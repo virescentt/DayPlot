@@ -23,6 +23,7 @@ cd DayPlot
 
 ## Pobieranie zależności projektu
 ### Backend (Flask + PostgreSQL)
+
 Utwórz bazę danych PostgreSQL o tej samej nazwie co w projekcie (__DayPlot__). Można to zrobić przez SQL Shell (psql) poleceniami lub przez interfejs graficzny pgAdmin: _databases -> new database -> DayPlot, gdzie template to template 1_. Pozostałe i tak będzie jako default ustawione.
  ![PostgreSQL final db look](docs/tutorPostgres.jpg)
 Potem __Save__.
@@ -30,7 +31,7 @@ Potem __Save__.
 <!-- (Opcjonalnie) zaimportuj dump bazy, jeśli jest dostępny -->
 Co dotyczy Pythona:
 ```cmd
-cd backend
+<!-- cd backend -->
 python -m venv venv           # utworzenie wirtualnego środowiska
 source venv/bin/activate      # aktywacja venv
 pip install -r requirements.txt # instalacja zależności

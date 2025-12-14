@@ -1,6 +1,8 @@
+venv/
 # Python / Flask
 backend/venv/
 backend/__pycache__/
+backend/db/__pycache__/
 backend/*.pyc
 backend/*.pyo
 backend/.pytest_cache/
