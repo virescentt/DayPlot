@@ -1,0 +1,20 @@
+# Python / Flask
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/.pytest_cache/
+backend/.env
+
+# Node / Expo / React Native
+mobile/node_modules/
+mobile/.expo/
+mobile/.expo-shared/
+mobile/web-build/
+mobile/npm-debug.log*
+mobile/yarn-error.log*
+mobile/.env
+
+# macOS / Windows system files
+.DS_Store
+Thumbs.db
