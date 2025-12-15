@@ -12,6 +12,8 @@ git --version
 node --version
 python3 --version
 psql --version
+<!-- Jeżeli po pobraniu polecenia jakaś wersja narzędzia nie zwraca odpowiedzi,
+najprawdopodobniej nie została dodana do ścieżki PATH. -->
 ```
 
 ## Klonowanie repozytorium z GitHub
@@ -35,11 +37,11 @@ python -m venv venv           # utworzenie wirtualnego środowiska
 source venv/bin/activate      # aktywacja venv
 pip install -r requirements.txt # instalacja zależności
 ```
+Następnie w folderze `/backend` zmień nazwę pliku `.example.env` na `.env` i w linii *DB_URI* wstaw swoje dane w miejscach *YOUR_PASSWORD* oraz *DATABASE_NAME*.
 
-Przed rozpoczęciem musimy również uzupełnić danymi i złożyć tabele w bazie danych. Dla tego uruchomiamy plik seed.py
+Przed rozpoczęciem musimy również uzupełnić danymi i złożyć tabele w bazie danych. Dla tego uruchomiamy plik `seed.py`
 ```cmd
-cd backend/
-python seed.py
+python -m backend.db.seed
 ```
 
 ### Fronted
@@ -51,14 +53,14 @@ npm install # instalacja zależności
 ## Przydatne polecenia do uruchomienia projektu
 Uruchamia serwer Flask, który będzie obsługiwał żądania aplikacji:
 ```cmd
-cd ../backend
-python app.py
+python -m backend.app
 ```
 Podczas działania serwera aplikacja mobilna może uzyskać do niego dostęp w celu pobrania danych.
 
 ---
 ```cmd
-npm start # 🟢 
+cd mobile/
+npm start # 🟢
 Otworzy się Expo Dev Tools
 Uruchamianie na telefonie przez Expo Go z QR-codem lub w emulatorze iOS/Android
 
