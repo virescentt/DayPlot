@@ -31,10 +31,15 @@ Potem __Save__.
 <!-- (Opcjonalnie) zaimportuj dump bazy, jeśli jest dostępny -->
 Co dotyczy Pythona:
 ```cmd
-<!-- cd backend -->
 python -m venv venv           # utworzenie wirtualnego środowiska
 source venv/bin/activate      # aktywacja venv
 pip install -r requirements.txt # instalacja zależności
+```
+
+Przed rozpoczęciem musimy również uzupełnić danymi i złożyć tabele w bazie danych. Dla tego uruchomiamy plik seed.py
+```cmd
+cd backend/
+python seed.py
 ```
 
 ### Fronted
@@ -46,6 +51,7 @@ npm install # instalacja zależności
 ## Przydatne polecenia do uruchomienia projektu
 Uruchamia serwer Flask, który będzie obsługiwał żądania aplikacji:
 ```cmd
+cd ../backend
 python app.py
 ```
 Podczas działania serwera aplikacja mobilna może uzyskać do niego dostęp w celu pobrania danych.
