@@ -1,6 +1,21 @@
 from backend.app import app
-from backend.db.models import db, User
+from backend.db.models import db, User, Quote
 from werkzeug.security import generate_password_hash
+
+quotes_list = [
+    "Act, don’t wait.",
+    "Strength overcomes weakness.",
+    "Every day is a step forward.",
+    "Mistakes fuel growth.",
+    "Will is enough to start.",
+    "Do today, be proud tomorrow.",
+    "Strive until you achieve.",
+    "Decisions matter more than circumstances.",
+    "Persistence breaks barriers.",
+    "Your progress is your power."
+]
+
+
 
 with app.app_context():
     # 1. creating tables, if they dont exist
@@ -26,3 +41,12 @@ with app.app_context():
         print("Seed: 2 users created")
     else:
         print("Seed: users already exist")
+    
+    if Quote.query.count() == 0:
+        quotes = [Quote(content=q) for q in quotes_list]
+        db.session.add_all(quotes)
+        db.session.commit()
+
+        print("Seed: 10 quotes created")
+    else:
+        print("Seed: quotes already exist")
