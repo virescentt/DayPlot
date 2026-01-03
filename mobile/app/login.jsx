@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import font from '../constants/typography.js';
 import { pxToPt } from '../utils/scale.js';
 import DayPlotTitle from '../components/ui/DayPlotTitle.jsx';
+import FormField from '../components/ui/FormField.jsx';
 
 
 export default function Login() {
@@ -19,19 +20,13 @@ export default function Login() {
         <View
           style={styles.container}
         >
-        <View style={{alignItems: 'center'}}>
-          <Image
-            source={require('../assets/images/splash-icon.png')}
-            style={styles.logo}
-            resizeMethod='contain'
-          />
-          <DayPlotTitle size={pxToPt(114)}/>
-        </View>
+       
+        <DayPlotTitle size={pxToPt(114)}/>
         
         <View style={styles.form}>
           <TextInput
             style={[styles.input, {marginBottom: pxToPt(50)}]}
-            placeholder='EMAIL'
+            placeholder='Email'
             placeholderTextColor="#fff"
             keyboardType='email-address'
             autoCapitalize='none'
@@ -39,27 +34,35 @@ export default function Login() {
           <TextInput
             style={styles.input}
             placeholderTextColor="#fff"
-            placeholder='PASSWORD'
+            placeholder='Password'
             secureTextEntry
           />
-          <Pressable style={styles.forgotButton}>
-            <Text style={styles.forgotText}>forgot password?</Text>
+          <Pressable
+            style={styles.forgotButton}
+            onPress={() => router.push('/forgot')}
+          >
+            <Text style={[styles.forgotText, styles.upperText]}>forgot password?</Text>
           </Pressable>
 
           <Pressable
             style={[styles.button, styles.signInButton]}
             onPress={() => router.replace('/home')}
           >
-            <Text style={styles.signInText}>sign in</Text>
+            <Text style={[styles.signInText, styles.upperText]}>sign in</Text>
           </Pressable>
         </View>
 
-        <Pressable
-          style={[styles.button, styles.signUpButton]}
-          onPress={() => router.replace('/home')}
-        >
-          <Text style={styles.signUpText}>sign up</Text>
-        </Pressable>
+          <View style={styles.signupBlock}>
+            <Text style={styles.AccountText}>
+              Do not have an account?
+            </Text>
+          <Pressable
+            style={[styles.button, styles.signUpButton]}
+            onPress={() => router.replace('/register')}
+          >
+            <Text style={[styles.signUpText, styles.upperText]}>sign up</Text>
+          </Pressable>
+        </View>
       </View>
       </ScrollView>
     </TouchableWithoutFeedback>
@@ -127,30 +130,34 @@ const styles = StyleSheet.create({
     marginBottom: pxToPt(50)
   },
 
-
-  forgotText: {
+  upperText: {
     textTransform: 'uppercase',
     letterSpacing: pxToPt(1.4),
+  },
+  forgotText: {
     color: '#3f6884',
-    fontSize: pxToPt(24),
+    fontSize: pxToPt(30),
   },
   signInText: {
-    letterSpacing: pxToPt(1.4),
-    textTransform: 'uppercase',
     color: '#fff',
     fontSize: pxToPt(40),
   },
+
+  signupBlock: {
+    width: '100%',
+    alignItems: 'center',
+
+    marginTop: pxToPt(20),
+  },
   signUpText: {
-    textTransform: 'uppercase',
-    letterSpacing: pxToPt(1.4),
     color: '#3f6884',
     fontSize: pxToPt(34),
   },
 
-  noAccountText: {
-    textTransform: 'uppercase',
+  AccountText: {
+    marginBottom: pxToPt(12),
     letterSpacing: pxToPt(1.4),
-    color: '#',
+    color: '#3f6884',
     fontSize: pxToPt(26),
   },
 

@@ -36,14 +36,7 @@ export default function IntroScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.centerBlock}>
-        <Image
-          source={require('../assets/images/splash-icon.png')}
-          style={styles.logo}
-        />
-        <DayPlotTitle size={pxToPt(114)} />
-      </View>
-
+      <DayPlotTitle logoStyle={styles.logo} containerStyle={styles.centerBlock} size={pxToPt(114)}  />
       <Text style={styles.quote}>{quotes_list[Math.floor(Math.random() * quotes_list.length)]}</Text>
     </View>
   );
