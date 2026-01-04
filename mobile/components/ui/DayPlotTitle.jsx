@@ -4,10 +4,10 @@ import { pxToPt } from '../../utils/scale.js';
 
 export default function DayPlotTitle( { size = 26, containerStyle, logoStyle } ) {
     return (
-        <View style={[styles.logoText, {alignItems: 'center'}, containerStyle]}>
+        <View style={[{alignItems: 'center'}, containerStyle]}>
           <Image
             source={require('../../assets/images/splash-icon.png')}
-            style={[styles.logo, styles.logoStyle]}
+            style={[styles.logo, logoStyle]}
             resizeMethod='contain'
           />
           <Text style={[styles.fp, { fontSize: size }]}>DAY

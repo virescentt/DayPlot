@@ -1,12 +1,12 @@
 import { View, Text, Pressable, Image, TextInput, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { router } from 'expo-router';
-import font from '../constants/typography.js';
-import { pxToPt } from '../utils/scale.js';
-import DayPlotTitle from '../components/ui/DayPlotTitle.jsx';
-import FormField from '../components/ui/FormField.jsx';
+import font from '../../constants/typography.js';
+import { pxToPt } from '../../utils/scale.js';
+import DayPlotTitle from '../../components/ui/DayPlotTitle.jsx';
+import FormField from '../../components/ui/FormField.jsx';
 
 
-export default function Register() {
+export default function Login() {
   return (
   <KeyboardAvoidingView
     style={{ flex: 1 }}
@@ -20,7 +20,7 @@ export default function Register() {
         <View
           style={styles.container}
         >
-
+       
         <DayPlotTitle size={pxToPt(114)}/>
         
         <View style={styles.form}>
@@ -32,34 +32,35 @@ export default function Register() {
             autoCapitalize='none'
           />
           <TextInput
-            style={[styles.input, {marginBottom: pxToPt(50)}]}
+            style={styles.input}
             placeholderTextColor="#fff"
             placeholder='Password'
             secureTextEntry
           />
-          <TextInput
-            style={[styles.input, {marginBottom: pxToPt(74)}]}
-            placeholderTextColor="#fff"
-            placeholder='Repeat Password'
-            secureTextEntry
-          />
+          <Pressable
+            style={styles.forgotButton}
+            onPress={() => router.push('/forgot')}
+          >
+            <Text style={[styles.forgotText, styles.upperText]}>forgot password?</Text>
+          </Pressable>
+
           <Pressable
             style={[styles.button, styles.signInButton]}
-            onPress={() => router.replace('/home')}
+            onPress={() => router.replace('(tabs)/home')}
           >
-            <Text style={[styles.signInText, styles.upperText]}>sign up</Text>
+            <Text style={[styles.signInText, styles.upperText]}>sign in</Text>
           </Pressable>
         </View>
 
           <View style={styles.signupBlock}>
             <Text style={styles.AccountText}>
-              Already have an account?
+              Do not have an account?
             </Text>
           <Pressable
-            style={[styles.button, styles.signUpButton, {marginBottom: pxToPt(50)}]}
-            onPress={() => router.replace('/login')}
+            style={[styles.button, styles.signUpButton]}
+            onPress={() => router.replace('/register')}
           >
-            <Text style={[styles.signUpText, styles.upperText]}>sign in</Text>
+            <Text style={[styles.signUpText, styles.upperText]}>sign up</Text>
           </Pressable>
         </View>
       </View>
@@ -112,16 +113,15 @@ const styles = StyleSheet.create({
   signInButton: {
     height: 40,
     width: '55%',
-    borderWidth: 3,
-    backgroundColor: '#fff',
-    borderColor: '#3f6884',
+    backgroundColor: '#a7bdd2',
+    borderColor: '#8aa7bc',
   },
   signUpButton: {
     height: 35,
     width: '35%',
-    backgroundColor: '#a7bdd2',
-    borderColor: '#8aa7bc',
-    
+    borderWidth: 3,
+    backgroundColor: '#fff',
+    borderColor: '#3f6884',
   },
   forgotButton: {
     alignSelf: 'flex-start',
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     fontSize: pxToPt(30),
   },
   signInText: {
-    color: '#3f6884',
+    color: '#fff',
     fontSize: pxToPt(40),
   },
 
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     marginTop: pxToPt(20),
   },
   signUpText: {
-    color: '#fff',
+    color: '#3f6884',
     fontSize: pxToPt(34),
   },
 

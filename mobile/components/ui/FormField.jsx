@@ -4,7 +4,7 @@ import { pxToPt } from '../../utils/scale.js';
 export default function FormField({ label, required, myStyle, ...props }) {
   return (
     <View style={{ width: '100%' }}>
-      <TextInput label style={[styles.input, myStyle]} {...props} />
+      <TextInput style={[styles.input, myStyle]} {...props} />
     </View>
   );
 }

@@ -9,9 +9,10 @@ import {
 import {
   BebasNeue_400Regular
 } from '@expo-google-fonts/bebas-neue';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 
-
-export default function Layout() {
+export default function RootLayout() {
   const [loaded, error] = useFonts({
     MontserratRegularItalic: Montserrat_400Regular_Italic,
     MontserratRegular: Montserrat_400Regular,
@@ -21,5 +22,16 @@ export default function Layout() {
   });
 
   if (!loaded && !error) return null;
-  return <Stack screenOptions={{ headerShown: false }} />;
+
+  return (
+    <SafeAreaProvider>
+      <SafeAreaView style={[{ flex: 1 }, {backgroundColor: '#fff'}]} edges={['top']}>``
+        <StatusBar style="dark" />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(tabs)" />
+        </Stack>
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
 }

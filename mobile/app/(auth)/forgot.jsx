@@ -1,8 +1,8 @@
 import { View, Text, Pressable, TextInput, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { router } from 'expo-router';
-import font from '../constants/typography.js';
-import { pxToPt } from '../utils/scale.js';
-import DayPlotTitle from '../components/ui/DayPlotTitle.jsx';
+import font from '../../constants/typography.js';
+import { pxToPt } from '../../utils/scale.js';
+import DayPlotTitle from '../../components/ui/DayPlotTitle.jsx';
 
 
 export default function Forgot() {
