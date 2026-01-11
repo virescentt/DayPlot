@@ -36,27 +36,10 @@ class User(db.Model):
         db.DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
     )
+    currency = db.Column(db.Integer, default=0)
     
     # relations with other tables
-    currency = db.relationship('UserCurrency', backref='user', uselist=False)
     flexible_tasks = db.relationship('FlexibleTask', backref='user', lazy='dynamic')
-
-# ---------- Quotes that are displayed when the app is loading  ----------
-class Quote(db.Model):
-    __tablename__ = "quotes"
-
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(80), nullable=False)
-
-
-class UserCurrency(db.Model):
-    __tablename__ = "user_currency"
-    
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    points = db.Column(db.Integer, default=0)
-    updated_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=datetime.now)
-
 
 # ---------- Flexible Tasks ----------
 class FlexibleTask(db.Model):

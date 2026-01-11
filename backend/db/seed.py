@@ -1,23 +1,10 @@
 from backend.app import app
 from backend.db.models import (
-    db, User, Quote, FlexibleTask, PlannedEvent, TimeLimits,
-    TemplateEvent, Category, TaskPriority, ScheduleSource, WeekDay, UserCurrency
+    db, User, FlexibleTask, PlannedEvent, TimeLimits,
+    TemplateEvent, Category, TaskPriority, ScheduleSource, WeekDay
 )
 from werkzeug.security import generate_password_hash
 from datetime import datetime, time
-
-quotes_list = [
-    "Act, don’t wait.",
-    "Strength overcomes weakness.",
-    "Every day is a step forward.",
-    "Mistakes fuel growth.",
-    "Will is enough to start.",
-    "Do today, be proud tomorrow.",
-    "Strive until you achieve.",
-    "Decisions matter more than circumstances.",
-    "Persistence breaks barriers.",
-    "Your progress is your power."
-]
 
 with app.app_context():
     # 1. Create tables if they don't exist
@@ -28,12 +15,14 @@ with app.app_context():
         user1 = User(
             email="user1@test.com",
             password_hash=generate_password_hash("password123"),
-            name="User One"
+            name="User One",
+            currency=10000
         )
         user2 = User(
             email="user2@test.com",
             password_hash=generate_password_hash("password123"),
-            name="User Two"
+            name="User Two",
+            currency=0
         )
         db.session.add_all([user1, user2])
         db.session.commit()
@@ -43,16 +32,7 @@ with app.app_context():
         user2 = User.query.filter_by(email="user2@test.com").first()
         print("Seed: users already exist")
 
-    # 3. Quotes
-    if Quote.query.count() == 0:
-        quotes = [Quote(content=q) for q in quotes_list]
-        db.session.add_all(quotes)
-        db.session.commit()
-        print("Seed: 10 quotes created")
-    else:
-        print("Seed: quotes already exist")
-
-    # 4. Categories
+    # 3. Categories
     if Category.query.filter_by(user_id=user1.id).count() == 0:
         categories = [
             Category(user_id=user1.id, name="Work"),
@@ -70,7 +50,7 @@ with app.app_context():
     db.session.commit()
     print("Seed: Categories created/verified")
 
-    # 5. Flexible Tasks
+    # 4. Flexible Tasks
     start_deadline = datetime(2026, 1, 11, 23, 59)
     if FlexibleTask.query.filter_by(user_id=user1.id).count() == 0:
         flexible_tasks = [
@@ -115,7 +95,7 @@ with app.app_context():
     db.session.commit()
     print("Seed: Flexible tasks created/verified")
 
-    # 6. Planned Events
+    # 5. Planned Events
     if PlannedEvent.query.filter_by(user_id=user1.id).count() == 0:
         planned_event1 = PlannedEvent(
             user_id=user1.id,
@@ -137,7 +117,7 @@ with app.app_context():
     db.session.commit()
     print("Seed: Planned events created/verified")
 
-    # 7. Template Events (для каждого пользователя)
+    # 6. Template Events (для каждого пользователя)
     if TemplateEvent.query.filter_by(user_id=user1.id).count() == 0:
         template_events_user1 = [
             TemplateEvent(
@@ -193,7 +173,7 @@ with app.app_context():
     db.session.commit()
     print("Seed: Template events created/verified")
 
-    # 8. TimeLimits / User Preferences
+    # 7. TimeLimits / User Preferences
     if not user1.preferences:
         prefs1 = TimeLimits(
             user_id=user1.id,
@@ -219,23 +199,6 @@ with app.app_context():
         print("Seed: User2 Time limits created")
     else:
         print("Seed: User2 Time limits already exist")
-        
-    db.session.commit()
-
-    # 9. UserCurrency
-    if not user1.currency:
-        currency1 = UserCurrency(user_id=user1.id, points=0)
-        db.session.add(currency1)
-        print("Seed: UserCurrency for user1 created")
-    else:
-        print("UserCurrency for user1 already exist")
-        
-    if not user2.currency:
-        currency2 = UserCurrency(user_id=user2.id, points=10000)
-        db.session.add(currency2)
-        print("Seed: UserCurrency for user2 created")
-    else:
-        print("UserCurrency for user2 already exist")
-    
+            
     db.session.commit()
         
