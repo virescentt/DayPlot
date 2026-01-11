@@ -1,51 +1,58 @@
-# Uruchomienie projektu DayPlot na Mac
+# Uruchomienie projektu DayPlot
 __Wymagania:__
-+ _Git_
-+ _Node.js_ + _npm_ (idą razem) 
-+ _Python 3_
-+ _PostgreSQL_ 
-+ _Expo Go_ na Iphone do szybkiego testu aplikacji mobilnej
++ [_Git_](https://git-scm.com/install/)
++ [_Node.js_ + _npm_](https://nodejs.org/en/download) (idą rpytazem) 
++ [_Python 3_](https://www.python.org/downloads/)
++ [_PostgreSQL_](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) 
++ _Expo Go_ - aplikacja na iphone do szybkiego testu apki
 
-Dostępność pakietów przed lub po instalacji można sprawdzić w terminalu następująco:
-```cmd
+__Dostępność pakietów przed lub po instalacji można sprawdzić w terminalu następująco:__
+```bash
 git --version
 node --version
 python3 --version
 psql --version
-<!-- Jeżeli po pobraniu polecenia jakaś wersja narzędzia nie zwraca odpowiedzi,
-najprawdopodobniej nie została dodana do ścieżki PATH. -->
+# Jeżeli tych poleceniach jakaś
+# wersja narzędzia zwraca error lub nic,
+# najprawdopodobniej nie została dodana do ścieżki PATH.
+# Ogarniemy to, napiszcie do mnie -->
 ```
 
 ## Klonowanie repozytorium z GitHub
-Uruchom polecenie w ścieżce folderu, do którego chcemy sklonować projekt:
+Uruchom polecenie w ścieżce folderu, do którego chcesz sklonować projekt:
 ```bash
 git clone https://github.com/virescentt/DayPlot.git
 cd DayPlot
 ```
 
 ## Pobieranie zależności projektu
-### Backend (Flask + PostgreSQL)
-
-Utwórz bazę danych PostgreSQL o tej samej nazwie co w projekcie (__DayPlot__). Można to zrobić przez SQL Shell (psql) poleceniami lub przez interfejs graficzny pgAdmin: _databases -> new database -> DayPlot, gdzie template to template 1_. Pozostałe i tak będzie jako default ustawione.
- ![PostgreSQL final db look](docs/tutorPostgres.jpg)
-Potem __Save__.
+### 1. Backend (Flask + PostgreSQL)
+Utwórz bazę danych PostgreSQL o tej samej nazwie co w projekcie (__DayPlot__). Wchodzimy do __pgAdmin4__: _databases -> new database -> wpisujemy DayPlot_. Potem __Save__.
+ ![PostgreSQL final db look](docs/pgadmin_guide_1.png)
 
 <!-- (Opcjonalnie) zaimportuj dump bazy, jeśli jest dostępny -->
-Co dotyczy Pythona:
-```cmd
-python -m venv venv           # utworzenie wirtualnego środowiska
-source venv/bin/activate      # aktywacja venv
+#### Co dotyczy Pythona:
++ Najpierw te polecenia:
+```bash
+python -m venv venv # utworzenie wirtualnego środowiska venv
+
+# aktywacja venv
+source venv/bin/activate # <-- dla MacOS
+source venv/Scripts/activate # <-- dla Windows
+
 pip install -r requirements.txt # instalacja zależności
 ```
-Następnie w folderze `/backend` zmień nazwę pliku `.example.env` na `.env` i w linii *DB_URI* wstaw swoje dane w miejscach *YOUR_PASSWORD* oraz *DATABASE_NAME*.
++ Następnie w folderze `/backend` zmień nazwę pliku `.example.env` na `.env` i w linii *DB_URI* wstaw swoje dane w miejscach *YOUR_PASSWORD* oraz *DATABASE_NAME*.
 
-Przed rozpoczęciem musimy również uzupełnić danymi i złożyć tabele w bazie danych. Dla tego uruchomiamy plik `seed.py`
-```cmd
++ Potem uruchomiamy plik `seed.py`:
+```bash
+# składa tabele w bazie i uzupełnia ich danymi.
 python -m backend.db.seed
 ```
 
-### Fronted
-```cmd
+### 2. Fronted
+Wykonać to:
+```bash
 cd ../mobile
 npm install # instalacja zależności
 ```
@@ -55,21 +62,27 @@ Uruchamia serwer Flask, który będzie obsługiwał żądania aplikacji:
 ```cmd
 python -m backend.app
 ```
-Podczas działania serwera aplikacja mobilna może uzyskać do niego dostęp w celu pobrania danych.
+Podczas działania serwera aplikacja może uzyskać do niego dostęp w celu pobrania danych.
+
+__do tej pory nie jest niezbędne.__
 
 ---
-```cmd
+
+## Ostateczne uruchomienie apki :)
+To własnie żeby zobaczyć wizualny wynik i poklikać sobie.
+```bash
 cd mobile/
 npm start # 🟢
-Otworzy się Expo Dev Tools
-Uruchamianie na telefonie przez Expo Go z QR-codem lub w emulatorze iOS/Android
+# Otworzy się Expo Dev Tools
+# Teraz można zeskanować QR-cod i w aplikacji
+# Expo Go zobaczyć naszą apkę
 
-npm run android   # aplikację mobilną na Androidzie
-npm run ios       # aplikację mobilną na iOS (tylko na Mac)
-npm run web       # wersję web aplikacji w przeglądarce
+npm run web       # wersja web aplikacji
 ```
-`npm run …` → polecenia zdefiniowane w pliku `package.json` projektu
 
 
+---
+
+### something 
 Android / iOS / web — różne sposoby przetestowania interfejsu aplikacji.
 
