@@ -6,7 +6,7 @@ import Header from '../../components/ui/Header.jsx';
 import Footer from '../../components/ui/Footer.jsx';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function Profile() {
+export default function Home() {
   return (
     <View style={styles.container}>
       <Header />

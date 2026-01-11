@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import { Ionicons, Feather } from '@expo/vector-icons';
 
-export default function TabsLayout() {
+export default function ProfileLayout() {
   return (
     <Tabs screenOptions={{ headerShown: false }}>
       <Tabs.Screen
@@ -20,6 +20,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ size, color }) => (
             <Feather name="plus" size={size + 6} color={color} />
           ),
+          title: 'Add Plot',
         }}
       />
 
@@ -29,6 +30,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-circle" size={size} color={color} />
           ),
+          title: 'Profile',
         }}
       />
     </Tabs>
