@@ -21,8 +21,15 @@ psql --version
 ## Klonowanie repozytorium z GitHub
 Uruchom polecenie w ścieżce folderu, do którego chcesz sklonować projekt:
 ```bash
-git clone https://github.com/virescentt/DayPlot.git
-cd DayPlot
+git clone https://github.com/virescentt/DayPlot.git . #kropka też powinna być
+
+# tworzymy lokalne branche i łączymy je ze zdalnymi
+git switch -c backend origin/backend 
+git switch -c mobile origin/mobile
+
+# żeby poberać potem zmiany które zostaną dodane do tych branchow:
+git switch branch_name
+git pull
 ```
 
 ## Pobieranie zależności projektu
