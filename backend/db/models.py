@@ -11,6 +11,12 @@ class TaskPriority(enum.Enum):
     HIGH = 3
     URGENT = 4
 
+class ReminderOffset(enum.Enum):
+    MIN_10 = 10
+    MIN_30 = 30
+    HOUR_1 = 60
+    DAY_1 = 1440
+
 class ScheduleSource(enum.Enum):
     AUTO = "auto"
     MANUAL = "manual"
@@ -66,6 +72,7 @@ class FlexibleTask(db.Model):
     description = db.Column(db.Text, nullable=True)
     start_datetime = db.Column(db.DateTime(timezone=True), nullable=True)
     end_datetime = db.Column(db.DateTime(timezone=True), nullable=True)
+    reminder_offset = db.Column(Enum(ReminderOffset), nullable=True)
 
 
     # Metadata
@@ -103,6 +110,7 @@ class PlannedEvent(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=True)
     category = db.relationship("Category", backref="planned_events")
     description = db.Column(db.Text, nullable=True)
+    reminder_offset = db.Column(Enum(ReminderOffset), nullable=True)
 
     # Метаданные
     created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
