@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     top: pxToPt(50),
     right: pxToPt(-100), // уезжает за экран
     height: pxToPt(90),
-    width: pxToPt(350),
+    width: pxToPt(400),
     backgroundColor: '#c8d7e3',
     borderRadius: pxToPt(40),
     flexDirection: 'row',
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#0d283d',
-    fontSize: pxToPt(40),
+    fontSize: pxToPt(50),
     fontFamily: 'YourFont-Bold',
     fontFamily: font.Mbold,
     marginRight: pxToPt(7),
