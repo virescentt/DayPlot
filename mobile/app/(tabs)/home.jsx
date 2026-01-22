@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { useState } from 'react';
 import { pxToPt } from '../../utils/scale.js';
 import { router } from 'expo-router';
 import font from '../../constants/typography.js';
@@ -12,6 +13,21 @@ import VerticalTimeline from '../../components/ui/VerticalTimeline.jsx';
 import CurrentTimeLine from '../../components/ui/CurrentTimeLine.jsx'; 
 
 export default function Home() {
+
+  const [timelineHeight, setTimelineHeight] = useState(0);
+
+  // // Gonna get from backend
+  // const minTime = 7;
+  // const maxTime = 21;
+  // const stepHours = 3;
+
+  // const timelineData = useMemo(() => {
+  //   return calculateTimeline(minTime, maxTime, stepHours, timelineHeight);
+  // }, [minTime, maxTime, stepHours, timelineHeight]);
+
+  // // и достаём
+  // const { start, end, times, usableHeight } = timelineData;
+
   return (
     <View style={styles.container}>
       <Header />
@@ -48,7 +64,6 @@ export default function Home() {
 
           {/* Date Badge */}
           <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: 10}}>
-              <CurrentTimeLine />
 
               {/* <Ionicons name="arrow-back-outline" size={12} color="#3c6674"/> */}
               <Arrow length={20} thickness={2} direction="left" />
@@ -60,8 +75,13 @@ export default function Home() {
           </View>
 
           {/* Data Container */}
-          <View style={{ flex: 1, flexDirection: 'row', marginBottom: 10, paddingHorizontal: 10, backgroundColor: ''}}>
-            <VerticalTimeline />
+          <View
+          style={{ flex: 1, flexDirection: 'row', marginBottom: 10, paddingHorizontal: 10, backgroundColor: ''}}
+          onLayout={(e) => setTimelineHeight(e.nativeEvent.layout.height)}
+        >
+            <VerticalTimeline height={timelineHeight}/>
+            <CurrentTimeLine />
+          
           </View>
 
         </View>
