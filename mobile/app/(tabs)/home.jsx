@@ -7,6 +7,9 @@ import Footer from '../../components/ui/Footer.jsx';
 import { Ionicons } from '@expo/vector-icons';
 import { TaskPoolButton } from '../../components/ui/TaskPoolButton.jsx';
 import Arrow from '../../components/ui/Arrow.jsx';
+import VerticalTimeline from '../../components/ui/VerticalTimeline.jsx';
+
+import CurrentTimeLine from '../../components/ui/CurrentTimeLine.jsx'; 
 
 export default function Home() {
   return (
@@ -45,6 +48,8 @@ export default function Home() {
 
           {/* Date Badge */}
           <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: 10}}>
+              <CurrentTimeLine />
+
               {/* <Ionicons name="arrow-back-outline" size={12} color="#3c6674"/> */}
               <Arrow length={20} thickness={2} direction="left" />
               <Text style={ styles.dateText }>
@@ -55,10 +60,8 @@ export default function Home() {
           </View>
 
           {/* Data Container */}
-          <View style={{ flex: 1, flexDirection: 'row', marginBottom: 10, paddingHorizontal: 20, backgroundColor: '#000'}}>
-            <View
-              style={ styles.horizontalTimeLine }
-            /> 
+          <View style={{ flex: 1, flexDirection: 'row', marginBottom: 10, paddingHorizontal: 10, backgroundColor: ''}}>
+            <VerticalTimeline />
           </View>
 
         </View>
@@ -111,10 +114,8 @@ const styles = StyleSheet.create({
     gap: 5, 
   },
 
-  horizontalTimeLine: {
-    width: 1,           // line thickness
-    height: '100%',         // line length
-    backgroundColor: '#d40afc', // line color
-    marginHorizontal: 8 // left and right indents if needed
-  }
+  currentLine: {
+    
+  },
+
 }) 
