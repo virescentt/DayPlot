@@ -11,22 +11,32 @@ import Arrow from '../../components/ui/Arrow.jsx';
 import VerticalTimeline from '../../components/ui/VerticalTimeline.jsx';
 
 import CurrentTimeLine from '../../components/ui/CurrentTimeLine.jsx'; 
+import { calculateTimeline } from '../../utils/timeline.js';
 
 export default function Home() {
 
   const [timelineHeight, setTimelineHeight] = useState(0);
 
-  // // Gonna get from backend
-  // const minTime = 7;
-  // const maxTime = 21;
-  // const stepHours = 3;
+  // Gonna get from backend
+  const minTime = 6;
+  const maxTime = 21;
+  
+  const stepHours = 3;
 
-  // const timelineData = useMemo(() => {
-  //   return calculateTimeline(minTime, maxTime, stepHours, timelineHeight);
-  // }, [minTime, maxTime, stepHours, timelineHeight]);
+  const timelineData = useMemo(() => {
+    return calculateTimeline(minTime, maxTime, stepHours, timelineHeight);
+  }, [minTime, maxTime, stepHours, timelineHeight]);
 
-  // // и достаём
-  // const { start, end, times, usableHeight } = timelineData;
+  // и достаём
+  const { 
+    times, 
+    timeToY, 
+    isLineVisible, 
+    labelHeight, 
+    paddingTopLabels,
+    paddingBottomLabels,
+    fontS 
+  } = timelineData;
 
   return (
     <View style={styles.container}>
@@ -76,12 +86,22 @@ export default function Home() {
 
           {/* Data Container */}
           <View
-          style={{ flex: 1, flexDirection: 'row', marginBottom: 10, paddingHorizontal: 10, backgroundColor: ''}}
+          style={{flex: 1, position: 'relative', flexDirection: 'row', paddingHorizontal: 10, backgroundColor: ''}}
           onLayout={(e) => setTimelineHeight(e.nativeEvent.layout.height)}
         >
-            <VerticalTimeline height={timelineHeight}/>
-            <CurrentTimeLine />
-          
+            <VerticalTimeline
+              times={times}
+              timeToY={timeToY}
+              fontS={fontS}
+              paddingTopLabels={paddingTopLabels}
+              paddingBottomLabels={paddingBottomLabels}
+              />
+            <CurrentTimeLine 
+              timeToY={timeToY}
+              isLineVisible={isLineVisible}
+              labelHeight={labelHeight}
+              paddingTopLabels={paddingTopLabels}
+            />          
           </View>
 
         </View>
