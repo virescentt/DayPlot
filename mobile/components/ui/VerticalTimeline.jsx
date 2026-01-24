@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
   },
   
   labelText: {
-    color: '#0d283d',
+    // color: '#0d283d',
+    color: '#000',
     fontFamily: font.Mregular,
     textTransform: 'uppercase',
   },

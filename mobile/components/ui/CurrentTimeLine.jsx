@@ -55,8 +55,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 55,
     right: 0,
-    height: 1,
-    backgroundColor: '#ff3b30',
+    // height: 1,
+    // color: '#ff66c4',
+    borderTopWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: '#ff66c4',
     zIndex: 999,
   },
 });

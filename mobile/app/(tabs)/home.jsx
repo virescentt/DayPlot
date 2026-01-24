@@ -20,7 +20,7 @@ export default function Home() {
   // Gonna get from backend
   const minTime = 6;
   const maxTime = 21;
-  
+
   const stepHours = 3;
 
   const timelineData = useMemo(() => {
@@ -86,7 +86,7 @@ export default function Home() {
 
           {/* Data Container */}
           <View
-          style={{flex: 1, position: 'relative', flexDirection: 'row', paddingHorizontal: 10, backgroundColor: ''}}
+          style={{flex: 1, position: 'relative', flexDirection: 'row', paddingHorizontal: 10, backgroundColor: '', marginBottom: 10}}
           onLayout={(e) => setTimelineHeight(e.nativeEvent.layout.height)}
         >
             <VerticalTimeline
