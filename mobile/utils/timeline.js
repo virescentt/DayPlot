@@ -1,7 +1,7 @@
 // utils/timeline.js
 import { pxToPt } from '../utils/scale';
 
-export function calculateTimeline(minTime, maxTime, stepHours, timelineHeight, fontS = pxToPt(45), paddingTopLabels = 30, paddingBottomLabels = 20) {
+export function calculateTimeline(minTime, maxTime, stepHours, timelineHeight, fontS = pxToPt(45), paddingTopLabels = 30, paddingBottomLabels = 10) {
   let start = minTime * 60;
   const step = stepHours * 60;
 
