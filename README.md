@@ -22,10 +22,14 @@ psql --version
 Uruchom polecenie w ścieżce folderu, do którego chcesz sklonować projekt:
 ```bash
 git clone https://github.com/virescentt/DayPlot.git . #kropka też powinna być
-
+```
+Tego polecenia wystarczy dla tego żeby zobaczyć i uruchomić projekt.
+Jeśli potrzebujesz zmiany kodu, musisz też utworzyć i powiązać inne branche:
+```bash
 # tworzymy lokalne branche i łączymy je ze zdalnymi
 git switch -c backend origin/backend 
 git switch -c mobile origin/mobile
+git switch -c dev origin/dev
 
 # żeby poberać potem zmiany które zostaną dodane do tych branchow:
 git switch branch_name
