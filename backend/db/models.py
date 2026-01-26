@@ -11,6 +11,16 @@ class TaskPriority(enum.Enum):
     HIGH = 3
     URGENT = 4
 
+class ReminderOffset(enum.Enum):
+    MIN_10 = 10
+    MIN_30 = 30
+    HOUR_1 = 60
+    DAY_1 = 1440
+
+class ScheduleSource(enum.Enum):
+    AUTO = "auto"
+    MANUAL = "manual"
+
 class WeekDay(enum.Enum):
     MONDAY = "Monday"
     TUESDAY = "Tuesday"
@@ -32,27 +42,10 @@ class User(db.Model):
         db.DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
     )
+    currency = db.Column(db.Integer, default=0)
     
     # relations with other tables
-    currency = db.relationship('UserCurrency', backref='user', uselist=False)
     flexible_tasks = db.relationship('FlexibleTask', backref='user', lazy='dynamic')
-
-# ---------- Quotes that are displayed when the app is loading  ----------
-class Quote(db.Model):
-    __tablename__ = "quotes"
-
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(80), nullable=False)
-
-
-class UserCurrency(db.Model):
-    __tablename__ = "user_currency"
-    
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    points = db.Column(db.Integer, default=0)
-    updated_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=datetime.now)
-
 
 # ---------- Flexible Tasks ----------
 class FlexibleTask(db.Model):
@@ -66,13 +59,20 @@ class FlexibleTask(db.Model):
     priority = db.Column(Enum(TaskPriority), nullable=False)  # 1-4, 4 — highest
     estimated_hours = db.Column(db.Float, nullable=False)  # from 0.25h (15 minutes) to 5h
     deadline = db.Column(db.DateTime(timezone=True), nullable=False)
-
+    scheduled_by = db.Column(
+    Enum(ScheduleSource),
+    nullable=False,
+    default=ScheduleSource.AUTO
+    )
+    is_done = db.Column(db.Boolean, default=False)
+    
     # Optional fields
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=True)
     category = db.relationship("Category", backref="flexible_tasks")
     description = db.Column(db.Text, nullable=True)
     start_datetime = db.Column(db.DateTime(timezone=True), nullable=True)
     end_datetime = db.Column(db.DateTime(timezone=True), nullable=True)
+    reminder_offset = db.Column(Enum(ReminderOffset), nullable=True)
 
 
     # Metadata
@@ -104,11 +104,13 @@ class PlannedEvent(db.Model):
     estimated_hours = db.Column(db.Float, nullable=False)  # от 0.25 до 5 часов
     start_datetime = db.Column(db.DateTime(timezone=True), nullable=False)
     end_datetime = db.Column(db.DateTime(timezone=True), nullable=False)
+    is_done = db.Column(db.Boolean, default=False)
 
     # Optional fields
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=True)
     category = db.relationship("Category", backref="planned_events")
     description = db.Column(db.Text, nullable=True)
+    reminder_offset = db.Column(Enum(ReminderOffset), nullable=True)
 
     # Метаданные
     created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
@@ -138,14 +140,12 @@ class Category(db.Model):
     # relation back to the user
     user = db.relationship("User", backref="categories")
 
-
-
 class TemplateEvent(db.Model):
     __tablename__ = "template_events"
 
     id = db.Column(db.Integer, primary_key=True)
-    template_id = db.Column(db.Integer, db.ForeignKey("schedule_template.id", ondelete="CASCADE"), nullable=False)
     
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     day_of_week = db.Column(Enum(WeekDay), nullable=False)  # Monday ... Sunday
     label = db.Column(db.String(100), nullable=False)
     start_time = db.Column(db.Time, nullable=False)  # only time
@@ -172,3 +172,34 @@ class TemplateEventOverride(db.Model):
     label = db.Column(db.String(100), nullable=True)
 
     template_event = db.relationship("TemplateEvent", backref="overrides")
+
+
+class TimeLimits(db.Model):
+    __tablename__ = "time_limits"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        unique=True,
+        nullable=False
+    )
+
+    # BY DEFAULT or when using auto planning for the first time or right after registration 
+    # sleep_start = 23:00
+    # sleep_end   = 07:00
+
+    # Сон (период, куда НЕЛЬЗЯ ставить задачи)
+    sleep_start = db.Column(db.Time, nullable=False)
+    sleep_end = db.Column(db.Time, nullable=False)
+
+    # Ограничения нагрузки
+    max_hours_per_day = db.Column(db.Float, nullable=False)
+    max_hours_per_week = db.Column(db.Float, nullable=False)
+
+    created_at = db.Column(
+        db.DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+    user = db.relationship("User", backref="preferences")
