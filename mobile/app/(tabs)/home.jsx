@@ -19,8 +19,8 @@ export default function Home() {
   const [selectedDay, setSelectedDay] = useState(null);
 
   // Gonna get from backend
-  const minTime = 9;
-  const maxTime = 24;
+  const minTime = 7;
+  const maxTime = 22;
 
   const stepHours = 3;
 
@@ -72,7 +72,7 @@ export default function Home() {
               paddingTopLabels={paddingTopLabels}
             />          
 
-            <WeekDays />
+            <WeekDays timeToY={timeToY} />
 
           </View>
 

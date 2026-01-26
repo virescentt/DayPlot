@@ -1,10 +1,12 @@
-import { View, Text, StyleSheet, Pressable, FlatList } from 'react-native';
+import { useRef } from 'react';
+import { View, Text, StyleSheet, Pressable, Animated, FlatList } from 'react-native';
 import font from '../../constants/typography';
 import { pxToPt } from '../../utils/scale';
+import Task from './Task';
 
 
 
-export default function WeekDays() {
+export default function WeekDays({ timeToY }) {
     const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const onSelectDay = (day) => {
         console.log(day);
@@ -20,15 +22,21 @@ export default function WeekDays() {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={ styles.flatList }
             renderItem={({ item }) => (
-            <Pressable onPress={() => onSelectDay(item)}>
+            <Pressable
+            onPress={() => onSelectDay(item)}
+            style={({ pressed }) => [
+                pressed && styles.pressed,
+            ]}
+            >
             <View style={styles.day}>
                 <Text style={[styles.label, {fontSize: fontS}]}>{item}</Text>
 
                 <View style={[styles.tasksContainer, {fontSize: fontS }]}>
-                    {/* <Text>лейбл = {labelHeight}
-                            {'\n'}
-                            всего (паддинг 3 над лейблом + лейбл + марджин под лейблом 5, + 4 паддинг вниз внутри таск конта) = {checkh}
-                    </Text> */}
+                    {/* <Text>лейбл = {labelHeight} */}
+                            {/* {'\n'}
+                            всего (паддинг 3 над лейблом + лейбл + марджин под лейблом 5, + 4 паддинг вниз внутри таск конта) = {checkh} */}
+                    {/* </Text> */}
+                    <Task timeToY={timeToY} ></Task>
                 {/* tasks */}
                 </View>
             </View>
@@ -65,5 +73,14 @@ const styles = StyleSheet.create({
         borderColor: '#3c6674',
         borderRadius: 10,
         paddingTop: 4,
+    },
+    pressed: {
+        shadowOpacity: 0.15,
+        elevation: 3,
+        borderWidth: 1,
+        borderColor: 'white',
+        shadowOpacity: 0.12,
+        transform: [{ scale: 0.965 }]
     }
+
 })
