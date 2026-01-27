@@ -28,7 +28,7 @@ export default function Profile() {
               onPress={() => user && changeName(token, setUser, user)}
             >
               <Text style={{fontFamily: font.Mbold, fontSize: pxToPt(80), color: '#fff'}}>
-                {user.name || 'Username'}
+                {user?.name || 'Username'}
                 </Text>
               <Ionicons name="pencil" size={12} color="#fff"/>
             </Pressable>
