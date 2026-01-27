@@ -1,6 +1,4 @@
 // services/auth.js
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 export const loginRequest = async (email, password) => {
   try {
     const response = await fetch('http://172.20.10.2:5000/auth/login', {

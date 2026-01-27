@@ -26,7 +26,8 @@ def me():
         return jsonify({
             "id": user.id,
             "email": user.email,
-            "name": user.name
+            "name": user.name,
+            "currency": user.currency
         })
     except jwt.ExpiredSignatureError:
         return jsonify({"message": "Token expired"}), 401
@@ -57,3 +58,4 @@ def update_name():
         return jsonify({"message": "Token expired"}), 401
     except jwt.InvalidTokenError:
         return jsonify({"message": "Invalid token"}), 401
+    

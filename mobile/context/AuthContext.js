@@ -4,7 +4,7 @@ import { createContext, useEffect, useState } from 'react';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [email, setEmail] = useState(''); // global email for login/registr
+  const [email, setEmail] = useState(''); // global email for login/register
   
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -52,7 +52,9 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-
+  if (loading) {
+    return null; 
+  }
   return (
     <AuthContext.Provider value={{ email, setEmail, login, logout, token, loading, user, setUser }}>
       {children}

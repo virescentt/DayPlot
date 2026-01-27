@@ -1,11 +1,16 @@
 import { View, Image, Text, StyleSheet } from 'react-native';
 import { pxToPt } from '../../utils/scale';
 import font from '../../constants/typography';
+import { AuthContext } from '../../context/AuthContext';
+import { useContext } from 'react';
 
 export default function CurrencyBadge() {
+  
+  const { user } = useContext(AuthContext);
+
   return (
     <View style={styles.badge}>
-      <Text style={styles.text}>456</Text>
+      <Text style={styles.text}>{user?.currency || 450}</Text>
       <Image
         source={require('../../assets/images/currency.png')}
         style={styles.icon}

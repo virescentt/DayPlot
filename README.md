@@ -66,7 +66,7 @@ npm install # instalacja zależności
 
 ## Przydatne polecenia do uruchomienia projektu
 Uruchamia serwer Flask, który będzie obsługiwał żądania aplikacji:
-```cmd
+```bash
 python -m backend.app
 ```
 Podczas działania serwera aplikacja może uzyskać do niego dostęp w celu pobrania danych.

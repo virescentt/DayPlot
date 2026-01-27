@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.15,
         elevation: 3,
         borderWidth: 1,
+        borderRadius: 10,
         borderColor: 'white',
         shadowOpacity: 0.12,
         transform: [{ scale: 0.965 }]
