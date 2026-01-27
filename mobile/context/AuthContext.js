@@ -29,11 +29,12 @@ export const AuthProvider = ({ children }) => {
       const res = await fetch('http://172.20.10.2:5000/user/me', {
         headers: { Authorization: `Bearer ${token}` }
       });
-
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data);
+      if (!res.ok) {
+        await logout();
       }
+      
+      const data = await res.json();
+      setUser(data);
     } catch (e) {
       console.log('loadUser error', e);
     }
