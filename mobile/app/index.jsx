@@ -1,12 +1,13 @@
 import { View, Text, Image, StyleSheet} from 'react-native'
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { Redirect, router } from 'expo-router';
 import font from "../constants/typography.js"
 import { pxToPt } from '../utils/scale.js';
 import DayPlotTitle from '../components/ui/DayPlotTitle.jsx'
+import { AuthContext } from '../context/AuthContext.js';
 
 export default function IntroScreen() {
-  let isLoggedIn = false; // потом будет реальная проверка
+  const { token, loading } = useContext(AuthContext);
   
   const quotes_list = [
     "Act, don’t wait.",
@@ -21,17 +22,23 @@ export default function IntroScreen() {
     "Your progress is your power."
   ]
 
-  let route = '/home'
-  if (!isLoggedIn) {
-    route = '/login'
+  let route = '/login';
+  if (token) {
+    route = '(tabs)/home';
   }
-  useEffect(
-    () => {
+   useEffect(() => {
+    if (loading) return;
+
     const timer = setTimeout(() => {
-      router.replace(route);
-    }, 3000);
-    return () => clearTimeout(timer); 
-  }, [])
+      if (token) {
+        router.replace(route);
+      } else {
+        router.replace(route);
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [loading, token]);
 
 
   return (

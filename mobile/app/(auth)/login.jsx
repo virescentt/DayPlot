@@ -2,11 +2,42 @@ import { View, Text, Pressable, Image, TextInput, StyleSheet, ScrollView, Keyboa
 import { router } from 'expo-router';
 import font from '../../constants/typography.js';
 import { pxToPt } from '../../utils/scale.js';
+import { isEmailValid } from '../../utils/validation.js';
 import DayPlotTitle from '../../components/ui/DayPlotTitle.jsx';
 import FormField from '../../components/ui/FormField.jsx';
-
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../context/AuthContext.js';
+import { loginRequest } from '../../services/auth.js';
+import { useLocalSearchParams } from 'expo-router';
+import { Alert } from 'react-native';
 
 export default function Login() {
+  const { email, setEmail } = useContext(AuthContext);
+  const { login, token } = useContext(AuthContext);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const { registered } = useLocalSearchParams();
+  
+  useEffect(() => {
+    if (registered) {
+      Alert.alert('Success!', 'You have successfully registered');
+    }
+  }, [registered]);
+
+  const handleLogin = async () => {
+    const res = await loginRequest(email, password);
+    if (res.token) {
+      await login(res.token);
+      router.replace('(tabs)/home');
+      setError('');
+
+    } else {
+      setError(res.message);
+    }
+  };
+
+  const isFormValid = isEmailValid(email) && password.length >= 6; // например, пароль минимум 6 символов
+  
   return (
   <KeyboardAvoidingView
     style={{ flex: 1 }}
@@ -20,22 +51,27 @@ export default function Login() {
         <View
           style={styles.container}
         >
-       
         <DayPlotTitle size={pxToPt(114)}/>
         
         <View style={styles.form}>
+          {error ? <Text style={{ color: 'red', marginVertical: 10, alignSelf: 'flex-start' }}>{error}</Text> : null}
           <TextInput
             style={[styles.input, {marginBottom: pxToPt(50)}]}
             placeholder='Email'
-            placeholderTextColor="#fff"
+            placeholderTextColor="#ffffff77"
             keyboardType='email-address'
             autoCapitalize='none'
+            value={email}
+            onChangeText={setEmail}
+            
           />
           <TextInput
             style={styles.input}
-            placeholderTextColor="#fff"
+            placeholderTextColor="#ffffff77"
             placeholder='Password'
             secureTextEntry
+            value={password}
+            onChangeText={setPassword}
           />
           <Pressable
             style={styles.forgotButton}
@@ -45,8 +81,14 @@ export default function Login() {
           </Pressable>
 
           <Pressable
-            style={[styles.button, styles.signInButton]}
-            onPress={() => router.replace('(tabs)/home')}
+            style={[styles.button, styles.signInButton,
+              { opacity: isFormValid ? 1 : 0.5 }
+            ]}
+            
+            // onPress={() => router.replace('(tabs)/home')}
+            onPress={handleLogin}
+            disabled={!isFormValid}
+
           >
             <Text style={[styles.signInText, styles.upperText]}>sign in</Text>
           </Pressable>
@@ -99,6 +141,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a507a',
     borderRadius: 8,
     paddingHorizontal: 12,
+    color: "white"
   },
   
   

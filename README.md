@@ -93,3 +93,4 @@ npm run web       # wersja web aplikacji
 ### something 
 Android / iOS / web — różne sposoby przetestowania interfejsu aplikacji.
 
+`pip freeze > requirements.txt` - to update python dependencies if new were added.

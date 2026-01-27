@@ -6,7 +6,7 @@ import { replace } from "expo-router/build/global-state/routing.js";
 import { router } from "expo-router";
 import font from "../../constants/typography.js";
 
-export default function ProfileSettingBtn({ target, iconName, btnName }) {
+export default function ProfileSettingBtn({ target, iconName, btnName, onLogoutPress = () => router.replace('/login') }) {
     /**
      * @param iconName - must be one of the listed names in the SettingsIcons dict from constants/icons.js
      * @param target - name of a file to which it should redirect (f.ex. 'language')
@@ -23,7 +23,7 @@ export default function ProfileSettingBtn({ target, iconName, btnName }) {
             </Pressable>
         :   <Pressable
             style={[styles.btn, {justifyContent: 'center', gap: 10, backgroundColor: '#e1eaf3'}]}
-            onPress={() => router.replace('/login')}>
+            onPress={onLogoutPress}>
                 {SettingsIcons[iconName]}
                 <Text style={[styles.text, {color: '#0d283d', fontFamily: font.Mbold}]}>{btnName}</Text>
             </Pressable>

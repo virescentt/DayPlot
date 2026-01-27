@@ -1,4 +1,6 @@
 import { View, Text, Pressable, TextInput, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../context/AuthContext.js';
 import { router } from 'expo-router';
 import font from '../../constants/typography.js';
 import { pxToPt } from '../../utils/scale.js';
@@ -6,6 +8,8 @@ import DayPlotTitle from '../../components/ui/DayPlotTitle.jsx';
 
 
 export default function Forgot() {
+  const { email, setEmail } = useContext(AuthContext);
+  
   return (
   <KeyboardAvoidingView
     style={{ flex: 1 }}
@@ -30,15 +34,17 @@ export default function Forgot() {
               <TextInput
                 style={[styles.input, {marginBottom: pxToPt(20)}]}
                 placeholder='Email'
-                placeholderTextColor="#fff"
+                placeholderTextColor="#ffffff77"
                 keyboardType='email-address'
                 autoCapitalize='none'
+                value={email}
+                onChangeText={setEmail}
               />
             <View style={styles.row}>
               <TextInput
                 style={[styles.input, styles.inputCode]}
                 placeholder='Code'
-                placeholderTextColor="#fff"
+                placeholderTextColor="#ffffff77"
                 keyboardType='numeric'
               />
               
@@ -90,12 +96,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a507a',
     borderRadius: 8,
     paddingHorizontal: 12,
+    color: 'white'
   },  
   inputCode: {
     width: '45%',
     display: "inline",
     borderColor: '#1a507a80',
     backgroundColor: '#1a507a80',
+    color: 'white',
+    letterSpacing: 2,
   },
   row: {
     width: '100%',

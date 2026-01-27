@@ -6,26 +6,38 @@ import Header from '../../../components/ui/Header.jsx';
 import Footer from '../../../components/ui/Footer.jsx';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import ProfileSettingBtn from '../../../components/ui/ProfileSettingBtn.jsx';
-import Language from './language.jsx';
+import { useContext } from 'react';
+import { Alert } from 'react-native';
+import { AuthContext } from '../../../context/AuthContext.js';
+import { maskEmail } from '../../../utils/validation.js';
+import { changeName } from '../../../services/user.js';
 
 export default function Profile() {
+  const { logout, user, token, setUser } = useContext(AuthContext);
+
   return (
     <View style={styles.container}>
       <Header />
       <ScrollView style={{flex: 1, width: '100%', backgroundColor: '#0d283d'}}>
         <View style={{paddingVertical: 10, paddingHorizontal: 5, flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
           <Ionicons name="person-circle" size={120} color="#a7bdd2"/>
+          
           <View style={{ flexDirection: 'column', gap: 5, marginTop: 10, }}>
             <Pressable
               style={{flexDirection: 'row', alignItems: 'center', gap: 5}}
+              onPress={() => user && changeName(token, setUser, user)}
             >
-              <Text style={{fontFamily: font.Mbold, fontSize: pxToPt(80), color: '#fff'}}>Username</Text>
+              <Text style={{fontFamily: font.Mbold, fontSize: pxToPt(80), color: '#fff'}}>
+                {user.name || 'Username'}
+                </Text>
               <Ionicons name="pencil" size={12} color="#fff"/>
             </Pressable>
             <Pressable
               style={{flexDirection: 'row', alignItems: 'center', gap: 3}}
             >
-              <Text style={{fontFamily: font.Mregular, fontSize: pxToPt(40), color: '#fff'}}>zz***zz@gmail.com</Text>
+              <Text style={{fontFamily: font.Mregular, fontSize: pxToPt(40), color: '#fff'}}>
+                {maskEmail(user?.email)}
+              </Text>
               {/* <Ionicons name="pencil" size={10} color="#fff"/> */}
             </Pressable>
           </View>
@@ -65,6 +77,10 @@ export default function Profile() {
           <ProfileSettingBtn
           iconName={'logOut'}
           btnName={'Log out'}
+          onLogoutPress={async () => {
+            await logout();
+            router.replace('/login');
+          }}
           />
 
         </View>

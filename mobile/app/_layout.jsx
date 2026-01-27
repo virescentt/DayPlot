@@ -11,6 +11,7 @@ import {
 } from '@expo-google-fonts/bebas-neue';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { AuthProvider } from '../context/AuthContext';
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -25,13 +26,15 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={[{ flex: 1 }, {backgroundColor: '#fff'}]} edges={['top']}>
-        <StatusBar style="dark" />
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(tabs)" />
-        </Stack>
-      </SafeAreaView>
+      <AuthProvider>
+        <SafeAreaView style={[{ flex: 1 }, {backgroundColor: '#fff'}]} edges={['top']}>
+          <StatusBar style="dark" />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+        </SafeAreaView>
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }

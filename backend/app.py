@@ -1,5 +1,7 @@
 from flask import Flask
 from backend.db.models import db
+from backend.routes.auth import auth_bp
+from backend.routes.user import user_bp
 from dotenv import load_dotenv
 from pathlib import Path
 import os
@@ -17,5 +19,8 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 
+app.register_blueprint(auth_bp, url_prefix="/auth")
+app.register_blueprint(user_bp, url_prefix="/user")
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

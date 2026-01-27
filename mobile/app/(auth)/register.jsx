@@ -1,12 +1,47 @@
 import { View, Text, Pressable, Image, TextInput, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { router } from 'expo-router';
 import font from '../../constants/typography.js';
+import { isEmailValid } from '../../utils/validation.js';
 import { pxToPt } from '../../utils/scale.js';
 import DayPlotTitle from '../../components/ui/DayPlotTitle.jsx';
 import FormField from '../../components/ui/FormField.jsx';
-
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../context/AuthContext.js';
+import { registerRequest } from '../../services/auth.js';
 
 export default function Register() {
+  const { email, setEmail } = useContext(AuthContext);
+  const [password, setPassword] = useState('');
+  const [repeatPassword, setRepeatPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const passwordsMatch = password === repeatPassword;
+  const isPasswordValid = password.length >= 6;
+
+  const isFormValid =
+    isEmailValid(email) &&
+    isPasswordValid;
+    
+
+  const handleRegister = async () => {
+    if (!passwordsMatch) {
+      setError('Passwords do not match.');
+      return;
+    };
+
+    const result = await registerRequest(email, password);
+
+    if (result.success) {
+        setError('');
+        router.replace({
+          pathname: '/login',
+          params: { registered: '1' }
+        });
+      } else {
+        setError(result.message);
+      }
+  };
+
   return (
   <KeyboardAvoidingView
     style={{ flex: 1 }}
@@ -24,28 +59,38 @@ export default function Register() {
         <DayPlotTitle size={pxToPt(114)}/>
         
         <View style={styles.form}>
+          {error ? <Text style={{ color: 'red', marginVertical: 10, alignSelf: 'flex-start' }}>{error}</Text> : null}
           <TextInput
             style={[styles.input, {marginBottom: pxToPt(50)}]}
             placeholder='Email'
-            placeholderTextColor="#fff"
+            placeholderTextColor="#ffffff77"
             keyboardType='email-address'
             autoCapitalize='none'
+            value={email}
+            onChangeText={setEmail}
           />
           <TextInput
             style={[styles.input, {marginBottom: pxToPt(50)}]}
-            placeholderTextColor="#fff"
+            placeholderTextColor="#ffffff77"
             placeholder='Password'
             secureTextEntry
+            value={password}
+            onChangeText={setPassword}
           />
           <TextInput
             style={[styles.input, {marginBottom: pxToPt(74)}]}
-            placeholderTextColor="#fff"
+            placeholderTextColor="#ffffff77"
             placeholder='Repeat Password'
             secureTextEntry
+            value={repeatPassword}
+            onChangeText={setRepeatPassword}
           />
           <Pressable
-            style={[styles.button, styles.signInButton]}
-            onPress={() => router.replace('/home')}
+            style={[styles.button, styles.signInButton,
+               { opacity: isFormValid ? 1 : 0.5 }
+            ]}
+            onPress={handleRegister}
+            disabled={!isFormValid}
           >
             <Text style={[styles.signInText, styles.upperText]}>sign up</Text>
           </Pressable>
@@ -98,6 +143,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a507a',
     borderRadius: 8,
     paddingHorizontal: 12,
+    color: 'white'
   },
   
   
