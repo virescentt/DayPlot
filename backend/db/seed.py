@@ -1,7 +1,7 @@
 from backend.app import app
 from backend.db.models import (
     db, User, FlexibleTask, PlannedEvent, TimeLimits,
-    TemplateEvent, Category, TaskPriority, ScheduleSource, WeekDay
+    TemplateEvent, Category, TaskPriority, ScheduleSource, WeekDay, ReminderOffset
 )
 from werkzeug.security import generate_password_hash
 from datetime import datetime, time
@@ -68,7 +68,8 @@ with app.app_context():
                 priority=TaskPriority.HIGH,
                 estimated_hours=1,
                 deadline=start_deadline,
-                scheduled_by=ScheduleSource.AUTO
+                scheduled_by=ScheduleSource.AUTO,
+                reminder_offset=ReminderOffset.MIN_30
             ),
         ]
         db.session.add_all(flexible_tasks)
@@ -80,7 +81,8 @@ with app.app_context():
                 priority=TaskPriority.URGENT,
                 estimated_hours=2,
                 deadline=start_deadline,
-                scheduled_by=ScheduleSource.AUTO
+                scheduled_by=ScheduleSource.AUTO,
+
             ),
             FlexibleTask(
                 user_id=user2.id,
@@ -88,7 +90,8 @@ with app.app_context():
                 priority=TaskPriority.MEDIUM,
                 estimated_hours=1,
                 deadline=start_deadline,
-                scheduled_by=ScheduleSource.AUTO
+                scheduled_by=ScheduleSource.AUTO,
+                reminder_offset=ReminderOffset.HOUR_1
             ),
         ]
         db.session.add_all(flexible_tasks)
@@ -102,7 +105,8 @@ with app.app_context():
             title="Doctor Appointment",
             estimated_hours=1,
             start_datetime=datetime(2026,1,6,10,0),
-            end_datetime=datetime(2026,1,6,11,0)
+            end_datetime=datetime(2026,1,6,11,0),
+            reminder_offset=ReminderOffset.DAY_1
         )
         db.session.add(planned_event1)
     if PlannedEvent.query.filter_by(user_id=user2.id).count() == 0:
@@ -111,7 +115,7 @@ with app.app_context():
             title="Team Meeting",
             estimated_hours=2,
             start_datetime=datetime(2026,1,7,14,0),
-            end_datetime=datetime(2026,1,7,16,0)
+            end_datetime=datetime(2026,1,7,16,0),
         )
         db.session.add(planned_event2)
     db.session.commit()

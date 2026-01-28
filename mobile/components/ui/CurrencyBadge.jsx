@@ -7,11 +7,11 @@ import { useContext } from 'react';
 export default function CurrencyBadge() {
   
   const { user } = useContext(AuthContext);
-
+  
   return (
     <View style={styles.badge}>
-      <Text style={styles.text}>{user?.currency || 450}</Text>
-      <Image
+      <Text style={styles.text}>{user?.currency}</Text>
+      <Image 
         source={require('../../assets/images/currency.png')}
         style={styles.icon}
       />

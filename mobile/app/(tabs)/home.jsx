@@ -1,8 +1,5 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { useState, useMemo } from 'react';
-import { pxToPt } from '../../utils/scale.js';
-import { router } from 'expo-router';
-import font from '../../constants/typography.js';
+import { useState, useMemo, useContext, useEffect } from 'react';
 import Header from '../../components/ui/Header.jsx';
 import VerticalTimeline from '../../components/ui/VerticalTimeline.jsx';
 
@@ -11,17 +8,14 @@ import { calculateTimeline } from '../../utils/timeline.js';
 import WeekDays from '../../components/ui/WeekDays.jsx';
 import StatsTaskPoolBtn from '../../components/ui/StatsTaskPoolBtn.jsx';
 import DateBadge from '../../components/ui/DateBadge.jsx';
+import { TasksContext } from '../../context/TasksContext.js';
 
 export default function Home() {
-
   const [timelineHeight, setTimelineHeight] = useState(0);
-  const [mode, setMode] = useState("week");
-  const [selectedDay, setSelectedDay] = useState(null);
+  // ----------------------------------------------------
 
-  // Gonna get from backend
-  const minTime = 7;
-  const maxTime = 22;
-
+  const { mode, minTime, maxTime } = useContext(TasksContext);
+  
   const stepHours = 3;
 
   const timelineData = useMemo(() => {
@@ -72,7 +66,9 @@ export default function Home() {
               paddingTopLabels={paddingTopLabels}
             />          
 
-            <WeekDays timeToY={timeToY} />
+            <WeekDays 
+              timeToY={timeToY} 
+            />
 
           </View>
 

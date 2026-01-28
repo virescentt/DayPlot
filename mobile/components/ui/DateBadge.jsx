@@ -2,8 +2,12 @@ import { Pressable, View, StyleSheet, Text } from "react-native"
 import font from "../../constants/typography";
 import { pxToPt } from "../../utils/scale";
 import Arrow from './Arrow.jsx';
+import { useContext } from "react";
+import { TasksContext } from "../../context/TasksContext.js";
 
-export default function DateBadge({ mode }) {
+export default function DateBadge() {
+    const { mode, selectedDay, weekDays, today } = useContext(TasksContext);
+    // if mode == 'week', then weekOfset. else if (mode == 'day'), then dayofset?
     return (
     <>
     {/* Date Badge */}

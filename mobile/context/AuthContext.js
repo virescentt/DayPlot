@@ -42,9 +42,19 @@ export const AuthProvider = ({ children }) => {
 
 
   const login = async (newToken) => {
-    await AsyncStorage.setItem('token', newToken);
-    setToken(newToken);
-    await loadUser(newToken);
+    setLoading(true);
+    try {
+      await AsyncStorage.setItem('token', newToken);
+      setToken(newToken);
+      await loadUser(newToken);
+      return true;
+    } catch (e) {
+      console.log('login error', e);
+      await logout();
+      return false;
+    } finally{
+      setLoading(false);
+    }
   };
 
   const logout = async () => {

@@ -2,6 +2,7 @@ from flask import Flask
 from backend.db.models import db
 from backend.routes.auth import auth_bp
 from backend.routes.user import user_bp
+from backend.routes.tasks import tasks_bp
 from dotenv import load_dotenv
 from pathlib import Path
 import os
@@ -21,6 +22,7 @@ db.init_app(app)
 
 app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(user_bp, url_prefix="/user")
+app.register_blueprint(tasks_bp, url_prefix="/tasks")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

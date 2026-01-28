@@ -23,16 +23,14 @@ export default function Task({ tasks, taskType, mode, timeToY }) {
 
     return (
         <>
-            <View style={[styles.taskContainer, {height: taskHeight, 
-        top: topStart,
-        backgroundColor: '#3d6984',
-        borderColor: '#0d283d',
-        
-        
+        <View style={[styles.taskContainer, {height: taskHeight, 
+            top: topStart,
+            backgroundColor: '#3d6984',
+            borderColor: '#0d283d',
         }]}>
 
-                <Text style={[styles.taskNameDay, {color: '#c8d7e3' }]}>School</Text>
-            </View>
+            <Text style={[styles.taskNameDay, {color: '#c8d7e3' }]}>School</Text>
+        </View>
             {/* <Text>{taskHeight}</Text> */}
         </>
     );

@@ -72,7 +72,7 @@ class FlexibleTask(db.Model):
     description = db.Column(db.Text, nullable=True)
     start_datetime = db.Column(db.DateTime(timezone=True), nullable=True)
     end_datetime = db.Column(db.DateTime(timezone=True), nullable=True)
-    reminder_offset = db.Column(Enum(ReminderOffset), nullable=True)
+    reminder_offset = db.Column(Enum(ReminderOffset, name="reminder_offset_enum"), nullable=True)
 
 
     # Metadata

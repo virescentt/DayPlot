@@ -1,10 +1,6 @@
 from flask import Blueprint, request, jsonify
-from backend.db.models import User
-from werkzeug.security import check_password_hash
-from werkzeug.security import generate_password_hash
+from backend.db.models import User, db
 import jwt, os
-from datetime import datetime, timedelta
-from backend.db.models import db
 
 user_bp = Blueprint("user", __name__)
 SECRET_KEY = os.getenv("SECRET_KEY", "or_there_was_no_secret_key")

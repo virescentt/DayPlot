@@ -13,7 +13,7 @@ import { Alert } from 'react-native';
 
 export default function Login() {
   const { email, setEmail } = useContext(AuthContext);
-  const { login, token } = useContext(AuthContext);
+  const { login, user } = useContext(AuthContext);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { registered } = useLocalSearchParams();
@@ -27,14 +27,21 @@ export default function Login() {
   const handleLogin = async () => {
     const res = await loginRequest(email, password);
     if (res.token) {
-      await login(res.token);
-      router.replace('(tabs)/home');
-      setError('');
-
+      const success = await login(res.token);
+      if (!success) setError('Failed to load user');
     } else {
       setError(res.message);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      console.log(user);
+      router.replace('(tabs)/home');
+    }
+  }, [user]);
+
+  
 
   const isFormValid = isEmailValid(email) && password.length >= 6; // например, пароль минимум 6 символов
   

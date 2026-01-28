@@ -7,7 +7,7 @@ import DayPlotTitle from '../components/ui/DayPlotTitle.jsx'
 import { AuthContext } from '../context/AuthContext.js';
 
 export default function IntroScreen() {
-  const { token, loading } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
   
   const quotes_list = [
     "Act, don’t wait.",
@@ -22,23 +22,16 @@ export default function IntroScreen() {
     "Your progress is your power."
   ]
 
-  let route = '/login';
-  if (token) {
-    route = '(tabs)/home';
-  }
-   useEffect(() => {
-    if (loading) return;
 
-    const timer = setTimeout(() => {
-      if (token) {
-        router.replace(route);
-      } else {
-        router.replace(route);
-      }
-    }, 2000);
+useEffect(() => {
+  if (loading) return;
 
-    return () => clearTimeout(timer);
-  }, [loading, token]);
+  const timer = setTimeout(() => {
+    router.replace(user ? '(tabs)/home' : '/login');
+  }, 2000);
+
+  return () => clearTimeout(timer);
+}, []);
 
 
   return (

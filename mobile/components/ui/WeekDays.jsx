@@ -1,50 +1,146 @@
-import { useRef } from 'react';
-import { View, Text, StyleSheet, Pressable, Animated, FlatList } from 'react-native';
+import { useContext, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Pressable, Animated, FlatList, PanResponder } from 'react-native';
 import font from '../../constants/typography';
 import { pxToPt } from '../../utils/scale';
 import Task from './Task';
+import { TasksContext } from '../../context/TasksContext';
 
 
 
 export default function WeekDays({ timeToY }) {
-    const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const onSelectDay = (day) => {
-        console.log(day);
-    };
-    const fontS = pxToPt(41);
-    const labelHeight = fontS * 1.2;
-    const checkh = 3 + labelHeight + 5 + 4
-    return (
-        <FlatList
-        data={DAYS}
-        horizontal
-        keyExtractor={(item) => item}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={ styles.flatList }
-            renderItem={({ item }) => (
-            <Pressable
-            onPress={() => onSelectDay(item)}
-            style={({ pressed }) => [
-                pressed && styles.pressed,
-            ]}
-            >
-            <View style={styles.day}>
-                <Text style={[styles.label, {fontSize: fontS}]}>{item}</Text>
+    const {
+        visibleTasks,
+        tasks,
+        weekDays,
+        today,
+        mode,
+        setMode,
+        selectedDay,
+        setSelectedDay,
+    } = useContext(TasksContext);
 
-                <View style={[styles.tasksContainer, {fontSize: fontS }]}>
-                    {/* <Text>лейбл = {labelHeight} */}
-                            {/* {'\n'}
-                            всего (паддинг 3 над лейблом + лейбл + марджин под лейблом 5, + 4 паддинг вниз внутри таск конта) = {checkh} */}
-                    {/* </Text> */}
-                    <Task timeToY={timeToY} ></Task>
-                {/* tasks */}
-                </View>
+    // // --- свайпы для режима 'day'
+    // const panResponder = PanResponder.create({
+    //     onMoveShouldSetPanResponder: (_, gestureState) =>
+    //     Math.abs(gestureState.dx) > 20,
+    //     onPanResponderRelease: (_, gestureState) => {
+    //     if (gestureState.dx < -20) shiftDay(1); // свайп влево → следующий день
+    //     if (gestureState.dx > 20) shiftDay(-1); // свайп вправо → предыдущий день
+    //     },
+    // });
+
+    // const shiftDay = (delta) => {
+    //     if (!selectedDay) return;
+    //     const newDay = new Date(selectedDay);
+    //     newDay.setDate(selectedDay.getDate() + delta);
+    //     setSelectedDay(newDay);
+    // };
+    
+    const fontS = pxToPt(41);
+
+    // свайпы для day mode
+    const panResponder = PanResponder.create({
+        onMoveShouldSetPanResponder: (_, gestureState) =>
+        Math.abs(gestureState.dx) > 20,
+        onPanResponderRelease: (_, gestureState) => {
+        if (!selectedDay) return;
+        const newDay = new Date(selectedDay);
+        if (gestureState.dx < -20) newDay.setDate(selectedDay.getDate() + 1);
+        if (gestureState.dx > 20) newDay.setDate(selectedDay.getDate() - 1);
+        setSelectedDay(newDay);
+        },
+    });
+
+    const onSelectDay = (dayDate) => {
+        setSelectedDay(dayDate);
+        setMode('day');
+    };
+
+  if (mode === 'week') {
+    return (
+      <FlatList
+        data={weekDays}
+        horizontal
+        keyExtractor={(day) => day.toDateString()}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.flatList}
+        renderItem={({ item: dayDate }) => (
+          <Pressable
+            onPress={() => onSelectDay(dayDate)}
+            style={({ pressed }) => [pressed && styles.pressed]}
+          >
+            <View style={styles.day}>
+              <Text style={[ styles.label, { fontSize: fontS },
+                    dayDate.toDateString() === today.toDateString() && styles.todayText,
+                ]}>
+                {
+                  dayDate.toDateString().slice(0, 3)}
+              </Text>
+              <View style={[styles.tasksContainer, 
+                dayDate.toDateString() === today.toDateString() && styles.todayContainer,
+              ]}>
+                {tasks
+                  .filter(t => new Date(t.start).toDateString() === dayDate.toDateString())
+                  .map(task => (
+                    <Task key={task.id} timeToY={timeToY} task={task} />
+                  ))}
+              </View>
             </View>
-            </Pressable>
+          </Pressable>
         )}
-        />
+      />
     );
+  }
+
+  // day mode
+  return (
+    <View {...panResponder.panHandlers} style={styles.dayViewContainer}>
+      <View style={styles.day}>
+        <Text style={[ styles.label, { fontSize: fontS },
+                selectedDay.toDateString() === today.toDateString() && styles.todayText,
+            ]}>
+          {selectedDay.toDateString().slice(0, 3)}
+        </Text>
+        <View style={[ styles.tasksContainer, 
+            selectedDay.toDateString() === today.toDateString() && styles.todayContainer,
+        ]}>
+          {visibleTasks.map(task => (
+            <Task key={task.id} timeToY={timeToY} task={task} />
+          ))}
+        </View>
+      </View>
+    </View>
+  );
 }
+
+
+    // return (
+    //     <FlatList
+    //     data={weekDays}
+    //     horizontal
+    //     keyExtractor={(dayDate) => dayDate}
+    //     showsHorizontalScrollIndicator={false}
+    //     contentContainerStyle={ styles.flatList }
+    //         renderItem={({ dayDate }) => (
+    //         <Pressable
+    //         onPress={() => onSelectDay(dayDate)}
+    //         style={({ pressed }) => [
+    //             pressed && styles.pressed,
+    //         ]}
+    //         >
+    //         <View style={styles.day}>
+    //             <Text style={[styles.label, {fontSize: fontS}]}>{item}</Text>
+
+    //             <View style={[styles.tasksContainer, {fontSize: fontS }]}>
+                    
+    //                 <Task timeToY={timeToY}></Task>
+    //                 {/* tasks */}
+    //             </View>
+    //         </View>
+    //         </Pressable>
+    //     )}
+    //     />
+    // );
 
 
 const styles = StyleSheet.create({
@@ -53,6 +149,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         gap: 10
     },
+    dayViewContainer: { flex: 1 },
     day: {
         flex: 1, 
         
@@ -66,6 +163,12 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase', 
         fontFamily: font.Mregular, 
         color: '#394c60',
+    },
+    todayText: {
+        color: '#e1eaf3'
+    },
+    todayContainer: {
+        backgroundColor: '#e1eaf38a'
     },
     tasksContainer: {
         flex: 1,
@@ -85,3 +188,10 @@ const styles = StyleSheet.create({
     }
 
 })
+
+// const labelHeight = fontS * 1.2;
+// const checkh = 3 + labelHeight + 5 + 4
+{/* <Text>лейбл = {labelHeight} */}
+        {/* {'\n'}
+        всего (паддинг 3 над лейблом + лейбл + марджин под лейблом 5, + 4 паддинг вниз внутри таск конта) = {checkh} */}
+{/* </Text> */}
