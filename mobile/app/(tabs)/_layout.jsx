@@ -1,10 +1,12 @@
 import { Tabs } from 'expo-router';
 import { Ionicons, Feather } from '@expo/vector-icons';
-import { TasksProvider } from '../../context/TasksContext';
+import { TasksContext, TasksProvider } from '../../context/TasksContext';
+import { useContext } from 'react';
 
 export default function TabsLayout() {
+  const { setMode } = useContext(TasksContext);
+  
   return (
-    <TasksProvider>
       <Tabs screenOptions={{ headerShown: false }}>
         <Tabs.Screen
           name="home"
@@ -13,6 +15,11 @@ export default function TabsLayout() {
               <Ionicons name="home" size={size} color={color} />
             ),
             title: 'Home',
+          }}
+          listeners={{
+            tabPress: () => {
+              setMode('week');
+            },
           }}
         />
 
@@ -36,7 +43,6 @@ export default function TabsLayout() {
           }}
         />
       </Tabs>
-    </TasksProvider>
 
   );
 }

@@ -19,13 +19,40 @@ export default function WeekDays({ timeToY }) {
         setSelectedDay,
     } = useContext(TasksContext);
 
-    // // --- свайпы для режима 'day'
+    useEffect(() => {
+      if (mode !== 'week') return;
+
+      const todayIndex = weekDays.findIndex(
+        d => d.toDateString() === today.toDateString()
+      );
+    }, [mode, weekDays]);
+
+    const listRef = useRef(null);
+    console.log(listRef)
+    useEffect(() => {
+      if (mode !== 'week') return;
+
+      const todayIndex = weekDays.findIndex(
+        d => d.toDateString() === today.toDateString()
+      );
+
+      if (todayIndex !== -1) {
+        listRef.current?.scrollToIndex({
+          index: todayIndex,
+          animated: true,
+          viewPosition: 0.5, // центр экрана
+        });
+      }
+    }, [mode, weekDays]);
+
+
+    // --- свайпы для режима 'day'
     // const panResponder = PanResponder.create({
     //     onMoveShouldSetPanResponder: (_, gestureState) =>
     //     Math.abs(gestureState.dx) > 20,
     //     onPanResponderRelease: (_, gestureState) => {
-    //     if (gestureState.dx < -20) shiftDay(1); // свайп влево → следующий день
-    //     if (gestureState.dx > 20) shiftDay(-1); // свайп вправо → предыдущий день
+    //     if (gestureState.dx < -20) shiftDay(1); // left swipe → next day
+    //     if (gestureState.dx > 20) shiftDay(-1); // right swipe → previous day
     //     },
     // });
 
@@ -38,7 +65,7 @@ export default function WeekDays({ timeToY }) {
     
     const fontS = pxToPt(41);
 
-    // свайпы для day mode
+    // swipes for day mode
     const panResponder = PanResponder.create({
         onMoveShouldSetPanResponder: (_, gestureState) =>
         Math.abs(gestureState.dx) > 20,
@@ -55,15 +82,25 @@ export default function WeekDays({ timeToY }) {
         setSelectedDay(dayDate);
         setMode('day');
     };
+  console.log('Tasks: ' );
+  console.log(tasks);
+  console.log('VisibleTasks: ');
+  console.log(visibleTasks);
 
   if (mode === 'week') {
     return (
       <FlatList
         data={weekDays}
         horizontal
+        ref={listRef}
         keyExtractor={(day) => day.toDateString()}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.flatList}
+        getItemLayout={(_, index) => ({
+          length: 120,      // ширина элемента
+          offset: ((index - 1) * 130) + 12,
+          index,
+        })}
         renderItem={({ item: dayDate }) => (
           <Pressable
             onPress={() => onSelectDay(dayDate)}

@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { useState, useMemo, useContext, useEffect } from 'react';
+import { useState, useMemo, useContext, useEffect, useCallback } from 'react';
 import Header from '../../components/ui/Header.jsx';
 import VerticalTimeline from '../../components/ui/VerticalTimeline.jsx';
 
@@ -9,12 +9,13 @@ import WeekDays from '../../components/ui/WeekDays.jsx';
 import StatsTaskPoolBtn from '../../components/ui/StatsTaskPoolBtn.jsx';
 import DateBadge from '../../components/ui/DateBadge.jsx';
 import { TasksContext } from '../../context/TasksContext.js';
+import { useFocusEffect } from 'expo-router';
 
 export default function Home() {
   const [timelineHeight, setTimelineHeight] = useState(0);
   // ----------------------------------------------------
 
-  const { mode, minTime, maxTime } = useContext(TasksContext);
+  const { mode, setMode, minTime, maxTime } = useContext(TasksContext);
   
   const stepHours = 3;
 
