@@ -40,3 +40,10 @@ export function calculateTimeline(minTime, maxTime, stepHours, timelineHeight, f
     
   return { start, end, step, times, labelHeight, usableHeight, paddingTopLabels, paddingBottomLabels, timeToY, isLineVisible, fontS};
 }
+
+
+function timeToMinutes(dateStr) {
+  if (!dateStr) return null;
+  const date = new Date(dateStr);
+  return date.getHours() * 60 + date.getMinutes();
+}

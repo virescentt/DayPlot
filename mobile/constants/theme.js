@@ -5,6 +5,23 @@
 
 import { Platform } from 'react-native';
 
+export const TASK_COLORS = {
+        flexible: {
+            background: '#e1eaf3',
+            border: '#3d6984',
+            text: '#0d283d',
+        },
+        planned: {
+            background: '#0d283d',
+            border: '#3d6984',
+            text: '#e1eaf3',
+        },
+        template: {
+            background: '#3d6984',
+            border: '#0d283d',
+            text: '#c8d7e3',
+        },
+    };
 
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';

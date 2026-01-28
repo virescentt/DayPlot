@@ -116,7 +116,7 @@ export default function WeekDays({ timeToY }) {
               <View style={[styles.tasksContainer, 
                 dayDate.toDateString() === today.toDateString() && styles.todayContainer,
               ]}>
-                {tasks
+                {visibleTasks
                   .filter(t => new Date(t.start).toDateString() === dayDate.toDateString())
                   .map(task => (
                     <Task key={task.id} timeToY={timeToY} task={task} />
@@ -132,52 +132,21 @@ export default function WeekDays({ timeToY }) {
   // day mode
   return (
     <View {...panResponder.panHandlers} style={styles.dayViewContainer}>
-      <View style={styles.day}>
-        <Text style={[ styles.label, { fontSize: fontS },
-                selectedDay.toDateString() === today.toDateString() && styles.todayText,
-            ]}>
-          {selectedDay.toDateString().slice(0, 3)}
-        </Text>
-        <View style={[ styles.tasksContainer, 
-            selectedDay.toDateString() === today.toDateString() && styles.todayContainer,
-        ]}>
-          {visibleTasks.map(task => (
-            <Task key={task.id} timeToY={timeToY} task={task} />
-          ))}
-        </View>
+      <Text style={[ styles.label, { fontSize: fontS },
+              selectedDay.toDateString() === today.toDateString() && styles.todayText,
+          ]}>
+        {selectedDay.toDateString().slice(0, 3)}
+      </Text>
+      <View style={[ styles.tasksContainer, {paddingHorizontal: 5}, 
+          selectedDay.toDateString() === today.toDateString() && styles.todayContainer,
+      ]}>
+        {visibleTasks.map(task => (
+          <Task key={task.id} timeToY={timeToY} task={task} />
+        ))}
       </View>
     </View>
   );
 }
-
-
-    // return (
-    //     <FlatList
-    //     data={weekDays}
-    //     horizontal
-    //     keyExtractor={(dayDate) => dayDate}
-    //     showsHorizontalScrollIndicator={false}
-    //     contentContainerStyle={ styles.flatList }
-    //         renderItem={({ dayDate }) => (
-    //         <Pressable
-    //         onPress={() => onSelectDay(dayDate)}
-    //         style={({ pressed }) => [
-    //             pressed && styles.pressed,
-    //         ]}
-    //         >
-    //         <View style={styles.day}>
-    //             <Text style={[styles.label, {fontSize: fontS}]}>{item}</Text>
-
-    //             <View style={[styles.tasksContainer, {fontSize: fontS }]}>
-                    
-    //                 <Task timeToY={timeToY}></Task>
-    //                 {/* tasks */}
-    //             </View>
-    //         </View>
-    //         </Pressable>
-    //     )}
-    //     />
-    // );
 
 
 const styles = StyleSheet.create({
@@ -186,11 +155,17 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         gap: 10
     },
-    dayViewContainer: { flex: 1 },
+    dayViewContainer: { 
+      flex: 1,
+      width: '100%',
+      // backgroundColor: 'white',
+      paddingHorizontal: 12,
+      paddingTop: 3,
+      gap: 5,
+    },
     day: {
         flex: 1, 
-        
-        width: 120, 
+        width: 120,
         paddingTop: 3,
         gap: 5,
     },

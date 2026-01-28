@@ -17,7 +17,10 @@ export default function Home() {
 
   const { mode, setMode, minTime, maxTime } = useContext(TasksContext);
   
-  const stepHours = 3;
+  let stepHours = 3;
+  if (mode === 'day') {
+    stepHours = 1;
+  }
 
   const timelineData = useMemo(() => {
     return calculateTimeline(minTime, maxTime, stepHours, timelineHeight);
