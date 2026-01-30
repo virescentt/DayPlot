@@ -97,8 +97,8 @@ export default function WeekDays({ timeToY }) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.flatList}
         getItemLayout={(_, index) => ({
-          length: 120,      // ширина элемента
-          offset: ((index - 1) * 130) + 12,
+          length: 150,      // ширина элемента
+          offset: ((index - 1) * 170) + 12,
           index,
         })}
         renderItem={({ item: dayDate }) => (
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     },
     day: {
         flex: 1, 
-        width: 120,
+        width: 150,
         paddingTop: 3,
         gap: 5,
     },

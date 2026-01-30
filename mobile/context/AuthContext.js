@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useEffect, useState } from 'react';
+import { SERVER_IP } from '../constants/services';
 
 export const AuthContext = createContext();
 
@@ -26,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
   const loadUser = async (token) => {
     try {
-      const res = await fetch('http://172.20.10.2:5000/user/me', {
+      const res = await fetch(`http://${SERVER_IP}/user/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) {

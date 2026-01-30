@@ -1,4 +1,5 @@
 import { Alert } from "react-native";
+import { SERVER_IP } from "../constants/services";
 
 
 export const changeName = (token, setUser, user) => {
@@ -11,7 +12,7 @@ export const changeName = (token, setUser, user) => {
           text: "Save", 
           onPress: async (newName) => {
             if (!newName) return;
-            const res = await fetch('http://172.20.10.2:5000/user/update-name', {
+            const res = await fetch(`http://${SERVER_IP}/user/update-name`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

@@ -10,6 +10,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent  # /backend
 load_dotenv(BASE_DIR / ".env")
 DB_URI = os.getenv("DB_URI")
+PORT = os.getenv("PORT")
 
 
 app = Flask(__name__)
@@ -25,4 +26,4 @@ app.register_blueprint(user_bp, url_prefix="/user")
 app.register_blueprint(tasks_bp, url_prefix="/tasks")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port={PORT}, debug=True)

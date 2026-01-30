@@ -1,12 +1,15 @@
 // services/auth.js
+import { SERVER_IP } from '../constants/services';
+
 export const loginRequest = async (email, password) => {
   try {
-    const response = await fetch('http://172.20.10.2:5000/auth/login', {
+    const response = await fetch(`http://${SERVER_IP}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
 
+    
     const data = await response.json();
 
     if (response.ok) {
@@ -23,7 +26,7 @@ export const loginRequest = async (email, password) => {
 
 export const registerRequest = async (email, password) => {
   try {
-    const response = await fetch('http://172.20.10.2:5000/auth/register', {
+    const response = await fetch(`http://${SERVER_IP}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
