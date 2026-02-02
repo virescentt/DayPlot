@@ -10,11 +10,8 @@ import os
 BASE_DIR = Path(__file__).resolve().parent  # /backend
 load_dotenv(BASE_DIR / ".env")
 DB_URI = os.getenv("DB_URI")
-<<<<<<< HEAD
-PORT = os.getenv("PORT", 5000)
-=======
-PORT = int(os.getenv("PORT"))
->>>>>>> e72b4dc93f85d14ca72e6891d62b826114b5617d
+
+PORT = int(os.getenv("PORT", 5000))
 
 
 app = Flask(__name__)
@@ -24,6 +21,10 @@ app.config["SQLALCHEMY_DATABASE_URI"] = DB_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
+
+@app.route("/")
+def index():
+    return "Flask OK"
 
 app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(user_bp, url_prefix="/user")

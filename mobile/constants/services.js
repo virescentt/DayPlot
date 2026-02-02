@@ -1,1 +1,1 @@
-export const SERVER_IP="172.20.10.8:5000"
+export const SERVER_IP = process.env.EXPO_PUBLIC_SERVER_IP
