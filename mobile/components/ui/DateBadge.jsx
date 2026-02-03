@@ -36,7 +36,7 @@ export default function DateBadge() {
     {/* Date Badge */}
     <View style={ styles.container }>
 
-        <Pressable onPress={() => goToNextPrev("prev", mode, setWeekOffset, weekOffset, selectedDay, weekDays, loadTasks, setSelectedDay)}>
+        <Pressable onPress={() => goToNextPrev("prev", mode, setWeekOffset, setSelectedDay, selectedDay, weekDays)}>
             <Arrow length={20} thickness={2} direction="left" />
         </Pressable>
         <Text style={ styles.dateText }>
@@ -45,7 +45,7 @@ export default function DateBadge() {
         <Pressable onPress={goToCurrent}>
             <Text style={[ styles.dateText, styles.currentText ]}>current</Text>
         </Pressable>
-        <Pressable onPress={() => goToNextPrev("next", mode, setWeekOffset, weekOffset, selectedDay, weekDays, loadTasks, setSelectedDay)}>
+        <Pressable onPress={() => goToNextPrev("next", mode, setWeekOffset, setSelectedDay, selectedDay, weekDays)}>
             <Arrow length={20} thickness={2} direction="right" />
         </Pressable>
     </View>

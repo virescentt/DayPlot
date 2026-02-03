@@ -32,33 +32,25 @@ export const TasksProvider = ({ children }) => {
     setLoading(false);
   };
 
+  
+  // Calculating the week !!!! GOD BLESS AMERICA ✔➰➰〰
+  const { weekStart, weekEnd, weekDays } = useMemo(() => {
+    const weekInfo = getWeekRange(today, weekOffset);
+    console.log(weekInfo)
+    return getWeekRange(today, weekOffset);
+  }, [ today, weekOffset ]);
+
+
+  const weekKey = useMemo(() => {
+    return `${weekStart.getTime()}-${weekEnd.getTime()}`;
+  }, [weekStart, weekEnd]);
+
   useEffect(() => {
     if (!token || !user) return;
-    console.log("Loading tasks...")
     loadTasks(weekStart, weekEnd);
-  }, [weekStart, weekEnd, token, user]);
+  }, [weekKey, token, user]);
 
-
-  const check_selected_day = () => (
-      (selectedDay < weekStart || selectedDay > weekEnd)
-    )
-  // Calculating the week
-  const { weekStart, weekEnd, weekDays } = useMemo(() => {
-    let base = today;
-    let offset = weekOffset;
-    if (mode === 'day' && selectedDay) {
-      base = selectedDay;
-      offset = getWeekOffsetForDay(selectedDay, today);
-    }
-
-    const weekInfo = getWeekRange(base, offset);
-    console.log(weekInfo)
-    return {
-      weekStart: weekInfo.weekStart,
-      weekEnd: weekInfo.weekEnd,
-      weekDays: weekInfo.weekDays,
-  };
-  }, [today, weekOffset, selectedDay, mode]);
+  
 
   // Visible tasks filter
   const visibleTasks = useMemo(() => {

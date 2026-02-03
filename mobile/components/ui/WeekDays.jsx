@@ -6,8 +6,6 @@ import Task from './Task';
 import { TasksContext } from '../../context/TasksContext';
 import { goToNextPrev } from '../../utils/tasks';
 
-
-
 export default function WeekDays({ timeToY }) {
     const {
         visibleTasks,
@@ -36,28 +34,10 @@ export default function WeekDays({ timeToY }) {
         listRef.current?.scrollToIndex({
           index: todayIndex,
           animated: true,
-          viewPosition: 0.5, // центр экрана
+          viewPosition: 0.5, // screen center
         });
       }
     }, [mode, weekDays]);
-
-
-    // --- свайпы для режима 'day'
-    // const panResponder = PanResponder.create({
-    //     onMoveShouldSetPanResponder: (_, gestureState) =>
-    //     Math.abs(gestureState.dx) > 20,
-    //     onPanResponderRelease: (_, gestureState) => {
-    //     if (gestureState.dx < -20) shiftDay(1); // left swipe → next day
-    //     if (gestureState.dx > 20) shiftDay(-1); // right swipe → previous day
-    //     },
-    // });
-
-    // const shiftDay = (delta) => {
-    //     if (!selectedDay) return;
-    //     const newDay = new Date(selectedDay);
-    //     newDay.setDate(selectedDay.getDate() + delta);
-    //     setSelectedDay(newDay);
-    // };
     
     const fontS = pxToPt(41);
 
@@ -68,9 +48,9 @@ export default function WeekDays({ timeToY }) {
         onPanResponderRelease: (_, gestureState) => {
           if (!selectedDay) return;
           const newDay = new Date(selectedDay);
-          if (gestureState.dx < -20) goToNextPrev("next", mode, setWeekOffset, weekOffset, selectedDay, weekDays, loadTasks, setSelectedDay);
+          if (gestureState.dx < -20) goToNextPrev("next", mode, setWeekOffset, setSelectedDay, selectedDay, weekDays);
           
-          if (gestureState.dx > 20) goToNextPrev("prev", mode, setWeekOffset, weekOffset, selectedDay, weekDays, loadTasks, setSelectedDay);
+          if (gestureState.dx > 20) goToNextPrev("prev", mode, setWeekOffset, setSelectedDay, selectedDay, weekDays);
         },
     });
 
@@ -78,12 +58,10 @@ export default function WeekDays({ timeToY }) {
         setSelectedDay(dayDate);
         setMode('day');
     };
-  // console.log('Tasks: ' );
-  // console.log(tasks);
-  // console.log('VisibleTasks: ');
-  // console.log(visibleTasks);
-  // console.log('SelectedDay: ');
-  // console.log(selectedDay);
+  console.log('Tasks: ' );
+  console.log(tasks);
+  console.log('VisibleTasks: ');
+  console.log(visibleTasks);
 
   if (mode === 'week') {
     return (
