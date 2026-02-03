@@ -4,7 +4,7 @@ import { TasksContext, TasksProvider } from '../../context/TasksContext';
 import { useContext } from 'react';
 
 export default function TabsLayout() {
-  const { setMode } = useContext(TasksContext);
+  const { setMode, setSelectedDay } = useContext(TasksContext);
   
   return (
       <Tabs screenOptions={{ headerShown: false }}>
@@ -18,6 +18,7 @@ export default function TabsLayout() {
           }}
           listeners={{
             tabPress: () => {
+              setSelectedDay(null);
               setMode('week');
             },
           }}

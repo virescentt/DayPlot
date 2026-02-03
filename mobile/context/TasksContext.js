@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, memo, useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from './AuthContext';
 import { fetchTasks } from '../services/tasks';
+import { getWeekOffsetForDay, getWeekRange } from '../utils/tasks';
 
 export const TasksContext = createContext();
 
@@ -30,29 +31,34 @@ export const TasksProvider = ({ children }) => {
     setTasks(data);
     setLoading(false);
   };
+
   useEffect(() => {
     if (!token || !user) return;
+    console.log("Loading tasks...")
     loadTasks(weekStart, weekEnd);
   }, [weekStart, weekEnd, token, user]);
 
+
+  const check_selected_day = () => (
+      (selectedDay < weekStart || selectedDay > weekEnd)
+    )
   // Calculating the week
   const { weekStart, weekEnd, weekDays } = useMemo(() => {
-    const start = new Date(today);
-    start.setDate(today.getDate() - ((today.getDay() + 6) % 7) + weekOffset*7);
-    start.setHours(0,0,0,0);
+    let base = today;
+    let offset = weekOffset;
+    if (mode === 'day' && selectedDay) {
+      base = selectedDay;
+      offset = getWeekOffsetForDay(selectedDay, today);
+    }
 
-    const end = new Date(start);
-    end.setDate(start.getDate() + 6);
-    end.setHours(23,59,59,999);
-
-    const days = Array.from({length:7}, (_,i) => {
-      const d = new Date(start);
-      d.setDate(start.getDate() + i);
-      return d;
-    });
-
-    return { weekStart: start, weekEnd: end, weekDays: days };
-  }, [today, weekOffset]);
+    const weekInfo = getWeekRange(base, offset);
+    console.log(weekInfo)
+    return {
+      weekStart: weekInfo.weekStart,
+      weekEnd: weekInfo.weekEnd,
+      weekDays: weekInfo.weekDays,
+  };
+  }, [today, weekOffset, selectedDay, mode]);
 
   // Visible tasks filter
   const visibleTasks = useMemo(() => {

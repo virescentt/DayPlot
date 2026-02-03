@@ -4,22 +4,50 @@ import { pxToPt } from "../../utils/scale";
 import Arrow from './Arrow.jsx';
 import { useContext } from "react";
 import { TasksContext } from "../../context/TasksContext.js";
+import { goToNextPrev } from "../../utils/tasks.js";
 
 export default function DateBadge() {
-    const { mode, selectedDay, weekDays, today } = useContext(TasksContext);
+    const { mode, selectedDay, weekDays, today, setSelectedDay, setMode, loadTasks, setWeekOffset, weekOffset} = useContext(TasksContext);
     // if mode == 'week', then weekOfset. else if (mode == 'day'), then dayofset?
+    const goToCurrent = async () => {
+        if (mode === "day") {
+            setSelectedDay(new Date(today));
+            setMode("day");
+        } else if (mode === "week") {
+            setWeekOffset(0);
+        };
+    }
+    
+    // displaying date range
+    let dateRange = "";
+    if (mode === "week" && weekDays?.length) {
+        const start = weekDays[0];
+        const end = weekDays[weekDays.length - 1];
+        const format = (d) => `${d.getDate()} ${d.toLocaleString('en', { month: 'short' })}`;
+        dateRange = `${format(start)} — ${format(end)}`;
+    } else if (mode === "day" && selectedDay) {
+        const d = selectedDay;
+        dateRange = `${d.getDate()} ${d.toLocaleString('en', { month: 'short' })}`;
+    }
+
     return (
+
     <>
     {/* Date Badge */}
     <View style={ styles.container }>
 
-        {/* <Ionicons name="arrow-back-outline" size={12} color="#3c6674"/> */}
-        <Arrow ength={20} thickness={2} direction="left" />
+        <Pressable onPress={() => goToNextPrev("prev", mode, setWeekOffset, weekOffset, selectedDay, weekDays, loadTasks, setSelectedDay)}>
+            <Arrow length={20} thickness={2} direction="left" />
+        </Pressable>
         <Text style={ styles.dateText }>
-        28 dec — 4 jun {"\t"}
-        <Text style={ styles.currentText }>current</Text>
+        {dateRange}
         </Text>
-        <Arrow length={20} thickness={2} direction="right" />
+        <Pressable onPress={goToCurrent}>
+            <Text style={[ styles.dateText, styles.currentText ]}>current</Text>
+        </Pressable>
+        <Pressable onPress={() => goToNextPrev("next", mode, setWeekOffset, weekOffset, selectedDay, weekDays, loadTasks, setSelectedDay)}>
+            <Arrow length={20} thickness={2} direction="right" />
+        </Pressable>
     </View>
     </>
 )}
@@ -35,7 +63,6 @@ const styles = StyleSheet.create({
     currentText: {
         textDecorationLine: 'underline',
         color: '#e1eaf3',
-        paddingLeft: 8, 
     },
     dateText: {
         letterSpacing: 1.4,

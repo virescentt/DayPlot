@@ -4,6 +4,7 @@ import font from '../../constants/typography';
 import { pxToPt } from '../../utils/scale';
 import Task from './Task';
 import { TasksContext } from '../../context/TasksContext';
+import { goToNextPrev } from '../../utils/tasks';
 
 
 
@@ -17,18 +18,13 @@ export default function WeekDays({ timeToY }) {
         setMode,
         selectedDay,
         setSelectedDay,
+        loadTasks,
+        setWeekOffset,
+        weekOffset
     } = useContext(TasksContext);
 
-    useEffect(() => {
-      if (mode !== 'week') return;
-
-      const todayIndex = weekDays.findIndex(
-        d => d.toDateString() === today.toDateString()
-      );
-    }, [mode, weekDays]);
-
     const listRef = useRef(null);
-    console.log(listRef)
+    // console.log(listRef)
     useEffect(() => {
       if (mode !== 'week') return;
 
@@ -70,11 +66,11 @@ export default function WeekDays({ timeToY }) {
         onMoveShouldSetPanResponder: (_, gestureState) =>
         Math.abs(gestureState.dx) > 20,
         onPanResponderRelease: (_, gestureState) => {
-        if (!selectedDay) return;
-        const newDay = new Date(selectedDay);
-        if (gestureState.dx < -20) newDay.setDate(selectedDay.getDate() + 1);
-        if (gestureState.dx > 20) newDay.setDate(selectedDay.getDate() - 1);
-        setSelectedDay(newDay);
+          if (!selectedDay) return;
+          const newDay = new Date(selectedDay);
+          if (gestureState.dx < -20) goToNextPrev("next", mode, setWeekOffset, weekOffset, selectedDay, weekDays, loadTasks, setSelectedDay);
+          
+          if (gestureState.dx > 20) goToNextPrev("prev", mode, setWeekOffset, weekOffset, selectedDay, weekDays, loadTasks, setSelectedDay);
         },
     });
 
@@ -82,10 +78,12 @@ export default function WeekDays({ timeToY }) {
         setSelectedDay(dayDate);
         setMode('day');
     };
-  console.log('Tasks: ' );
-  console.log(tasks);
-  console.log('VisibleTasks: ');
-  console.log(visibleTasks);
+  // console.log('Tasks: ' );
+  // console.log(tasks);
+  // console.log('VisibleTasks: ');
+  // console.log(visibleTasks);
+  // console.log('SelectedDay: ');
+  // console.log(selectedDay);
 
   if (mode === 'week') {
     return (
@@ -97,7 +95,7 @@ export default function WeekDays({ timeToY }) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.flatList}
         getItemLayout={(_, index) => ({
-          length: 150,      // ширина элемента
+          length: 150,      // element width
           offset: ((index - 1) * 170) + 12,
           index,
         })}
@@ -173,7 +171,7 @@ const styles = StyleSheet.create({
         marginBottom: 5, 
         textAlign: 'center', 
         textTransform: 'uppercase', 
-        fontFamily: font.Mregular, 
+        fontFamily: font.Mbold, 
         color: '#394c60',
     },
     todayText: {
