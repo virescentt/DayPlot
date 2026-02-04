@@ -7,6 +7,7 @@ import { TasksContext } from '../../context/TasksContext';
 import { TASK_COLORS } from '../../constants/theme';
 import EditDeleteTemplateModal from './EditDeleteTemplateModal';
 import { Ionicons } from '@expo/vector-icons';
+import { timeToMinutes } from '../../utils/timeline';
 
 
 export default function Task({ task, timeToY }) {
@@ -17,18 +18,18 @@ export default function Task({ task, timeToY }) {
     
     const toggleDone = () => setIsDone(prev => !prev);
 
-    // функции для действий
+    // functions for actions on tasks
     const openEditModal = () => setModalVisible(true);
     const closeEditModal = () => setModalVisible(false);
 
     const handleThisDay = () => {
-        // логика для "this day only"
+        // logic for "this day only"
         console.log('This day only');
         setModalVisible(false);
     };
 
     const handleFutureDays = () => {
-        // логика для "this and future days"
+        // logic for "this and future days"
         console.log('This and future days');
         setModalVisible(false);
     };
@@ -39,29 +40,23 @@ export default function Task({ task, timeToY }) {
         ? [styles.taskContainer, styles.done]
         : [styles.taskContainer];
 
-    const colors = TASK_COLORS[task.type]; // автоматически выберет по типу
+    const colors = TASK_COLORS[task.type]; // will choose automatically by its type
 
     const fontS = pxToPt(41);
     const labelHeight = fontS * 1.2;
-    // Если mode == 'week', тогда мы эту хуетень просто во view держим, если mode == 'day', должны в pressable.  
-    /** Цвет бекграунда будет зависить от типа задачи #3d6984:
-     * flexible = фон #e1eaf3, обводка #3d6984, текст #0d283d
-     * event = фон #0d283d, обводка #3d6984, текст #e1eaf3
-     * template = фон #3d6984, обводка #0d283d, текст #c8d7e3 */ 
+    // If mode == 'week', then we simply keep that shit in a View, if mode == 'day', then in a Pressable.  
+    /** The color of a background will depend on a type #3d6984:
+     * flexible = backgr #e1eaf3, border #3d6984, text #0d283d
+     * event = backgr #0d283d, border #3d6984, text #e1eaf3
+     * template = backgr #3d6984, border #0d283d, text #c8d7e3 */ 
 
-    function timeToMinutes(dateStr) {
-        if (!dateStr) return null;
-        const date = new Date(dateStr);
-        return date.getHours() * 60 + date.getMinutes();
-    }
-
-    let taskHeight = 100; // дефолт
+    let taskHeight = 100; // default
     let topStart = 0;
     if (task.start && task.end) {
         const startMinutes = timeToMinutes(task.start);
         const endMinutes = timeToMinutes(task.end);
         topStart = timeToY(startMinutes, 'current');
-        const topEnd = timeToY(endMinutes, 'current') + 6;
+        const topEnd = timeToY(endMinutes, 'current');
         taskHeight = topEnd - topStart;
     }
     // const start = 420;
@@ -150,7 +145,7 @@ export default function Task({ task, timeToY }) {
         );
     }
 
-    return null; // на всякий случай
+    return null; // just in case
 };
 
 const styles = StyleSheet.create({

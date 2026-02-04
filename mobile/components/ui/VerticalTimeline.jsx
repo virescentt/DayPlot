@@ -1,6 +1,4 @@
-import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { pxToPt } from '../../utils/scale';
 import font from '../../constants/typography';
 
 export default function VerticalTimeline({
@@ -46,8 +44,7 @@ const styles = StyleSheet.create({
   },
   
   labelText: {
-    // color: '#0d283d',
-    color: '#000',
+    color: '#0d283d',
     fontFamily: font.Mregular,
     textTransform: 'uppercase',
   },
@@ -55,6 +52,6 @@ const styles = StyleSheet.create({
   separatorLine: {
     width: 2,
     backgroundColor: '#8aa7bc',
-    marginHorizontal: 5,
+    marginLeft: 5,
   },
 });

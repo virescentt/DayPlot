@@ -61,6 +61,7 @@ export const TasksProvider = ({ children }) => {
 
   // minTime/maxTime for the timeline
   const { minTime, maxTime } = useMemo(() => {
+    if (mode === 'day') return { minTime: 0, maxTime: 24}
     if (!tasks.length) return { minTime: 7, maxTime: 22 };
     let min = Infinity, max = -Infinity;
     for (const t of tasks) {

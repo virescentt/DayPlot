@@ -57,9 +57,9 @@ const styles = StyleSheet.create({
     right: 0,
     // height: 1,
     // color: '#ff66c4',
-    borderTopWidth: 1,
+    borderTopWidth: 2,
     borderStyle: 'dashed',
-    borderColor: '#ff66c4',
+    borderColor: '#e1eaf3',
     zIndex: 999,
   },
 });

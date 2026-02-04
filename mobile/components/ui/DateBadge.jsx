@@ -31,21 +31,22 @@ export default function DateBadge() {
     }
 
     return (
-
     <>
     {/* Date Badge */}
     <View style={ styles.container }>
 
-        <Pressable onPress={() => goToNextPrev("prev", mode, setWeekOffset, setSelectedDay, selectedDay, weekDays)}>
+        <Pressable style={{ paddingHorizontal: 20}} onPress={() => goToNextPrev("prev", mode, setWeekOffset, setSelectedDay, selectedDay, weekDays)}>
             <Arrow length={20} thickness={2} direction="left" />
         </Pressable>
-        <Text style={ styles.dateText }>
-        {dateRange}
-        </Text>
-        <Pressable onPress={goToCurrent}>
-            <Text style={[ styles.dateText, styles.currentText ]}>current</Text>
-        </Pressable>
-        <Pressable onPress={() => goToNextPrev("next", mode, setWeekOffset, setSelectedDay, selectedDay, weekDays)}>
+        <View style={{ flexDirection: "row", width: 200, justifyContent: "space-between"}}>
+            <Text style={ styles.dateText }>
+            {dateRange}
+            </Text>
+            <Pressable onPress={goToCurrent}>
+                <Text style={[ styles.dateText, styles.currentText ]}>current</Text>
+            </Pressable>
+        </View>
+        <Pressable style={{ paddingHorizontal: 20}} onPress={() => goToNextPrev("next", mode, setWeekOffset, setSelectedDay, selectedDay, weekDays)}>
             <Arrow length={20} thickness={2} direction="right" />
         </Pressable>
     </View>
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         fontSize: pxToPt(50),
         color: '#3c6674',
-        marginLeft: 10,
+        // marginLeft: 10,
         marginRight: 10,
     },
 }) 

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { useState, useMemo, useContext, useEffect, useCallback } from 'react';
 import Header from '../../components/ui/Header.jsx';
 import VerticalTimeline from '../../components/ui/VerticalTimeline.jsx';
@@ -15,7 +15,7 @@ export default function Home() {
   const [timelineHeight, setTimelineHeight] = useState(0);
   // ----------------------------------------------------
 
-  const { mode, setMode, minTime, maxTime } = useContext(TasksContext);
+  const { mode, minTime, maxTime } = useContext(TasksContext);
   
   let stepHours = 3;
   if (mode === 'day') {
@@ -23,7 +23,7 @@ export default function Home() {
   }
 
   const timelineData = useMemo(() => {
-    return calculateTimeline(minTime, maxTime, stepHours, timelineHeight);
+    return calculateTimeline(minTime, maxTime, stepHours, timelineHeight, mode);
   }, [minTime, maxTime, stepHours, timelineHeight]);
 
   // и достаём
@@ -34,7 +34,8 @@ export default function Home() {
     labelHeight, 
     paddingTopLabels,
     paddingBottomLabels,
-    fontS 
+    fontS,
+    contentHeight
   } = timelineData;
 
   return (
@@ -51,32 +52,38 @@ export default function Home() {
 
           <DateBadge mode={mode} />
 
-          {/* Data Container */}
-          <View
-          style={ styles.dataContainer }
-          onLayout={(e) => setTimelineHeight(e.nativeEvent.layout.height)}
+          <ScrollView
+            style={ styles.dataContainer }
+            contentContainerStyle={
+              mode === 'day'
+                ? { height: 1500 }
+                : { flexGrow: 1}
+            }
+            onLayout={(e) => setTimelineHeight(e.nativeEvent.layout.height)}
           >
-            <VerticalTimeline
-              times={times}
-              timeToY={timeToY}
-              fontS={fontS}
-              paddingTopLabels={paddingTopLabels}
-              paddingBottomLabels={paddingBottomLabels}
-              />
             <CurrentTimeLine 
               timeToY={timeToY}
               isLineVisible={isLineVisible}
               labelHeight={labelHeight}
               paddingTopLabels={paddingTopLabels}
-            />          
-
-            <WeekDays 
-              timeToY={timeToY} 
             />
+            
+            <View style={{ flexDirection: 'row', flex: 1 }}>
+              {/* Левая колонка — время */}
+              <VerticalTimeline
+                times={times}
+                timeToY={timeToY}
+                fontS={fontS}
+                paddingTopLabels={paddingTopLabels}
+                paddingBottomLabels={paddingBottomLabels}
+              />
 
-          </View>
-
+              {/* Правая колонка — дни + задачи */}
+                <WeekDays timeToY={timeToY} />
+            </View>
+          </ScrollView>
         </View>
+
 
       </View>
       {/* <Footer /> */}
@@ -93,9 +100,8 @@ const styles = StyleSheet.create({
   dataContainer: {
     flex: 1, 
     position: 'relative', 
-    flexDirection: 'row', 
+    flexDirection: 'column', 
     paddingHorizontal: 10, 
-    backgroundColor: '', 
     marginBottom: 10,
   },
   upperText: {
