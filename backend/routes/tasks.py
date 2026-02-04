@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from backend.db.models import FlexibleTask, PlannedEvent, TemplateEvent
 from backend.decorators import token_required
 from datetime import datetime, timezone, timedelta
+from backend.db.models import db
 
 tasks_bp = Blueprint("tasks", __name__, url_prefix="/tasks")
 
@@ -36,14 +37,14 @@ def get_tasks(user):
     ).all()
 
     # 3. Template events
-    # выбираем шаблонные события, которые попадают в диапазон по дню недели
+    # choosing template events, which fall within the range by day of the week
     template_events = []
     for te in TemplateEvent.query.filter_by(user_id=user.id).all():
-        # проверяем каждый день в диапазоне from_dt - to_dt
+        # checing every day for the range of from_dt - to_dt
         current = from_dt
         while current <= to_dt:
             if current.strftime("%A") == te.day_of_week.value:
-                # проверка override
+                # checking override
                 override = next((o for o in te.overrides if o.date == current.date() and not o.cancelled), None)
                 start_time = override.start_time if override and override.start_time else te.start_time
                 end_time = override.end_time if override and override.end_time else te.end_time
@@ -77,3 +78,37 @@ def get_tasks(user):
 
     all_tasks = [serialize_task(t) for t in flexible_tasks + planned_events] + template_events
     return jsonify(all_tasks)
+
+
+@tasks_bp.route('/<int:task_id>/toggle-done', methods=['PATCH'])
+@token_required
+def toggle_task_done(user, task_id):
+    data = request.get_json(silent=True) or {}
+    task_type = data.get("type")
+
+    if task_type not in ("flexible", "planned"):
+        return jsonify({"error": "Invalid task type"}), 400
+
+    if task_type == "flexible":
+        task = FlexibleTask.query.filter_by(
+            id=task_id,
+            user_id=user.id
+        ).first()
+
+    elif task_type == "planned":
+        task = PlannedEvent.query.filter_by(
+            id=task_id,
+            user_id=user.id
+        ).first()
+
+    if not task:
+        return jsonify({"error": "Task not found"}), 404
+
+    task.is_done = not task.is_done
+    db.session.commit()
+
+    return jsonify({
+        "id": task.id,
+        "type": task_type,
+        "is_done": task.is_done
+    }), 200

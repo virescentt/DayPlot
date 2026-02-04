@@ -11,3 +11,26 @@ export const fetchTasks = async (token, from, to) => {
   return res.json();
 };
 
+export const toggleTaskDone = async (taskId, taskType, token) => {
+  console.log("TOKEN IN toggleTaskDone:", token);
+  const res = await fetch(
+    `http://${SERVER_IP}/tasks/${taskId}/toggle-done`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        type: taskType, // "flexible" | "planned"
+      }),
+    }
+  );
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || "Failed to toggle task");
+  }
+
+  return await res.json();
+};

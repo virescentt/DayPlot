@@ -90,7 +90,8 @@ export const TasksProvider = ({ children }) => {
       setSelectedDay,
       weekOffset,
       setWeekOffset,
-      today
+      today,
+      setTasks
     }}>
       {children}
     </TasksContext.Provider>

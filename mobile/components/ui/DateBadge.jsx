@@ -12,10 +12,8 @@ export default function DateBadge() {
     const goToCurrent = async () => {
         if (mode === "day") {
             setSelectedDay(new Date(today));
-            setMode("day");
-        } else if (mode === "week") {
-            setWeekOffset(0);
         };
+        setWeekOffset(0);
     }
     
     // displaying date range
@@ -38,8 +36,11 @@ export default function DateBadge() {
         <Pressable style={{ paddingHorizontal: 20}} onPress={() => goToNextPrev("prev", mode, setWeekOffset, setSelectedDay, selectedDay, weekDays)}>
             <Arrow length={20} thickness={2} direction="left" />
         </Pressable>
-        <View style={{ flexDirection: "row", width: 200, justifyContent: "space-between"}}>
-            <Text style={ styles.dateText }>
+        <View style={{ 
+            flexDirection: "row", 
+            width: mode === "day" ? 110 : 200, 
+            justifyContent: "space-between"}}>
+            <Text style={styles.dateText}>
             {dateRange}
             </Text>
             <Pressable onPress={goToCurrent}>
@@ -72,6 +73,5 @@ const styles = StyleSheet.create({
         fontSize: pxToPt(50),
         color: '#3c6674',
         // marginLeft: 10,
-        marginRight: 10,
     },
 }) 
