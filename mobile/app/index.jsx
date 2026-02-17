@@ -6,6 +6,18 @@ import { pxToPt } from '../utils/scale.js';
 import DayPlotTitle from '../components/ui/DayPlotTitle.jsx'
 import { AuthContext } from '../context/AuthContext.js';
 
+
+import { LogBox } from 'react-native';
+
+// Disable all warnings/errors
+// LogBox.ignoreAllLogs(true);
+
+// Or disable specific warnings by its text
+LogBox.ignoreLogs([
+  'Text children should be wrapped', 
+  'VirtualizedLists should never be nested' 
+]);
+
 export default function IntroScreen() {
   const { user, loading } = useContext(AuthContext);
   
@@ -21,8 +33,7 @@ export default function IntroScreen() {
     "Persistence breaks barriers.",
     "Your progress is your power."
   ]
-
-
+  
 useEffect(() => {
   if (loading) return;
 

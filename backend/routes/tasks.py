@@ -54,9 +54,7 @@ def get_tasks(user):
                     "title": label,
                     "start": datetime.combine(current.date(), start_time).isoformat(),
                     "end": datetime.combine(current.date(), end_time).isoformat(),
-                    "priority": None,
-                    "is_done": False,
-                    "category": None,
+                                        
                     "type": "template"
                 })
             current += timedelta(days=1)

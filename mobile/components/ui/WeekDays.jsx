@@ -94,9 +94,12 @@ export default function WeekDays({ timeToY }) {
               ]}>
                 {visibleTasks
                   .filter(t => new Date(t.start).toDateString() === dayDate.toDateString())
-                  .map(task => (
-                    <Task key={task.id} timeToY={timeToY} task={task} />
-                  ))}
+                  .map(task => {
+                    console.log(`${task.type}-${task.id}`)
+                    // console.log(task.id)
+                    return <Task key={`${task.type}-${task.id}`} timeToY={timeToY} task={task} />
+                    
+        })}
               </View>
             </View>
           </Pressable>
