@@ -10,11 +10,15 @@ import {
   BebasNeue_400Regular
 } from '@expo-google-fonts/bebas-neue';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import Animated from 'react-native-reanimated'; 'react-native-reanimated';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '../context/AuthContext';
 import { TasksProvider } from '../context/TasksContext';
 
 export default function RootLayout() {
+  console.log("ANIMATED OBJECT: ", Animated);
   const [loaded, error] = useFonts({
     MontserratRegularItalic: Montserrat_400Regular_Italic,
     MontserratRegular: Montserrat_400Regular,
@@ -26,18 +30,23 @@ export default function RootLayout() {
   if (!loaded && !error) return null;
 
   return (
-    <SafeAreaProvider>
-      <AuthProvider>
-        <TasksProvider>
-          <SafeAreaView style={[{ flex: 1 }, {backgroundColor: '#fff'}]} edges={['top']}>
-            <StatusBar style="dark" />
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(auth)" />
-              <Stack.Screen name="(tabs)" />
-            </Stack>
-          </SafeAreaView>
-        </TasksProvider>
-      </AuthProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+    <BottomSheetModalProvider>
+      <SafeAreaProvider>
+        <AuthProvider>
+          <TasksProvider>
+            <SafeAreaView style={[{ flex: 1 }, {backgroundColor: '#fff'}]} edges={['top']}>
+              <StatusBar style="dark" />
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(auth)" />
+                <Stack.Screen name="(tabs)" />
+              </Stack>
+            </SafeAreaView>
+          </TasksProvider>
+        </AuthProvider>
+      </SafeAreaProvider>
+    </BottomSheetModalProvider>
+    </GestureHandlerRootView>
+
   );
 }
