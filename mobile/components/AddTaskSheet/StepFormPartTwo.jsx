@@ -11,7 +11,8 @@ import Svg, { Path } from 'react-native-svg';
 import StretchArrow from '../../components/ui/StretchArrow.jsx'
 import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
-
+import { Switch } from 'react-native';
+import SelectAdditional from '../ui/SelectAdditional.jsx';
 
 const RowInput = ({ icon, children }) => (
   <View style={styles.deadlineRow}>
@@ -20,23 +21,73 @@ const RowInput = ({ icon, children }) => (
   </View>
 );
 
+
+
 export default function StepFormPartTwo() {
   const { common, setCommon,  newTask, setNewTask } = useContext(AddNewContext);
   
-  const [showDate, setShowDate] = useState(false);
-  const [showTime, setShowTime] = useState(false);
+  // const [showDate, setShowDate] = useState(false);
+  // const [showTime, setShowTime] = useState(false);
 
-  const defaultDeadline = new Date(Date.now() + 60 * 60 * 1000);
-  const [deadlineDate, setDeadlineDate] = useState(defaultDeadline);
-  const [deadlineTime, setDeadlineTime] = useState(defaultDeadline);
+  const [useSchedule, setUseSchedule] = useState(false);
+
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(
+    new Date(Date.now() + 60 * 60 * 1000)
+  );
 
   const [timeMinutes, setTimeMinutes] = useState(60); // 1 hour by default
 
+
+  
   const formatTime = minutes => {
     const h = Math.floor(minutes / 60);
     const m = minutes % 60;
     return `${h}h ${m}m`;
   };
+  
+  const clampEndDate = (start, end) => {
+  if (end <= start) {
+    return new Date(start.getTime() + 15 * 60000);
+  }
+  return end;
+};
+
+useEffect(() => {
+  if (!useSchedule) return;
+
+  const diff =
+    (endDate.getTime() - startDate.getTime()) / 60000;
+
+  // const minutes = Math.max(15, Math.min(300, Math.round(diff / 15) * 15));
+
+  // setTimeMinutes(minutes);
+
+  setNewTask(prev => ({
+    ...prev,
+    startDatetime: startDate.toISOString(),
+    endDatetime: endDate.toISOString(),
+    estimatedTime: timeMinutes,
+  }));
+
+}, [startDate, endDate, useSchedule]);
+useEffect(() => {
+  if (useSchedule) return;
+
+  const newEnd = new Date(startDate.getTime() + timeMinutes * 60000);
+
+  setEndDate(newEnd);
+
+  setNewTask(prev => ({
+    ...prev,
+    startDatetime: startDate.toISOString(),
+    endDatetime: newEnd.toISOString(),
+    estimatedTime: timeMinutes,
+  }));
+
+}, [timeMinutes, startDate, useSchedule]);
+
+
 
   return (
     <View style={styles.container}>
@@ -44,13 +95,32 @@ export default function StepFormPartTwo() {
       <Text style={styles.title}>
         {common.taskType?.replace('_', ' ') || 'New Task'}
       </Text>
+      
+      <View style={{ width: '90%', flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom: 10, }}>
+        <Text style={[
+          styles.title2,
+          { opacity: useSchedule ? 1 : 0.5 }]}>schedule task</Text>
 
+        <Switch
+        style={{ marginTop: 6 }}
+          value={useSchedule}
+          onValueChange={setUseSchedule}
+        />
+      </View>
+      
         {/* DATETIMES CONTAINER */}
-        <View style={{ width: '90%', marginBottom: 30 }}>
+        <View 
+          pointerEvents={useSchedule ? 'auto' : 'none'}
+          style={{
+            gap: 10, 
+            width: '90%', 
+            marginBottom: 30,
+            opacity: useSchedule ? 1 : 0.5,
+            }}>
               
           {/* DATETIME START */}
-          <View style={{ flexDirection: 'row'}}>
-            <Text style={[ styles.title2, {alignSelf: 'flex-start'}]}>start:</Text>
+          <View style={{ flexDirection: 'row', alignContent: 'center'}}>
+            <Text style={[ styles.title2, {alignSelf: 'flex-start', fontFamily: font.Mregular, fontSize: 20}]}>start:</Text>
             
             {/* Start: Date */}
               {/* <Pressable onPress={() => setShowDate(true)} style={styles.dateButton}>
@@ -62,17 +132,21 @@ export default function StepFormPartTwo() {
                 </Text>
               </Pressable> */}
                 <DateTimePicker
-                  value={deadlineDate}
+                  value={startDate}
                   mode="date"
                   display={Platform.OS === 'ios' ? 'compact' : 'default'}
-                  onChange={(event, selectedDate) => {
-                    setShowDate(false);
-                    if (selectedDate) {
-                      setDeadlineDate(selectedDate);
-                      const combined = new Date(selectedDate);
-                      combined.setHours(deadlineTime.getHours(), deadlineTime.getMinutes());
-                      setNewTask(prev => ({ ...prev, deadline: combined.toISOString() }));
-                    }
+                  onChange={(e, date) => {
+                    if (!date) return;
+
+                    const updated = new Date(startDate);
+                    updated.setFullYear(
+                      date.getFullYear(),
+                      date.getMonth(),
+                      date.getDate()
+                    );
+
+                    setStartDate(updated);
+                    setEndDate(prev => clampEndDate(updated, prev));
                   }}
                 />
                 
@@ -82,25 +156,25 @@ export default function StepFormPartTwo() {
                 <Text style={ styles.dateText }>{deadlineTime.getHours()}:{deadlineTime.getMinutes().toString().padStart(2, '0')}</Text>
               </Pressable> */}
                 <DateTimePicker
-                  value={deadlineTime}
+                  value={startDate}
                   mode="time"
-                  is24Hour={true}
+                  is24Hour
                   display={Platform.OS === 'ios' ? 'compact' : 'default'}
-                  onChange={(event, selectedTime) => {
-                    setShowTime(false);
-                    if (selectedTime) {
-                      setDeadlineTime(selectedTime);
-                      const combined = new Date(deadlineDate);
-                      combined.setHours(selectedTime.getHours(), selectedTime.getMinutes());
-                      setNewTask(prev => ({ ...prev, deadline: combined.toISOString() }));
-                    }
+                  onChange={(e, time) => {
+                    if (!time) return;
+
+                    const updated = new Date(startDate);
+                    updated.setHours(time.getHours(), time.getMinutes());
+
+                    setStartDate(updated);
+                    setEndDate(prev => clampEndDate(updated, prev));
                   }}
                 />
           </View>
 
           {/* DATETIME END */}
           <View style={{ flexDirection: 'row'}}>
-            <Text style={[ styles.title2, {alignSelf: 'flex-start'}]}>
+            <Text style={[ styles.title2, {alignSelf: 'flex-start',fontFamily: font.Mregular, fontSize: 20 }]}>
               end:
             </Text>
           
@@ -115,17 +189,20 @@ export default function StepFormPartTwo() {
                 </Text>
               </Pressable> */}
               <DateTimePicker
-                value={deadlineDate}
+                value={endDate}
                 mode="date"
-                display={Platform.OS === 'ios' ? 'default' : 'default'}
-                onChange={(event, selectedDate) => {
-                  setShowDate(false);
-                  if (selectedDate) {
-                    setDeadlineDate(selectedDate);
-                    const combined = new Date(selectedDate);
-                    combined.setHours(deadlineTime.getHours(), deadlineTime.getMinutes());
-                    setNewTask(prev => ({ ...prev, deadline: combined.toISOString() }));
-                  }
+                display={Platform.OS === 'ios' ? 'compact' : 'default'}
+                onChange={(e, date) => {
+                  if (!date) return;
+
+                  const updated = new Date(endDate);
+                  updated.setFullYear(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate()
+                  );
+
+                  setEndDate(clampEndDate(startDate, updated));
                 }}
               />
 
@@ -135,18 +212,17 @@ export default function StepFormPartTwo() {
                 <Text style={ styles.dateText }>{deadlineTime.getHours()}:{deadlineTime.getMinutes().toString().padStart(2, '0')}</Text>
               </Pressable> */}
               <DateTimePicker
-                value={deadlineTime}
+                value={endDate}
                 mode="time"
-                is24Hour={true}
-                display={Platform.OS === 'ios' ? 'default' : 'default'}
-                onChange={(event, selectedTime) => {
-                  setShowTime(false);
-                  if (selectedTime) {
-                    setDeadlineTime(selectedTime);
-                    const combined = new Date(deadlineDate);
-                    combined.setHours(selectedTime.getHours(), selectedTime.getMinutes());
-                    setNewTask(prev => ({ ...prev, deadline: combined.toISOString() }));
-                  }
+                is24Hour
+                display={Platform.OS === 'ios' ? 'compact' : 'default'}
+                onChange={(e, time) => {
+                  if (!time) return;
+
+                  const updated = new Date(endDate);
+                  updated.setHours(time.getHours(), time.getMinutes());
+
+                  setEndDate(clampEndDate(startDate, updated));
                 }}
               />
 
@@ -154,47 +230,88 @@ export default function StepFormPartTwo() {
           <Text style={[ styles.titleDescr, {alignSelf: 'flex-start', textAlign: 'left'} ]}>Optional. If turned off, the task will be added to the tasks pool on the home page. Such tasks can be scheduled automatically.</Text>
       </View>
       
+      <View style={{ flexDirection: 'row', }}>
+        <SelectAdditional myPlaceholder={'Reminder'} newTaskProperty={'reminderOffset'} arrayOfValues={['None', 10, 30, 60, 1440]}/>
+        <SelectAdditional iconFAname='hourglass-start' myPlaceholder={'Rest Time'} newTaskProperty={'restTime'} arrayOfValues={['None', 10, 30, 60 ]}/>
+      </View>
       {/* ESTIMATED TIME */}
-      <View style={{ width: '90%', marginVertical: 20 }}>
-      {/* Заголовок */}
-      <Text style={styles.title2}>estimated time</Text>
+      <View 
+      pointerEvents={!useSchedule ? 'auto' : 'none'}
+      style={{
+        width:'90%',
+        marginVertical:20,
+        opacity: useSchedule ? 0.5 : 1,
+        justifyContent: 'center', 
+        alignItems: 'center',
+      }}>
+        {/* Заголовок */}
+        <Text style={styles.title2}>estimated time</Text>
 
-      {/* Инпут */}
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        value={formatTime(timeMinutes)}
-        onChangeText={text => {
-          const [h, m] = text.match(/\d+/g) || [0, 0];
-          let total = parseInt(h) * 60 + parseInt(m);
-          if (total < 15) total = 15;
-          if (total > 300) total = 300;
-          setTimeMinutes(total);
-        }}
-      />
+        <View style={{ 
+          flexDirection: 'row', 
+          justifyContent: 'center', 
+          width: '90%', 
+          position: 'relative', // чтобы absolute внутри отсчитывался от этого
+          height: 80,           // желаемая высота контейнера
+          overflow: 'hidden',   // обрезаем лишнее
+          marginBottom: 10
+        }}>
+          {/* HOURS */}
+          <View style={{ flex: 1, flexDirection: 'row', position: 'absolute', top: -80 }}> 
+            <Picker
+              selectedValue={Math.floor(timeMinutes / 60)}
+              style={{ width: 100, height: 150 }} // нативная высота Picker
+              onValueChange={h => setTimeMinutes(h * 60 + (timeMinutes % 60))}
+            >
+              {[0,1,2,3,4,5].map(h => (
+                <Picker.Item key={h} label={`${h} h`} value={h} />
+              ))}
+            </Picker>
 
+          {/* MINUTES */}
+            <Picker
+              selectedValue={timeMinutes % 60}
+              style={{ width: 120, height: 150 }}
+              onValueChange={m =>
+                setTimeMinutes(Math.floor(timeMinutes / 60) * 60 + m)
+              }
+            >
+              {Array.from({ length: 60 }, (_, i) => i)
+                .filter(m => {
+                  const hours = Math.floor(timeMinutes / 60);
+                  if (hours === 5) return m === 0;        // максимум 5ч = 0 мин
+                  if (hours === 0) return m >= 15;        // минимум 15 мин при 0ч
+                  return true;                             // остальные варианты все минуты
+                })
+                .map(m => (
+                  <Picker.Item key={m} label={`${m} m`} value={m} />
+                ))}
+            </Picker>
+          </View>
+        </View>
       {/* Ползунок */}
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ width: 30 }}>0h</Text>
+        <Text style={{ color: '#c8d7e3', fontFamily: font.Mregular, fontSize: 15}}>0h</Text>
         <Slider
-          style={{ flex: 1 }}
+          style={{ flex: 1, marginHorizontal: 10 }}
+          // style={{ marginRight: 14, marginLeft: 0 }}
           minimumValue={15}
           maximumValue={300} // 5 часов
           step={15}
           value={timeMinutes}
+          // onSlidingComplete={setTimeMinutes}
           onValueChange={val => setTimeMinutes(val)}
           minimumTrackTintColor="#394c60"
           maximumTrackTintColor="#c8d7e3"
         />
-        <Text style={{ width: 30 }}>5h</Text>
+        <Text style={{ color: '#c8d7e3', fontFamily: font.Mregular, fontSize: 15}}>5h</Text>
       </View>
     </View>
 
       {/* NEXT & PREV buttons */}
-      <View style={{flexDirection: 'row', width: '90%', justifyContent: 'space-between'}}>
+      <View style={{flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
         <Pressable
-          style={[
-          ]}
+          style={ styles.backButton }
           onPress={() => setCommon(prev => ({ ...prev, step: prev.step - 1 }))}
         >
           <Text style={styles.backText}>BACK</Text>
@@ -202,9 +319,9 @@ export default function StepFormPartTwo() {
         <Pressable
           style={[
             styles.completeButton,
-            !newTask.estimatedTime || (!startDateTime & !endDateTime) && { opacity: 0.5 }
+            // !newTask.estimatedTime || (!startDate && !endDate) && { opacity: 0.5 }
           ]}
-          disabled={!newTask.estimatedTime || (!startDateTime & !endDateTime)}
+          // disabled={!newTask.estimatedTime || (!startDate && !endDate)}
           onPress={() => setCommon(prev => ({ ...prev, step: prev.step + 1 }))}
         >
           <MaterialIcons name="done" size={50} color={"#394c60"} />
@@ -323,6 +440,10 @@ const styles = StyleSheet.create({
     letterSpacing: 1.4,
   },
   backButton: {
+    alignSelf: 'flex-end'
+  },
+  completeButton: {
+    alignSelf: 'flex-end'
   },
   backText: {
     color: '#fff',

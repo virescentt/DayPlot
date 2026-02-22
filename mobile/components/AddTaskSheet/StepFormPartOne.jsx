@@ -138,17 +138,31 @@ export default function StepFormPartOne() {
 
       </View>
 
-      {/* NEXT button */}
-      <Pressable
-        style={[
-          styles.nextButton,
-          !common.title && { opacity: 0.5 }  
-        ]}
-        disabled={!common.title}
-        onPress={() => setCommon(prev => ({ ...prev, step: prev.step + 1 }))}
-      >
-        <Text style={styles.nextText}>NEXT</Text>
-      </Pressable>
+      {/* buttons back and next */}
+      <View style={{flex: 1, width: '90%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+      {/* BACK button */}
+        <Pressable
+          style={[
+            styles.nextButton,
+          ]}
+          onPress={() => setCommon(prev => ({ ...prev, step: prev.step - 1 }))}
+        >
+          <Text style={styles.nextText}>BACK</Text>
+        </Pressable>
+        {/* NEXT button */}
+        <Pressable
+          style={[
+            styles.nextButton,
+            !common.title && { opacity: 0.5 }  
+          ]}
+          disabled={!common.title}
+          onPress={() => setCommon(prev => ({ ...prev, step: prev.step + 1 }))}
+        >
+          <Text style={styles.nextText}>NEXT</Text>
+        </Pressable>
+
+      </View>
+
     </View>
   );
 }
@@ -237,7 +251,7 @@ const styles = StyleSheet.create({
   deadlineRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,          // RN 0.71+
+    gap: 3,          // RN 0.71+
     marginBottom: 10,
   },
   dateButton: {
@@ -261,16 +275,13 @@ const styles = StyleSheet.create({
     letterSpacing: 1.4,
   },
   nextButton: {
-    flex: 1,
-    justifyContent: 'center',
-    marginRight: 20,
-    alignSelf: 'flex-end'
+    alignSelf: 'flex-end',
   },
   nextText: {
     color: '#fff',
-    fontSize: 40,
+    fontSize: 30,
     letterSpacing: 1.4,
     color: '#3c6674',
-    fontFamily: font.Bregular,
+    fontFamily: font.Mregular,
   },
 });

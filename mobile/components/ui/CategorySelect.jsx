@@ -6,6 +6,7 @@ import { Button } from '@react-navigation/elements';
 import { AddNewContext } from '../../context/AddNewContext';
 import { useNavigation } from '@react-navigation/native';
 import { Alert, Platform } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function CategorySelect() {
   const { common, setCommon } = useContext(AddNewContext);
@@ -34,10 +35,17 @@ export default function CategorySelect() {
         ]}>
             {common.categoryName || 'Select category'}
         </Text>
+        {/* Right inner icon */}
+        <FontAwesome5
+            name="caret-down"
+            size={20}
+            color="#394c60"
+            style={{ position: 'absolute', right: 10, top: '50%', transform: [{ translateY: -10 }] }}
+        />
     </Pressable>
     <Modal visible={open} animationType="slide" transparent onRequestClose={() => setOpen(false)}>
-        <View style={styles.modalBg}>
-            <View style={styles.dropdown}>
+        <Pressable onPress={() => setOpen(false)} style={styles.modalBg}>
+            <Pressable onPress={(e) => e.stopPropagation()} style={styles.dropdown}>
             
                 <FlatList
                     data={categories}
@@ -110,8 +118,8 @@ export default function CategorySelect() {
                     </Pressable>
                 </View>
 
-            </View>
-        </View>
+            </Pressable>
+        </Pressable>
     </Modal>
     <Modal visible={addModal} transparent>
         <View style={styles.center}>

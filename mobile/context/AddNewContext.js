@@ -22,6 +22,7 @@ export const AddNewProvider = ({ children }) => {
     startDatetime: null,
     endDatetime: null,
     reminderOffset: null,
+    restTime: null,
     scheduledBy: null,
   });
 
