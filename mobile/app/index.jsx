@@ -1,6 +1,6 @@
-import { View, Text, Image, StyleSheet} from 'react-native'
+import { View, Text, StyleSheet} from 'react-native'
 import { useContext, useEffect } from 'react'
-import { Redirect, router } from 'expo-router';
+import { router } from 'expo-router';
 import font from "../constants/typography.js"
 import { pxToPt } from '../utils/scale.js';
 import DayPlotTitle from '../components/ui/DayPlotTitle.jsx'

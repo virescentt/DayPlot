@@ -1,14 +1,10 @@
 import { View, Text, Image, StyleSheet, Pressable, TextInput, Platform } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import font from '../../constants/typography.js';
-import { TASK_COLORS, PRIORITY_COLORS } from '../../constants/theme.js';
-import { useContext, useEffect, useState } from 'react';
+import {PRIORITY_COLORS } from '../../constants/theme.js';
+import { useContext, useState } from 'react';
 import { AddNewContext } from '../../context/AddNewContext.js';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import CategorySelect from '../ui/CategorySelect.jsx';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Svg, { Path } from 'react-native-svg';
-import StretchArrow from '../../components/ui/StretchArrow.jsx'
 import { FontAwesome6 } from '@expo/vector-icons';
 
 const RowInput = ({ icon, children }) => (

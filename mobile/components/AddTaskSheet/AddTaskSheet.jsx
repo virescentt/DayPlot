@@ -1,9 +1,6 @@
-import React, { forwardRef, useMemo, useState } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 import { View, Text } from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
-import StepChooseType from './StepChooseType';
-import StepFormPartOne from './StepFormPartOne';
-import StepFormPartTwo from './StepFormPartTwo';
 
 const AddTaskSheet = forwardRef((props, ref) => {
   const snapPoints = useMemo(() => ['85%'], []);

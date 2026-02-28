@@ -1,4 +1,4 @@
-import { View, Image, Text, StyleSheet, Pressable } from 'react-native'   
+import { View, StyleSheet, Pressable } from 'react-native'   
 import { pxToPt } from '../../utils/scale.js';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';

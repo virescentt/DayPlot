@@ -1,11 +1,7 @@
-import { View, Text, StyleSheet, TextInput, Pressable, FlatList, Modal } from 'react-native';
-import { pxToPt } from '../../utils/scale';
+import { View, Text, StyleSheet, Pressable, FlatList, Modal } from 'react-native';
 import font from '../../constants/typography';
-import { useContext, useEffect, useState } from 'react';
-import { Button } from '@react-navigation/elements';
+import { useContext, useState } from 'react';
 import { AddNewContext } from '../../context/AddNewContext';
-import { useNavigation } from '@react-navigation/native';
-import { Alert, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 

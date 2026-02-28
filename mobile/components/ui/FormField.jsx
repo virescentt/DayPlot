@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet } from "react-native"
+import { View, TextInput, StyleSheet } from "react-native"
 import { pxToPt } from '../../utils/scale.js';
 
 export default function FormField({ label, required, myStyle, ...props }) {

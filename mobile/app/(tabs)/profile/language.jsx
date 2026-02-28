@@ -1,8 +1,5 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { pxToPt } from '../../../utils/scale.js';
-import font from '../../../constants/typography.js';
+import { View, Text, StyleSheet } from 'react-native';
 import Header from '../../../components/ui/Header.jsx';
-import Footer from '../../../components/ui/Footer.jsx';
 
 export default function Language() {
   return (

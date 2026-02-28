@@ -1,5 +1,4 @@
-import { View, Image, Text, StyleSheet } from 'react-native'   
-import font from '../../constants/typography.js';
+import { View, StyleSheet } from 'react-native'   
 import { pxToPt } from '../../utils/scale.js';
 import DayPlotTitle from './DayPlotTitle.jsx';
 import CurrencyBadge from './CurrencyBadge.jsx';

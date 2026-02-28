@@ -1,13 +1,7 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { pxToPt } from '../../utils/scale.js';
-import { router } from 'expo-router';
+import { Text, StyleSheet, Pressable } from 'react-native';
 import font from '../../constants/typography.js';
-import Header from '../../components/ui/Header.jsx';
-import Footer from '../../components/ui/Footer.jsx';
 import { Ionicons } from '@expo/vector-icons';
-import { TASK_COLORS, TASK_LABELS } from '../../constants/theme.js';
-import BottomSheet, { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext } from 'react';
 import StepChooseType from '../../components/AddTaskSheet/StepChooseType.jsx';
 import { AddNewContext } from '../../context/AddNewContext.js';
 import StepFormPartOne from '../../components/AddTaskSheet/StepFormPartOne.jsx';

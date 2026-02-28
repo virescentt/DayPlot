@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import font from '../../constants/typography.js';
 import { TASK_COLORS, TASK_LABELS } from '../../constants/theme.js';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext } from 'react';
 import { AddNewContext } from '../../context/AddNewContext.js';
 
 export default function StepChooseType() {

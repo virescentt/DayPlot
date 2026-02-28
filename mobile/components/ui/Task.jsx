@@ -1,8 +1,6 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import font from '../../constants/typography';
 import { pxToPt } from '../../utils/scale';
-import { TransitionPresets } from '@react-navigation/bottom-tabs';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { TasksContext } from '../../context/TasksContext';
 import { TASK_COLORS } from '../../constants/theme';
 import EditDeleteTemplateModal from './EditDeleteTemplateModal';

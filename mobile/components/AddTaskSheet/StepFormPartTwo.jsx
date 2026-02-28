@@ -1,47 +1,25 @@
-import { View, Text, Image, StyleSheet, Pressable, TextInput, Platform, Alert } from 'react-native';
+import { View, Text, StyleSheet, Pressable, TextInput, Platform, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import font from '../../constants/typography.js';
-import { TASK_COLORS, PRIORITY_COLORS } from '../../constants/theme.js';
 import { useContext, useEffect, useState } from 'react';
 import { AddNewContext } from '../../context/AddNewContext.js';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import CategorySelect from '../ui/CategorySelect.jsx';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Svg, { Path } from 'react-native-svg';
-import StretchArrow from '../../components/ui/StretchArrow.jsx'
-import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
+import {MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { Switch } from 'react-native';
 import SelectAdditional from '../ui/SelectAdditional.jsx';
 import InfoLabel from '../ui/InfoLabel.jsx';
-import {
-  KeyboardAvoidingView,
-  ScrollView,
-  Keyboard,
-  TouchableWithoutFeedback,
-} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { REMINDER_OFFSET, REST_TIME } from '../../constants/services.js';
 import { AuthContext } from '../../context/AuthContext.js';
 import { buildTaskRequest, handleCreateTask } from '../../utils/addNew.js';
 
 
-const RowInput = ({ icon, children }) => (
-  <View style={styles.deadlineRow}>
-      {icon}
-      {children}
-  </View>
-);
-
-
 
 export default function StepFormPartTwo() {
-  const { common, setCommon,  newTask, setNewTask, template, createTask } = useContext(AddNewContext);
+  const { common, setCommon,  newTask, setNewTask, template, createTask, resetForm } = useContext(AddNewContext);
   const { token } = useContext(AuthContext);
   
-  // const [showDate, setShowDate] = useState(false);
-  // const [showTime, setShowTime] = useState(false);
-
   const [useSchedule, setUseSchedule] = useState(false);
 
   const [startDate, setStartDate] = useState(new Date());
@@ -50,63 +28,48 @@ export default function StepFormPartTwo() {
   );
 
   const [timeMinutes, setTimeMinutes] = useState(60); // 1 hour by default
-
-
-  
-  const formatTime = minutes => {
-    const h = Math.floor(minutes / 60);
-    const m = minutes % 60;
-    return `${h}h ${m}m`;
-  };
   
   const clampEndDate = (start, end) => {
-  if (end <= start) {
-    return new Date(start.getTime() + 15 * 60000);
-  }
-  return end;
-};
+    if (end <= start) {
+      return new Date(start.getTime() + 15 * 60000);
+    }
+    return end;
+  };
 
-useEffect(() => {
-  if (!useSchedule) return;
+  useEffect(() => {
+    if (!useSchedule) return;
 
-  const diff =
-    (endDate.getTime() - startDate.getTime()) / 60000;
+    const diff =
+      (endDate.getTime() - startDate.getTime()) / 60000;
 
-  // const minutes = Math.max(15, Math.min(300, Math.round(diff / 15) * 15));
+    setNewTask(prev => ({
+      ...prev,
+      startDatetime: startDate.toISOString(),
+      endDatetime: endDate.toISOString(),
+      estimatedTime: timeMinutes,
+    }));
 
-  // setTimeMinutes(minutes);
+  }, [startDate, endDate, useSchedule]);
 
-  setNewTask(prev => ({
-    ...prev,
-    startDatetime: startDate.toISOString(),
-    endDatetime: endDate.toISOString(),
-    estimatedTime: timeMinutes,
-  }));
+  useEffect(() => {
+    if (useSchedule) return;
 
-}, [startDate, endDate, useSchedule]);
-useEffect(() => {
-  if (useSchedule) return;
+    const newEnd = new Date(startDate.getTime() + timeMinutes * 60000);
 
-  const newEnd = new Date(startDate.getTime() + timeMinutes * 60000);
+    setEndDate(newEnd);
 
-  setEndDate(newEnd);
+    setNewTask(prev => ({
+      ...prev,
+      startDatetime: startDate.toISOString(),
+      endDatetime: newEnd.toISOString(),
+      estimatedTime: timeMinutes,
+    }));
 
-  setNewTask(prev => ({
-    ...prev,
-    startDatetime: startDate.toISOString(),
-    endDatetime: newEnd.toISOString(),
-    estimatedTime: timeMinutes,
-  }));
-
-}, [timeMinutes, startDate, useSchedule]);
+  }, [timeMinutes, startDate, useSchedule]);
 
 
 
   return (
-  // <KeyboardAvoidingView
-  //   style={{ flex: 1 }}
-  //   behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-  // >
     <KeyboardAwareScrollView
       style={{ flex: 1, backgroundColor: '#a7bdd2' }}
       contentContainerStyle={styles.container}
@@ -311,9 +274,9 @@ useEffect(() => {
               {Array.from({ length: 60 }, (_, i) => i)
                 .filter(m => {
                   const hours = Math.floor(timeMinutes / 60);
-                  if (hours === 5) return m === 0;        // максимум 5ч = 0 мин
-                  if (hours === 0) return m >= 15;        // минимум 15 мин при 0ч
-                  return true;                             // остальные варианты все минуты
+                  if (hours === 5) return m === 0;        // max 5h = 0m
+                  if (hours === 0) return m >= 15;        // min 15m for 0h
+                  return true;                             // others have all minutes
                 })
                 .map(m => (
                   <Picker.Item key={m} label={`${m} m`} value={m} />
@@ -321,17 +284,15 @@ useEffect(() => {
             </Picker>
           </View>
         </View>
-        {/* Ползунок */}
+        {/* Slider */}
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text style={{ color: '#c8d7e3', fontFamily: font.Mregular, fontSize: 15}}>0h</Text>
           <Slider
             style={{ flex: 1, marginHorizontal: 10 }}
-            // style={{ marginRight: 14, marginLeft: 0 }}
             minimumValue={15}
-            maximumValue={300} // 5 часов
+            maximumValue={300} // 5 hours
             step={15}
             value={timeMinutes}
-            // onSlidingComplete={setTimeMinutes}
             onValueChange={val => setTimeMinutes(val)}
             minimumTrackTintColor="#394c60"
             maximumTrackTintColor="#c8d7e3"
@@ -376,8 +337,8 @@ useEffect(() => {
               Alert.alert(result.message.title, result.message.body);
 
               if (result.code === 200) {
-                // Можно сбросить форму, step не трогаем
-                setCommon(prev => ({ ...prev, step: 1 })); // не делаем, как ты просил
+                setCommon(prev => ({ ...prev, step: 1 }));
+                resetForm();
               }
             }}
           >

@@ -6,7 +6,7 @@ import { fetchCreateTask } from '../services/tasks';
 export const AddNewContext = createContext();
 
 export const AddNewProvider = ({ children }) => {
-  const defaultDeadline = new Date(Date.now() + 60 * 60 * 1000);
+  // const defaultDeadline = new Date(Date.now() + 60 * 60 * 1000);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,6 +14,7 @@ export const AddNewProvider = ({ children }) => {
   const getDefaultDeadline = () =>
     new Date(Date.now() + 60 * 60 * 1000).toISOString();
 
+  // --- Common fields ---
   const defaultCommon = {
     step: 1,
     taskType: null,
@@ -22,6 +23,7 @@ export const AddNewProvider = ({ children }) => {
     categoryName: null,
   };
 
+  // --- FlexibleTask and PlannedEvent ---
   const defaultNewTask = () => ({
     priority: "LOW",
     estimatedTime: 0,
@@ -33,39 +35,22 @@ export const AddNewProvider = ({ children }) => {
     scheduledBy: 'MANUAL',
   });
 
+  // --- TemplateEvent ---
   const defaultTemplate = {
     dayOfWeek: null,
     startTime: null,
     endTime: null,
   };
 
-  // --- Common fields ---
-  const [common, setCommon] = useState({
-    step: 1,
-    taskType: null,
-    title: 'New Task',
-    description: '',
-    categoryName: null,
-  });
+  const [common, setCommon] = useState(defaultCommon);
+  const [newTask, setNewTask] = useState(defaultNewTask());
+  const [template, setTemplate] = useState(defaultTemplate);
 
-  // --- FlexibleTask and PlannedEvent ---
-  const [newTask, setNewTask] = useState({
-    priority: "LOW",
-    estimatedTime: 0,
-    deadline: defaultDeadline.toISOString(),
-    startDatetime: null,
-    endDatetime: null,
-    reminderOffset: null,
-    restTime: null,
-    scheduledBy: 'MANUAL',
-  });
-
-  // --- TemplateEvent ---
-  const [template, setTemplate] = useState({
-    dayOfWeek: null,
-    startTime: null,
-    endTime: null,
-  });
+  const resetForm = () => {
+    setCommon(defaultCommon);
+    setNewTask(defaultNewTask());
+    setTemplate(defaultTemplate);
+  };
 
   const createTask = async (token, taskData) => {
     setLoading(true);
@@ -89,6 +74,7 @@ export const AddNewProvider = ({ children }) => {
       loading,
       error,
       createTask,
+      resetForm
     }}>
       {children}
     </AddNewContext.Provider>

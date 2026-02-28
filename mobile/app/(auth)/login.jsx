@@ -1,10 +1,9 @@
-import { View, Text, Pressable, Image, TextInput, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, Pressable, TextInput, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { router } from 'expo-router';
 import font from '../../constants/typography.js';
 import { pxToPt } from '../../utils/scale.js';
 import { isEmailValid } from '../../utils/validation.js';
 import DayPlotTitle from '../../components/ui/DayPlotTitle.jsx';
-import FormField from '../../components/ui/FormField.jsx';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext.js';
 import { loginRequest } from '../../services/auth.js';

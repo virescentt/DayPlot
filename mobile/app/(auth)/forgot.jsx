@@ -1,5 +1,5 @@
 import { View, Text, Pressable, TextInput, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext.js';
 import { router } from 'expo-router';
 import font from '../../constants/typography.js';

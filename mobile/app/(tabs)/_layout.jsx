@@ -1,12 +1,8 @@
 import { Tabs } from 'expo-router';
-import { View, Text } from 'react-native';
-import React, { useRef, useState } from 'react'; // Явно импортируем React
+import { useRef, useState } from 'react'; 
 import { Ionicons, Feather } from '@expo/vector-icons';
-import { TasksContext, TasksProvider } from '../../context/TasksContext';
+import { TasksContext } from '../../context/TasksContext';
 import { useContext } from 'react';
-import AddTaskSheet from '../../components/AddTaskSheet/AddTaskSheet';
-import BottomSheet from '@gorhom/bottom-sheet';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AddNewProvider } from '../../context/AddNewContext';
 
 

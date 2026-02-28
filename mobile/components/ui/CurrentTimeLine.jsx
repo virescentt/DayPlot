@@ -1,7 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import { pxToPt } from '../../utils/scale';
-import font from '../../constants/typography';
+import { useState, useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
 
 
 export default function CurrentTimeLine({ timeToY, isLineVisible, labelHeight, paddingTopLabels}) {

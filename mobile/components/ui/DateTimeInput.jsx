@@ -7,7 +7,7 @@ import { AddNewContext } from '../../context/AddNewContext';
 import { useNavigation } from '@react-navigation/native';
 import { Alert } from 'react-native';
 
-export default function CategorySelect() {
+export default function DateTimeInput() {
     
 }
 
