@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify
-from backend.db.models import FlexibleTask, PlannedEvent, TemplateEvent
+from backend.db.models import FlexibleTask, PlannedEvent, TemplateEvent, Category, TaskPriority
 from backend.decorators import token_required
 from datetime import datetime, timezone, timedelta
 from backend.db.models import db
+from sqlalchemy.exc import IntegrityError
 
 tasks_bp = Blueprint("tasks", __name__, url_prefix="/tasks")
+
 
 @tasks_bp.route("", methods=["GET"])
 @token_required
@@ -110,3 +112,97 @@ def toggle_task_done(user, task_id):
         "type": task_type,
         "is_done": task.is_done
     }), 200
+
+
+
+@tasks_bp.route("", methods=["POST"])
+@token_required
+def create_task(user):
+
+    data = request.json
+
+    task_type = data.get("type")
+    common = data.get("common", {})
+    payload = data.get("payload", {})
+    
+    category = (
+    Category.query.filter_by(
+        name=common.get("categoryName"),
+        user_id=user.id
+        ).first()
+        if common.get("categoryName")
+        else None
+    )
+
+    if not task_type:
+        return jsonify({"error": "type required"}), 400
+    
+    if task_type == "flexible":
+        task = FlexibleTask(
+            user_id=user.id,
+            title=common.get("title"),
+            description=common.get("description"),
+            category=category,
+
+            priority=payload.get("priority"),
+            estimated_time=payload.get("estimatedTime"),
+            deadline=payload.get("deadline"),
+
+            start_datetime=payload.get("startDatetime"),
+            end_datetime=payload.get("endDatetime"),
+
+            reminder_offset=payload.get("reminderOffset"),
+            rest_time=payload.get("restTime"),
+            scheduled_by=payload.get("scheduledBy"),
+        )
+    elif task_type == "planned":
+        task = PlannedEvent(
+            user_id=user.id,
+            title=common["title"],
+            description=common.get("description"),
+
+            start_datetime=payload.get("startDatetime"),
+            end_datetime=payload.get("endDatetime"),
+
+            reminder_offset=payload.get("reminderOffset"),
+            rest_time=payload.get("restTime"),
+            scheduled_by=payload.get("scheduledBy"),
+        )
+    elif task_type == "template":
+        task = TemplateEvent(
+            user_id=user.id,
+            label=common.get("title"),
+            description=common.get("description"),
+            category=category,
+
+            day_of_week=payload.get("dayOfWeek"),
+            start_time=payload.get("startTime"),
+            end_time=payload.get("endTime"),
+        )
+    else:
+        return jsonify({"error": "Invalid type"}), 400
+
+    
+    try:
+        db.session.add(task)
+        db.session.commit()
+        return jsonify({"id": task.id}), 201
+
+
+    except IntegrityError as e:
+        db.session.rollback()
+
+        return jsonify({
+            "error": "Database validation failed",
+            "details": str(e)
+        }), 400
+
+    except ValueError as e:
+        db.session.rollback()
+
+        return jsonify({
+            "error": str(e)
+        }), 400
+
+
+    

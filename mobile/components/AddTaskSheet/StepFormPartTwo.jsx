@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, Pressable, TextInput, Platform } from 'react-native';
+import { View, Text, Image, StyleSheet, Pressable, TextInput, Platform, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import font from '../../constants/typography.js';
 import { TASK_COLORS, PRIORITY_COLORS } from '../../constants/theme.js';
@@ -13,6 +13,18 @@ import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { Switch } from 'react-native';
 import SelectAdditional from '../ui/SelectAdditional.jsx';
+import InfoLabel from '../ui/InfoLabel.jsx';
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { REMINDER_OFFSET, REST_TIME } from '../../constants/services.js';
+import { AuthContext } from '../../context/AuthContext.js';
+import { buildTaskRequest, handleCreateTask } from '../../utils/addNew.js';
+
 
 const RowInput = ({ icon, children }) => (
   <View style={styles.deadlineRow}>
@@ -24,7 +36,8 @@ const RowInput = ({ icon, children }) => (
 
 
 export default function StepFormPartTwo() {
-  const { common, setCommon,  newTask, setNewTask } = useContext(AddNewContext);
+  const { common, setCommon,  newTask, setNewTask, template, createTask } = useContext(AddNewContext);
+  const { token } = useContext(AuthContext);
   
   // const [showDate, setShowDate] = useState(false);
   // const [showTime, setShowTime] = useState(false);
@@ -90,16 +103,33 @@ useEffect(() => {
 
 
   return (
-    <View style={styles.container}>
-      
+  // <KeyboardAvoidingView
+  //   style={{ flex: 1 }}
+  //   behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  // >
+    <KeyboardAwareScrollView
+      style={{ flex: 1, backgroundColor: '#a7bdd2' }}
+      contentContainerStyle={styles.container}
+      enableOnAndroid={true}
+      extraScrollHeight={20}
+      keyboardShouldPersistTaps="handled"
+    >
       <Text style={styles.title}>
         {common.taskType?.replace('_', ' ') || 'New Task'}
       </Text>
       
       <View style={{ width: '90%', flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom: 10, }}>
-        <Text style={[
+        <InfoLabel
+          label="schedule task"
+          info="Optional. If turned off, the task will be added to the tasks pool on the home page. Such tasks can be scheduled automatically."
+          // infoTitle='Schedule Task'
+          textStyle={[
           styles.title2,
-          { opacity: useSchedule ? 1 : 0.5 }]}>schedule task</Text>
+          { opacity: useSchedule ? 1 : 0.5 }]}
+        />
+        {/* <Text style={[
+          styles.title2,
+          { opacity: useSchedule ? 1 : 0.5 }]}>schedule task</Text> */}
 
         <Switch
         style={{ marginTop: 6 }}
@@ -227,19 +257,21 @@ useEffect(() => {
               />
 
           </View>
-          <Text style={[ styles.titleDescr, {alignSelf: 'flex-start', textAlign: 'left'} ]}>Optional. If turned off, the task will be added to the tasks pool on the home page. Such tasks can be scheduled automatically.</Text>
+          
       </View>
       
       <View style={{ flexDirection: 'row', }}>
-        <SelectAdditional myPlaceholder={'Reminder'} newTaskProperty={'reminderOffset'} arrayOfValues={['None', 10, 30, 60, 1440]}/>
-        <SelectAdditional iconFAname='hourglass-start' myPlaceholder={'Rest Time'} newTaskProperty={'restTime'} arrayOfValues={['None', 10, 30, 60 ]}/>
+        <SelectAdditional myPlaceholder={'Reminder'} newTaskProperty={'reminderOffset'} options={REMINDER_OFFSET}/>
+        <SelectAdditional iconFAname='hourglass-start' myPlaceholder={'Rest Time'} newTaskProperty={'restTime'} options={REST_TIME}/>
       </View>
+
+      
       {/* ESTIMATED TIME */}
       <View 
       pointerEvents={!useSchedule ? 'auto' : 'none'}
       style={{
         width:'90%',
-        marginVertical:20,
+        marginVertical: 40,
         opacity: useSchedule ? 0.5 : 1,
         justifyContent: 'center', 
         alignItems: 'center',
@@ -289,24 +321,43 @@ useEffect(() => {
             </Picker>
           </View>
         </View>
-      {/* Ползунок */}
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ color: '#c8d7e3', fontFamily: font.Mregular, fontSize: 15}}>0h</Text>
-        <Slider
-          style={{ flex: 1, marginHorizontal: 10 }}
-          // style={{ marginRight: 14, marginLeft: 0 }}
-          minimumValue={15}
-          maximumValue={300} // 5 часов
-          step={15}
-          value={timeMinutes}
-          // onSlidingComplete={setTimeMinutes}
-          onValueChange={val => setTimeMinutes(val)}
-          minimumTrackTintColor="#394c60"
-          maximumTrackTintColor="#c8d7e3"
-        />
-        <Text style={{ color: '#c8d7e3', fontFamily: font.Mregular, fontSize: 15}}>5h</Text>
+        {/* Ползунок */}
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={{ color: '#c8d7e3', fontFamily: font.Mregular, fontSize: 15}}>0h</Text>
+          <Slider
+            style={{ flex: 1, marginHorizontal: 10 }}
+            // style={{ marginRight: 14, marginLeft: 0 }}
+            minimumValue={15}
+            maximumValue={300} // 5 часов
+            step={15}
+            value={timeMinutes}
+            // onSlidingComplete={setTimeMinutes}
+            onValueChange={val => setTimeMinutes(val)}
+            minimumTrackTintColor="#394c60"
+            maximumTrackTintColor="#c8d7e3"
+          />
+          <Text style={{ color: '#c8d7e3', fontFamily: font.Mregular, fontSize: 15}}>5h</Text>
+        </View>
       </View>
-    </View>
+      
+      {/* DESCRIPTION */}
+      <View style={{ width: '90%', marginBottom: 20 }}>
+        <Text style={[ styles.title2, { textAlign: 'left' }]}>description</Text>
+
+        <TextInput
+          style={styles.descriptionInput}
+          placeholder="Add task description..."
+          placeholderTextColor="#6b8798"
+          multiline
+          scrollEnabled
+          returnKeyType="done"
+          textAlignVertical="top"
+          value={common.description || ''}
+          onChangeText={text =>
+            setCommon(prev => ({ ...prev, description: text }))
+          }
+        />
+      </View>
 
       {/* NEXT & PREV buttons */}
       <View style={{flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -316,25 +367,33 @@ useEffect(() => {
         >
           <Text style={styles.backText}>BACK</Text>
         </Pressable>
-        <Pressable
-          style={[
-            styles.completeButton,
-            // !newTask.estimatedTime || (!startDate && !endDate) && { opacity: 0.5 }
-          ]}
-          // disabled={!newTask.estimatedTime || (!startDate && !endDate)}
-          onPress={() => setCommon(prev => ({ ...prev, step: prev.step + 1 }))}
-        >
+          <Pressable
+            style={[styles.completeButton]}
+            onPress={async () => {
+              const taskData = buildTaskRequest(common, newTask, template);
+              const result = await handleCreateTask(createTask, token, taskData);
+              
+              Alert.alert(result.message.title, result.message.body);
+
+              if (result.code === 200) {
+                // Можно сбросить форму, step не трогаем
+                setCommon(prev => ({ ...prev, step: 1 })); // не делаем, как ты просил
+              }
+            }}
+          >
           <MaterialIcons name="done" size={50} color={"#394c60"} />
         </Pressable>
       </View>
-
-    </View>
+    </KeyboardAwareScrollView>
   );
 }
 
+
+// <Text style={[ styles.titleDescr, {alignSelf: 'flex-start', textAlign: 'left'} ]}>Optional. If turned off, the task will be added to the tasks pool on the home page. Such tasks can be scheduled automatically.</Text>
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1, 
     backgroundColor: '#a7bdd2',
     alignItems: 'center',
     padding: 20,
@@ -439,6 +498,19 @@ const styles = StyleSheet.create({
     fontFamily: font.Mregular,
     letterSpacing: 1.4,
   },
+
+  descriptionInput: {
+    width: '100%',
+    height: 120,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 12,
+    fontFamily: font.Mregular,
+    fontSize: 18,
+    letterSpacing: 1.2,
+    color: '#394c60',
+  },
+
   backButton: {
     alignSelf: 'flex-end'
   },
@@ -447,9 +519,12 @@ const styles = StyleSheet.create({
   },
   backText: {
     color: '#fff',
-    fontSize: 40,
+    fontSize: 30,
     letterSpacing: 1.4,
     color: '#3c6674',
-    fontFamily: font.Bregular,
+    fontFamily: font.Mregular,
   },
 });
+
+
+

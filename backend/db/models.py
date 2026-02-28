@@ -17,6 +17,13 @@ class ReminderOffset(enum.Enum):
     HOUR_1 = 60
     DAY_1 = 1440
 
+
+class RestTime(enum.Enum):
+    MIN_5 = 5
+    MIN_15 = 15
+    MIN_30 = 30
+    HOUR_1 = 60
+
 class ScheduleSource(enum.Enum):
     AUTO = "auto"
     MANUAL = "manual"
@@ -57,7 +64,7 @@ class FlexibleTask(db.Model):
     # Required fields
     title = db.Column(db.String(100), nullable=False)
     priority = db.Column(Enum(TaskPriority), nullable=False)  # 1-4, 4 — highest
-    estimated_hours = db.Column(db.Float, nullable=False)  # from 0.25h (15 minutes) to 5h
+    estimated_time = db.Column(db.Float, nullable=False)  # from 15 minutes to 300 minutes (5 hours)
     deadline = db.Column(db.DateTime(timezone=True), nullable=False)
     scheduled_by = db.Column(
     Enum(ScheduleSource),
@@ -73,6 +80,7 @@ class FlexibleTask(db.Model):
     start_datetime = db.Column(db.DateTime(timezone=True), nullable=True)
     end_datetime = db.Column(db.DateTime(timezone=True), nullable=True)
     reminder_offset = db.Column(Enum(ReminderOffset, name="reminder_offset_enum"), nullable=True)
+    rest_time = db.Column(Enum(RestTime, name="rest_time_enum"), nullable=True)
 
 
     # Metadata
@@ -101,7 +109,6 @@ class PlannedEvent(db.Model):
 
     # Required fields
     title = db.Column(db.String(255), nullable=False)
-    estimated_hours = db.Column(db.Float, nullable=False)  # от 0.25 до 5 часов
     start_datetime = db.Column(db.DateTime(timezone=True), nullable=False)
     end_datetime = db.Column(db.DateTime(timezone=True), nullable=False)
     is_done = db.Column(db.Boolean, default=False)
@@ -111,6 +118,7 @@ class PlannedEvent(db.Model):
     category = db.relationship("Category", backref="planned_events")
     description = db.Column(db.Text, nullable=True)
     reminder_offset = db.Column(Enum(ReminderOffset), nullable=True)
+    rest_time = db.Column(Enum(RestTime, name="rest_time_enum"), nullable=True)
 
     # Метаданные
     created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
@@ -151,8 +159,10 @@ class TemplateEvent(db.Model):
     start_time = db.Column(db.Time, nullable=False)  # only time
     end_time = db.Column(db.Time, nullable=False)
 
-    # category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=True)
-    # category = db.relationship("Category", backref="template_events")
+    # Optional fields
+    description = db.Column(db.Text, nullable=True)
+    category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=True)
+    category = db.relationship("Category", backref="template_events")
 
 
 class TemplateEventOverride(db.Model):

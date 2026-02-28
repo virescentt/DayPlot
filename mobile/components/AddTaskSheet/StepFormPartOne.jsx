@@ -58,12 +58,12 @@ export default function StepFormPartOne() {
             style={[
               styles.priorityCircle,
               { backgroundColor: color },
-              newTask.priority === Number(priority) && styles.prioritySelected
+              newTask.priority === priority && styles.prioritySelected
             ]}
             onPress={() =>
               setNewTask(prev => ({
                 ...prev,
-                priority: Number(priority)
+                priority: priority
               }))
             }
             />
@@ -139,7 +139,7 @@ export default function StepFormPartOne() {
       </View>
 
       {/* buttons back and next */}
-      <View style={{flex: 1, width: '90%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+      <View style={{flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
       {/* BACK button */}
         <Pressable
           style={[
@@ -218,9 +218,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 15,
     backgroundColor: '#fff',
-    fontFamily: font.Bregular,
+    fontFamily: font.Mregular,
     letterSpacing: 1.4,
-    fontSize: 30,
+    fontSize: 20,
     color: '#394c60',
   },
   picker: {

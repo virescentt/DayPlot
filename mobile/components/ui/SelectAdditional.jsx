@@ -8,71 +8,55 @@ import { useNavigation } from '@react-navigation/native';
 import { Alert, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-export default function SelectAdditional({iconFAname = 'bell', myPlaceholder, newTaskProperty, arrayOfValues }) {
-  const { common, setCommon, newTask, setNewTask } = useContext(AddNewContext);
-  
+
+export default function SelectAdditional({
+  iconFAname = 'bell',
+  myPlaceholder,
+  newTaskProperty,
+  options = [] // теперь ожидается массив объектов { label, value }
+}) {
+  const { newTask, setNewTask } = useContext(AddNewContext);
   const [open, setOpen] = useState(false);
-  const [taskPropertyValues, setTaskPropertyValues] = useState(arrayOfValues); 
-  const [addModal, setAddModal] = useState(false);
-  const [selectedTaskProperty, setSelectedTaskProperty] = useState('New Category');
-  
+
+  // Находим текущую выбранную опцию по значению
+  const selectedOption = options.find(opt => opt.value === newTask[newTaskProperty]);
+
+  const displayText = newTask[newTaskProperty] == null // null или undefined
+  ? myPlaceholder
+  : selectedOption?.label ?? myPlaceholder;
+
   return (
     <View style={{ width: '50%', alignItems: 'center', flexDirection: 'row', gap: 10 }}>
-
-    <FontAwesome5
-        name={iconFAname}
-        size={30}
-        color="#394c60"
-        style={{paddingBottom: 15}}
-    />
-    <Pressable
-        style={styles.input}
-        onPress={() => setOpen(true)}
-        placeholder={myPlaceholder}
-        placeholderTextColor="#394c6080"
-    >
-        <Text style={[
-            styles.categoryName,
-            !newTask.newTaskProperty && styles.placeholder
-        ]}>
-            {newTask.newTaskProperty || myPlaceholder}
+      <FontAwesome5 name={iconFAname} size={30} color="#e1eaf3" style={{paddingBottom: 15}} />
+      <Pressable style={styles.input} onPress={() => setOpen(true)}>
+        <Text style={[ styles.categoryName, !newTask[newTaskProperty] && styles.placeholder ]}>
+          {displayText}
         </Text>
-        {/* Right inner icon */}
-        <FontAwesome5
-            name="caret-down"
-            size={20}
-            color="#394c60"
-            style={{ position: 'absolute', right: 10, top: '50%', transform: [{ translateY: -10 }] }}
-        />
-    </Pressable>
-    <Modal visible={open} animationType="slide" transparent onRequestClose={() => setOpen(false)}>
-        <Pressable onPress={() => setOpen(false)} style={styles.modalBg}>
-            <Pressable onPress={(e) => e.stopPropagation()} style={styles.dropdown}>
-            
-                <FlatList
-                    data={taskPropertyValues}
-                    keyExtractor={(item) => item}
-                    renderItem={({ item }) => {
-                        const value = item === 'None' ? null : item;
+        <FontAwesome5 name="caret-down" size={20} color="#2a5b85" style={{ position: 'absolute', right: 10, top: '50%', transform: [{ translateY: -10 }] }} />
+      </Pressable>
 
-                        return (
-                            <Pressable
-                            onPress={() => {
-                                setNewTask(prev => ({
-                                ...prev,
-                                newTaskProperty: value,
-                                }));
-                                setOpen(false);
-                            }}
-                            >
-                            <Text style={styles.item}>{item}</Text>
-                            </Pressable>
-                        );
-                    }}
-                />
-            </Pressable>
+      <Modal visible={open} animationType="slide" transparent onRequestClose={() => setOpen(false)}>
+        <Pressable onPress={() => setOpen(false)} style={styles.modalBg}>
+          <Pressable onPress={(e) => e.stopPropagation()} style={styles.dropdown}>
+            <Text>{myPlaceholder}</Text>
+            <FlatList
+              data={options}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => {
+                
+                return (
+                <Pressable onPress={() => {
+                  setNewTask(prev => ({ ...prev, [newTaskProperty]: item.value }));
+                  setOpen(false);
+                }}>
+                  <Text style={styles.item}>{item.label}</Text>
+                </Pressable>
+                )
+              }}
+            />
+          </Pressable>
         </Pressable>
-    </Modal>
+      </Modal>
     </View>
   );
 }
@@ -94,10 +78,10 @@ const styles = StyleSheet.create({
     color: '#3d6984',
     fontFamily: font.Mregular,
     letterSpacing: 1.4,
-    fontSize: 10,
+    fontSize: 13,
   },
   placeholder: {
-    color: '#394c6080',
+    color: '#3d6984',
   },
   /* ---------- MAIN MODAL ---------- */
 

@@ -62,7 +62,7 @@ export default function WeekDays({ timeToY }) {
   console.log(tasks);
   console.log('VisibleTasks: ');
   console.log(visibleTasks);
-
+  
   if (mode === 'week') {
     return (
       <FlatList

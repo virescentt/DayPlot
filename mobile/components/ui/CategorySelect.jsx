@@ -46,7 +46,7 @@ export default function CategorySelect() {
     <Modal visible={open} animationType="slide" transparent onRequestClose={() => setOpen(false)}>
         <Pressable onPress={() => setOpen(false)} style={styles.modalBg}>
             <Pressable onPress={(e) => e.stopPropagation()} style={styles.dropdown}>
-            
+                <Text>Category</Text>
                 <FlatList
                     data={categories}
                     keyExtractor={(item) => item}
@@ -162,9 +162,9 @@ const styles = StyleSheet.create({
   
   categoryName: {
     color: '#394c60',
-    fontFamily: font.Bregular,
+    fontFamily: font.Mregular,
     letterSpacing: 1.4,
-    fontSize: 30,
+    fontSize: 20,
   },
   placeholder: {
     color: '#394c6080',

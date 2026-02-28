@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
       const storedToken = await AsyncStorage.getItem('token');
       if (storedToken) {
         setToken(storedToken);
+        // loadToken();
         await loadUser(storedToken);
       }
       setLoading(false);

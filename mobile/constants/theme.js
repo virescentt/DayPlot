@@ -13,10 +13,10 @@ export const TASK_LABELS = {
 
 
 export const PRIORITY_COLORS = {
-    1: '#cdd7e0',
-    2: '#3d6984',
-    3: '#1a507a',
-    4: '#0d283d',
+    LOW: '#cdd7e0',
+    MEDIUM: '#3d6984',
+    HIGH: '#1a507a',
+    URGENT: '#0d283d',
 };
 
 

@@ -25,7 +25,7 @@ export default function Add() {
       // Этап 2: choose a category
       return <StepFormPartOne />
     } else if (common.step === 3) {
-      // Этап 3: настройки + кнопка завершить
+      // Этап 3: choose dates and description
       return <StepFormPartTwo />
       return (
         <>
