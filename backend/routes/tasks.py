@@ -137,50 +137,55 @@ def create_task(user):
     if not task_type:
         return jsonify({"error": "type required"}), 400
     
-    if task_type == "flexible":
-        task = FlexibleTask(
-            user_id=user.id,
-            title=common.get("title"),
-            description=common.get("description"),
-            category=category,
+    try:
+        if task_type == "flexible":
+            task = FlexibleTask(
+                user_id=user.id,
+                title=common.get("title"),
+                description=common.get("description"),
+                category=category,
 
-            priority=payload.get("priority"),
-            estimated_time=payload.get("estimatedTime"),
-            deadline=payload.get("deadline"),
+                priority=payload.get("priority"),
+                estimated_time=payload.get("estimatedTime"),
+                deadline=payload.get("deadline"),
 
-            start_datetime=payload.get("startDatetime"),
-            end_datetime=payload.get("endDatetime"),
+                start_datetime=payload.get("startDatetime"),
+                end_datetime=payload.get("endDatetime"),
 
-            reminder_offset=payload.get("reminderOffset"),
-            rest_time=payload.get("restTime"),
-            scheduled_by=payload.get("scheduledBy"),
-        )
-    elif task_type == "planned":
-        task = PlannedEvent(
-            user_id=user.id,
-            title=common["title"],
-            description=common.get("description"),
+                reminder_offset=payload.get("reminderOffset"),
+                rest_time=payload.get("restTime"),
+                scheduled_by=payload.get("scheduledBy"),
+            )
+        elif task_type == "planned":
+            task = PlannedEvent(
+                user_id=user.id,
+                title=common["title"],
+                description=common.get("description"),
 
-            start_datetime=payload.get("startDatetime"),
-            end_datetime=payload.get("endDatetime"),
+                start_datetime=payload.get("startDatetime"),
+                end_datetime=payload.get("endDatetime"),
 
-            reminder_offset=payload.get("reminderOffset"),
-            rest_time=payload.get("restTime"),
-            scheduled_by=payload.get("scheduledBy"),
-        )
-    elif task_type == "template":
-        task = TemplateEvent(
-            user_id=user.id,
-            label=common.get("title"),
-            description=common.get("description"),
-            category=category,
+                reminder_offset=payload.get("reminderOffset"),
+                rest_time=payload.get("restTime"),
+                scheduled_by=payload.get("scheduledBy"),
+            )
+        elif task_type == "template":
+            task = TemplateEvent(
+                user_id=user.id,
+                label=common.get("title"),
+                description=common.get("description"),
+                category=category,
 
-            day_of_week=payload.get("dayOfWeek"),
-            start_time=payload.get("startTime"),
-            end_time=payload.get("endTime"),
-        )
-    else:
-        return jsonify({"error": "Invalid type"}), 400
+                day_of_week=payload.get("dayOfWeek"),
+                start_time=payload.get("startTime"),
+                end_time=payload.get("endTime"),
+            )
+        else:
+            return jsonify({"error": "Invalid type"}), 400
+
+    except ValueError as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 400
 
     
     try:
@@ -196,13 +201,3 @@ def create_task(user):
             "error": "Database validation failed",
             "details": str(e)
         }), 400
-
-    except ValueError as e:
-        db.session.rollback()
-
-        return jsonify({
-            "error": str(e)
-        }), 400
-
-
-    

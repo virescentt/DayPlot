@@ -12,11 +12,40 @@ export const AddNewProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   const getDefaultDeadline = () =>
+    new Date(Date.now() + 60 * 60 * 1000 * 24).toISOString();
+
+  const getDefaultStartDatetime = () =>
+    new Date(Date.now()).toISOString();
+
+  const getDefaultEndDatetime = () =>
     new Date(Date.now() + 60 * 60 * 1000).toISOString();
+
+
+   const isChanged = () => {
+    // проверяем common
+    for (let key in defaultCommon) if (common[key] !== defaultCommon[key]) return true;
+    // проверяем newTask
+    if (
+      newTask.priority !== "LOW" ||
+      newTask.estimatedTime !== 0 ||
+      newTask.reminderOffset !== null ||
+      newTask.restTime !== null ||
+      newTask.scheduledBy !== "MANUAL"
+    ) return true;
+    // проверяем template
+    for (let key in defaultTemplate) if (template[key] !== defaultTemplate[key]) return true;
+    return false;
+  };
+
+
+  // fields that wont be sent to the server
+  const defaultUtils = {
+    step: 1,
+    useSchedule: false
+  };
 
   // --- Common fields ---
   const defaultCommon = {
-    step: 1,
     taskType: null,
     title: 'New Task',
     description: '',
@@ -28,8 +57,8 @@ export const AddNewProvider = ({ children }) => {
     priority: "LOW",
     estimatedTime: 0,
     deadline: getDefaultDeadline(),
-    startDatetime: null,
-    endDatetime: null,
+    startDatetime: getDefaultStartDatetime(),
+    endDatetime: getDefaultEndDatetime(),
     reminderOffset: null,
     restTime: null,
     scheduledBy: 'MANUAL',
@@ -45,11 +74,13 @@ export const AddNewProvider = ({ children }) => {
   const [common, setCommon] = useState(defaultCommon);
   const [newTask, setNewTask] = useState(defaultNewTask());
   const [template, setTemplate] = useState(defaultTemplate);
+  const [utils, setUtils] = useState(defaultUtils);
 
   const resetForm = () => {
     setCommon(defaultCommon);
     setNewTask(defaultNewTask());
     setTemplate(defaultTemplate);
+    setUtils(defaultUtils);
   };
 
   const createTask = async (token, taskData) => {
@@ -71,10 +102,12 @@ export const AddNewProvider = ({ children }) => {
       common, setCommon,
       newTask, setNewTask,
       template, setTemplate,
+      utils, setUtils,
       loading,
       error,
       createTask,
-      resetForm
+      resetForm,
+      isChanged
     }}>
       {children}
     </AddNewContext.Provider>

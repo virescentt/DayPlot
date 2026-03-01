@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { AddNewContext } from '../../context/AddNewContext.js';
 
 export default function StepChooseType() {
-  const { common, setCommon } = useContext(AddNewContext);
+  const { setUtils, setCommon } = useContext(AddNewContext);
    
   return (
     // <Header /> 
@@ -19,7 +19,8 @@ export default function StepChooseType() {
             { backgroundColor: TASK_COLORS[TASK_LABELS[type]]?.background || '#888' },
           ]}
           onPress={() => {
-            setCommon( (prev) => ({...prev, taskType: type, step: prev.step + 1  }));
+            setCommon( (prev) => ({...prev, taskType: type }));
+            setUtils( (prev) => ({...prev, step: prev.step + 1 }));
           }}
         >
           <Text

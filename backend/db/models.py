@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone, timedelta
 from sqlalchemy import Enum
 import enum
+from sqlalchemy.orm import validates
 
 db = SQLAlchemy()
 
@@ -89,16 +90,40 @@ class FlexibleTask(db.Model):
 
     # Date range validation (approximately)
     @staticmethod
-    def validate_date_range(start_dt, end_dt):
-        """Check: start/end from today to +2 months"""
-        today = datetime.now(timezone.utc)
-        max_date = today + timedelta(days=60)
-        if start_dt and not (today <= start_dt <= max_date):
-            raise ValueError("Start date must be from today to +2 months")
-        if end_dt and not (today <= end_dt <= max_date):
-            raise ValueError("End date must be from today to +2 months")
+    def validate_dates(start_dt=None, end_dt=None, deadline=None):
+        now = datetime.now(timezone.utc)
+        min_date = now - timedelta(days=60)
+        max_date = now + timedelta(days=60)
+
+        # привести к aware
+        if start_dt and isinstance(start_dt, str):
+            start_dt = datetime.fromisoformat(start_dt).replace(tzinfo=timezone.utc)
+
+        if end_dt and isinstance(end_dt, str):
+            end_dt = datetime.fromisoformat(end_dt).replace(tzinfo=timezone.utc)
+
+        if deadline and isinstance(deadline, str):
+            deadline = datetime.fromisoformat(deadline).replace(tzinfo=timezone.utc)
+
+
+        if start_dt and not (min_date <= start_dt <= max_date):
+            raise ValueError(f"Start date must be within ±2 months from today")
+        if end_dt and not (min_date <= end_dt <= max_date):
+            raise ValueError(f"End date must be within ±2 months from today")
+        if deadline and not (min_date <= deadline <= max_date):
+            raise ValueError(f"Deadline must be within ±2 months from today")
         if start_dt and end_dt and start_dt > end_dt:
-            raise ValueError("Start datetime cannot be after end datetime")
+            raise ValueError(f"Start datetime cannot be after end datetime")
+        if end_dt and deadline and end_dt > deadline:
+            raise ValueError(f"End datetime cannot be after the deadline")
+
+    @validates('start_datetime', 'end_datetime', 'deadline')
+    def validate_all_dates(self, key, value):
+        start = self.start_datetime if key != 'start_datetime' else value
+        end = self.end_datetime if key != 'end_datetime' else value
+        deadline = self.deadline if key != 'deadline' else value
+        self.validate_dates(start, end, deadline)
+        return value
         
 
 class PlannedEvent(db.Model):
@@ -126,15 +151,32 @@ class PlannedEvent(db.Model):
 
     # Валидация диапазона дат (опционально)
     @staticmethod
-    def validate_date_range(start_dt, end_dt):
-        today = datetime.now(timezone.utc)
-        max_date = today + timedelta(days=60)
-        if not (today <= start_dt <= max_date):
-            raise ValueError("Start date must be from today to +2 months")
-        if not (today <= end_dt <= max_date):
-            raise ValueError("End date must be from today to +2 months")
-        if start_dt > end_dt:
-            raise ValueError("Start datetime cannot be after end datetime")
+    def validate_dates(start_dt=None, end_dt=None, deadline=None):
+        now = datetime.now(timezone.utc)
+        min_date = now - timedelta(days=60)
+        max_date = now + timedelta(days=60)
+
+        # привести к aware
+        if start_dt and isinstance(start_dt, str):
+            start_dt = datetime.fromisoformat(start_dt).replace(tzinfo=timezone.utc)
+
+        if end_dt and isinstance(end_dt, str):
+            end_dt = datetime.fromisoformat(end_dt).replace(tzinfo=timezone.utc)
+
+
+        if start_dt and not (min_date <= start_dt <= max_date):
+            raise ValueError(f"Start date must be within ±2 months from today")
+        if end_dt and not (min_date <= end_dt <= max_date):
+            raise ValueError(f"End date must be within ±2 months from today")
+        if start_dt and end_dt and start_dt > end_dt:
+            raise ValueError(f"Start datetime cannot be after end datetime")
+
+    @validates('start_datetime', 'end_datetime')
+    def validate_all_dates(self, key, value):
+        start = self.start_datetime if key != 'start_datetime' else value
+        end = self.end_datetime if key != 'end_datetime' else value
+        self.validate_dates(start, end)
+        return value
         
 class Category(db.Model):
     __tablename__ = "categories"

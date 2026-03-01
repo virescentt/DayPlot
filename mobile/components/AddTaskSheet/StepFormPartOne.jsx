@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, Pressable, TextInput, Platform } from 'react-native';
+import { View, Text, Image, StyleSheet, Pressable, TextInput, Platform, Alert } from 'react-native';
 import font from '../../constants/typography.js';
 import {PRIORITY_COLORS } from '../../constants/theme.js';
 import { useContext, useState } from 'react';
@@ -15,18 +15,30 @@ const RowInput = ({ icon, children }) => (
 );
 
 export default function StepFormPartOne() {
-  const { common, setCommon,  newTask, setNewTask } = useContext(AddNewContext);
-  
-  const [showDate, setShowDate] = useState(false);
-  const [showTime, setShowTime] = useState(false);
+  const { common, setCommon, setUtils, newTask, setNewTask, isChanged, resetForm } = useContext(AddNewContext);
 
-  // Default deadline: Now + 1h
-  const defaultDeadline = new Date(Date.now() + 60 * 60 * 1000);
-  const [deadlineDate, setDeadlineDate] = useState(defaultDeadline);
-  const [deadlineTime, setDeadlineTime] = useState(defaultDeadline);
+  const deadline = new Date(newTask.deadline);
 
-  console.log(newTask.priority + 'PRIORITY LEVEL DEFAULT')
-
+   const handleBack = () => {
+    if (isChanged()) {
+      Alert.alert(
+        "Want to exit?",
+        "All changes will be lost.",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Exit",
+            style: "destructive",
+            onPress: () => {
+              resetForm();
+            }
+          },
+        ]
+      );
+    } else {
+      resetForm();
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -93,17 +105,25 @@ export default function StepFormPartOne() {
             </Text>
           </Pressable> */}
             <DateTimePicker
-              value={deadlineDate}
+              value={deadline}
               mode="date"
               display={Platform.OS === 'ios' ? 'default' : 'default'}
-              onChange={(event, selectedDate) => {
-                setShowDate(false);
-                if (selectedDate) {
-                  setDeadlineDate(selectedDate);
-                  const combined = new Date(selectedDate);
-                  combined.setHours(deadlineTime.getHours(), deadlineTime.getMinutes());
-                  setNewTask(prev => ({ ...prev, deadline: combined.toISOString() }));
-                }
+              onChange={(e, date) => {
+                if (!date) return;
+
+                const updated = new Date(newTask.deadline);
+
+                updated.setFullYear(
+                  date.getFullYear(),
+                  date.getMonth(),
+                  date.getDate()
+                )
+                
+                const now = new Date();
+                if (updated < now) updated.setTime(now.getTime());
+                
+                setNewTask(prev => ({ ...prev, deadline: updated.toISOString() }));
+                
               }}
             />
           </RowInput>
@@ -115,18 +135,25 @@ export default function StepFormPartOne() {
             <Text style={ styles.dateText }>{deadlineTime.getHours()}:{deadlineTime.getMinutes().toString().padStart(2, '0')}</Text>
           </Pressable> */}
             <DateTimePicker
-              value={deadlineTime}
+              value={deadline}
               mode="time"
               is24Hour={true}
               display={Platform.OS === 'ios' ? 'default' : 'default'}
-              onChange={(event, selectedTime) => {
-                setShowTime(false);
-                if (selectedTime) {
-                  setDeadlineTime(selectedTime);
-                  const combined = new Date(deadlineDate);
-                  combined.setHours(selectedTime.getHours(), selectedTime.getMinutes());
-                  setNewTask(prev => ({ ...prev, deadline: combined.toISOString() }));
-                }
+              onChange={(e, date) => {
+                if (!date) return;
+
+                const updated = new Date(newTask.deadline);
+
+                updated.setHours(
+                  date.getHours(),
+                  date.getMinutes()
+                )
+
+                const now = new Date();
+                if (updated < now) updated.setTime(now.getTime());
+
+                setNewTask(prev => ({ ...prev, deadline: updated.toISOString() }));
+                
               }}
             />
           </RowInput>
@@ -136,12 +163,13 @@ export default function StepFormPartOne() {
 
       {/* buttons back and next */}
       <View style={{flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-      {/* BACK button */}
+      
+        {/* BACK button */}
         <Pressable
           style={[
             styles.nextButton,
           ]}
-          onPress={() => setCommon(prev => ({ ...prev, step: prev.step - 1 }))}
+           onPress={handleBack}
         >
           <Text style={styles.nextText}>BACK</Text>
         </Pressable>
@@ -152,7 +180,7 @@ export default function StepFormPartOne() {
             !common.title && { opacity: 0.5 }  
           ]}
           disabled={!common.title}
-          onPress={() => setCommon(prev => ({ ...prev, step: prev.step + 1 }))}
+          onPress={() => setUtils(prev => ({ ...prev, step: prev.step + 1 }))}
         >
           <Text style={styles.nextText}>NEXT</Text>
         </Pressable>

@@ -9,16 +9,16 @@ import StepFormPartTwo from '../../components/AddTaskSheet/StepFormPartTwo.jsx';
 
 
 export default function Add() {
-  const { common, setCommon, flexible, setFlexible } = useContext(AddNewContext);
+  const { utils } = useContext(AddNewContext);
 
   const renderStepContent = () => {
-    if (common.step === 1) {
+    if (utils.step === 1) {
       // Step 1: choose a task type
       return <StepChooseType  />;
-    } else if (common.step === 2) {
+    } else if (utils.step === 2) {
       // Этап 2: choose a category
       return <StepFormPartOne />
-    } else if (common.step === 3) {
+    } else if (utils.step === 3) {
       // Этап 3: choose dates and description
       return <StepFormPartTwo />
       return (
