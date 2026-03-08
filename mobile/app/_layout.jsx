@@ -12,13 +12,24 @@ import {
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import Animated from 'react-native-reanimated'; 'react-native-reanimated';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '../context/AuthContext';
 import { TasksProvider } from '../context/TasksContext';
+import { useEffect } from 'react';
+import { Platform, UIManager } from 'react-native';
 
 export default function RootLayout() {
-  console.log("ANIMATED OBJECT: ", Animated);
+
+  useEffect(() => {
+    if (
+      Platform.OS === 'android' &&
+      UIManager.setLayoutAnimationEnabledExperimental
+    ) {
+      UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+  }, []);
+
+
   const [loaded, error] = useFonts({
     MontserratRegularItalic: Montserrat_400Regular_Italic,
     MontserratRegular: Montserrat_400Regular,

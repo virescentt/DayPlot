@@ -1,10 +1,10 @@
 import { useContext, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Pressable, Animated, FlatList, PanResponder } from 'react-native';
-import font from '../../constants/typography';
-import { pxToPt } from '../../utils/scale';
-import Task from './Task';
-import { TasksContext } from '../../context/TasksContext';
-import { goToNextPrev } from '../../utils/tasks';
+import font from '../constants/typography';
+import { pxToPt } from '../utils/scale';
+import Task from './ui/Task';
+import { TasksContext } from '../context/TasksContext';
+import { goToNextPrev } from '../utils/tasks';
 
 export default function WeekDays({ timeToY }) {
     const {

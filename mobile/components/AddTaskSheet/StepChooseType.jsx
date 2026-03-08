@@ -3,12 +3,14 @@ import font from '../../constants/typography.js';
 import { TASK_COLORS, TASK_LABELS } from '../../constants/theme.js';
 import { useContext } from 'react';
 import { AddNewContext } from '../../context/AddNewContext.js';
+import Header from '../ui/Header.jsx';
 
 export default function StepChooseType() {
   const { setUtils, setCommon } = useContext(AddNewContext);
    
   return (
-    // <Header /> 
+    <>
+    <Header /> 
     <View style={styles.container}>
       <Text style={ styles.title }>what do you {'\n'} want to add?</Text>
       {['plot_twist', 'plot', 'edit_schedule'].map((type) => (
@@ -34,9 +36,11 @@ export default function StepChooseType() {
         </Pressable>
       ))}
     </View>
-    // <Footer />
-  );
- }
+    </>
+// <Footer />
+
+);
+}
 
 const styles = StyleSheet.create({
   container: {

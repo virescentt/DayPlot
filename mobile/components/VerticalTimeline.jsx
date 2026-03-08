@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native';
-import font from '../../constants/typography';
+import font from '../constants/typography';
 
 export default function VerticalTimeline({
   times,

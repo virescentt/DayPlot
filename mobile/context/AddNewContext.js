@@ -1,6 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useEffect, useState } from 'react';
-import { SERVER_IP } from '../constants/services';
 import { fetchCreateTask } from '../services/tasks';
 
 export const AddNewContext = createContext();
@@ -22,9 +20,9 @@ export const AddNewProvider = ({ children }) => {
 
 
    const isChanged = () => {
-    // проверяем common
+    // checking common props
     for (let key in defaultCommon) if (common[key] !== defaultCommon[key]) return true;
-    // проверяем newTask
+    // checking newTask props
     if (
       newTask.priority !== "LOW" ||
       newTask.estimatedTime !== 0 ||
@@ -32,7 +30,7 @@ export const AddNewProvider = ({ children }) => {
       newTask.restTime !== null ||
       newTask.scheduledBy !== "MANUAL"
     ) return true;
-    // проверяем template
+    // checking tempalte props
     for (let key in defaultTemplate) if (template[key] !== defaultTemplate[key]) return true;
     return false;
   };

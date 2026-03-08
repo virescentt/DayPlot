@@ -1,20 +1,24 @@
 import { View, Text, Pressable, Modal, StyleSheet } from 'react-native';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 import font from '../../constants/typography';
+import { AddNewContext } from '../../context/AddNewContext';
+import { TASK_LABELS } from '../../constants/theme';
 
 export default function InfoLabel({
   label,
   info,
   textStyle,
   infoTitle = '',
+  iconColor
 }) {
+  const { common } = useContext(AddNewContext);
   const [visible, setVisible] = useState(false);
 
   return (
     <>
       {/* LABEL + ICON */}
-      <View style={styles.row}>
+      <View style={[styles.row, {width: TASK_LABELS[common.taskType] === 'template' && '100%'}]}>
         <Text style={[styles.label, textStyle]}>
           {label}
         </Text>
@@ -23,7 +27,7 @@ export default function InfoLabel({
           <MaterialIcons
             name="help-outline"
             size={20}
-            color="#3c6674"
+            color={iconColor}
           />
         </Pressable>
       </View>

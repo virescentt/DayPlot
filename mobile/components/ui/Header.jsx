@@ -15,12 +15,11 @@ export default function Header() {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#fff',
     height: pxToPt(200),
     width: '100%',
     paddingVertical: 6,
     paddingHorizontal: 10,
-    // borderWidth: 1,
-    // borderColor: '#1a507a',
   },
   headerContStyle: {
     flexDirection: 'row',

@@ -1,4 +1,4 @@
-import { Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import font from '../../constants/typography.js';
 import { Ionicons } from '@expo/vector-icons';
 import { useContext } from 'react';
@@ -16,31 +16,12 @@ export default function Add() {
       // Step 1: choose a task type
       return <StepChooseType  />;
     } else if (utils.step === 2) {
-      // Этап 2: choose a category
+      
+      // Step 2: choose a category
       return <StepFormPartOne />
     } else if (utils.step === 3) {
-      // Этап 3: choose dates and description
+      // Step 3: choose dates and description
       return <StepFormPartTwo />
-      return (
-        <>
-          <Text style={styles.title}>Final settings</Text>
-          <Text style={{ color: '#3c6674', marginBottom: 20 }}>
-            Task: {taskType}, Category: {category}
-          </Text>
-
-          <Pressable
-            style={styles.finishButton}
-            onPress={() => {
-              console.log('Task created:', { taskType, category });
-              setStep(1);
-              setTaskType(null);
-              setCategory(null);
-            }}
-          >
-            <Ionicons name="checkmark-circle" size={60} color="green" />
-          </Pressable>
-        </>
-      );
     }
   };
 

@@ -1,5 +1,4 @@
 import { Tabs } from 'expo-router';
-import { useRef, useState } from 'react'; 
 import { Ionicons, Feather } from '@expo/vector-icons';
 import { TasksContext } from '../../context/TasksContext';
 import { useContext } from 'react';
@@ -8,15 +7,7 @@ import { AddNewProvider } from '../../context/AddNewContext';
 
 export default function TabsLayout() {
   const { setMode, setSelectedDay } = useContext(TasksContext);
-  const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
-  const BottomSheetRef = useRef(null);
-
-  
-  const openSheet = () => {
-    BottomSheetRef.current?.expand();
-    console.log(BottomSheetRef.current, "EXPANDDDD PLEAAAASE")
-  };
-
+ 
   return (
     <AddNewProvider>
       <Tabs screenOptions={{
@@ -46,12 +37,6 @@ export default function TabsLayout() {
             ),
             title: 'Add Plot',
           }}
-          // listeners={{
-          //   tabPress: (e) => {
-          //     e.preventDefault(); // отменяем обычный переход
-          //     openSheet();
-          //   },
-          // }}
           />
 
         <Tabs.Screen
