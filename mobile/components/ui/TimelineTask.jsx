@@ -6,13 +6,9 @@ import { TASK_COLORS } from '../../constants/theme';
 import EditDeleteTemplateModal from './EditDeleteTemplateModal';
 import { Ionicons } from '@expo/vector-icons';
 import { timeToMinutes } from '../../utils/timeline';
-import { toggleTaskDone } from '../../services/tasks';
-import { AuthContext } from '../../context/AuthContext';
 
-
-export default function Task({ task, timeToY }) {
-    const { mode, setTasks } = useContext(TasksContext);
-    const { token } = useContext(AuthContext);
+export default function TimelineTask({ task, timeToY }) {
+    const { mode, handleToggleDone } = useContext(TasksContext);
     const [modalVisible, setModalVisible] = useState(false);
     const isDone = task.is_done;
     
@@ -30,23 +26,6 @@ export default function Task({ task, timeToY }) {
     
      */
     
-    
-    const handleToggleDone = async (taskId, taskType) => {
-        if (taskType === 'template') return; // шаблоны не трогаем
-
-        try {
-            const updatedTask = await toggleTaskDone(taskId, taskType, token);
-
-            // updating tasks array to reload useMemo
-            setTasks(prev =>
-            prev.map(t =>
-                t.id === updatedTask.id && t.type === updatedTask.type ? { ...t, is_done: updatedTask.is_done } : t
-            )
-            );
-        } catch (err) {
-            console.log(err);
-        }
-    };
 
     const openEditModal = () => setModalVisible(true);
     const closeEditModal = () => setModalVisible(false);
@@ -67,6 +46,7 @@ export default function Task({ task, timeToY }) {
         const topEnd = timeToY(endMinutes, 'current');
         taskHeight = topEnd - topStart;
 
+        // setting up font size and padding vertical based on task height (time duration)
         if (mode === 'week') {
             if (taskHeight < 30) fontS = pxToPt(30), paddingVertical = 0;
             else if (taskHeight <= 50) fontS = pxToPt(50), paddingVertical = 0;
@@ -193,9 +173,6 @@ const styles = StyleSheet.create({
     },
     priorityText: {
         marginTop: 4,
-        // position: 'absolute',
-        // bottom: 5,
-        // right: 5,
         fontSize: 12,
         color: '#0d283d',
     },

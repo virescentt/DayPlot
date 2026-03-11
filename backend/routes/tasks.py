@@ -167,7 +167,6 @@ def create_task(user):
 
                 reminder_offset=payload.get("reminderOffset"),
                 rest_time=payload.get("restTime"),
-                scheduled_by=payload.get("scheduledBy"),
             )
         elif task_type == "template":
             task = TemplateEvent(

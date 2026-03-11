@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Pressable, Animated, FlatList, PanResponder } from 'react-native';
 import font from '../constants/typography';
 import { pxToPt } from '../utils/scale';
-import Task from './ui/Task';
+import TimelineTask from './ui/TimelineTask';
 import { TasksContext } from '../context/TasksContext';
 import { goToNextPrev } from '../utils/tasks';
 
@@ -97,7 +97,7 @@ export default function WeekDays({ timeToY }) {
                   .map(task => {
                     console.log(`${task.type}-${task.id}`)
                     // console.log(task.id)
-                    return <Task key={`${task.type}-${task.id}`} timeToY={timeToY} task={task} />
+                    return <TimelineTask key={`${task.type}-${task.id}`} timeToY={timeToY} task={task} />
                     
         })}
               </View>
@@ -120,7 +120,7 @@ export default function WeekDays({ timeToY }) {
           selectedDay.toDateString() === today.toDateString() && styles.todayContainer,
       ]}>
         {visibleTasks.map(task => (
-          <Task key={task.id} timeToY={timeToY} task={task} />
+          <TimelineTask key={task.id} timeToY={timeToY} task={task} />
         ))}
       </View>
     </View>

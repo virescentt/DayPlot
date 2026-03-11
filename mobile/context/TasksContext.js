@@ -51,6 +51,22 @@ export const TasksProvider = ({ children }) => {
   }, [weekKey, token, user]);
 
   
+  const handleToggleDone = async (taskId, taskType) => {
+      if (taskType === 'template') return; // шаблоны не трогаем
+
+      try {
+          const updatedTask = await toggleTaskDone(taskId, taskType, token);
+
+          // updating tasks array to reload useMemo
+          setTasks(prev =>
+          prev.map(t =>
+              t.id === updatedTask.id && t.type === updatedTask.type ? { ...t, is_done: updatedTask.is_done } : t
+          )
+          );
+      } catch (err) {
+          console.log(err);
+      }
+  };
 
   // Visible tasks filter
   const visibleTasks = useMemo(() => {
@@ -91,7 +107,8 @@ export const TasksProvider = ({ children }) => {
       weekOffset,
       setWeekOffset,
       today,
-      setTasks
+      setTasks,
+      handleToggleDone
     }}>
       {children}
     </TasksContext.Provider>
