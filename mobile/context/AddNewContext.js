@@ -63,15 +63,17 @@ export const AddNewProvider = ({ children }) => {
   });
 
   // --- TemplateEvent ---
-  const defaultTemplate = {
+  const defaultTemplate = () => ({
+    label: 'New Event',
+    description: '',
     dayOfWeek: null,
-    startTime: null,
-    endTime: null,
-  };
+    startTime: getDefaultStartDatetime(),
+    endTime: getDefaultEndDatetime(),
+  });
 
   const [common, setCommon] = useState(defaultCommon);
   const [newTask, setNewTask] = useState(defaultNewTask());
-  const [template, setTemplate] = useState(defaultTemplate);
+  const [template, setTemplate] = useState(defaultTemplate());
   const [utils, setUtils] = useState(defaultUtils);
 
   const resetForm = () => {

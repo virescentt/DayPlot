@@ -16,8 +16,19 @@ export const REMINDER_OFFSET = [
     { label: '1 hour', value: 'HOUR_1' },
     { label: '1 day', value: 'DAY_1' }
 ]
+
 export const TASK_TYPES = {
   plot_twist: 'flexible',
   plot: 'planned',
   edit_schedule: 'template',
+};
+
+export const WEEKDAYS = {
+    MONDAY: "Monday",
+    TUESDAY: "Tuesday",
+    WEDNESDAY: "Wednesday",
+    THURSDAY: "Thursday",
+    FRIDAY: "Friday",
+    SATURDAY: "Saturday",
+    SUNDAY: "Sunday",
 };

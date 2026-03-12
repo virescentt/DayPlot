@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-from backend.db.models import FlexibleTask, PlannedEvent, TemplateEvent, Category, TaskPriority
+from backend.db.models import FlexibleTask, PlannedEvent, TemplateEvent, Category, WeekDay
 from backend.decorators import token_required
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, time, timezone, timedelta
 from backend.db.models import db
 from sqlalchemy.exc import IntegrityError
 
@@ -56,7 +56,7 @@ def get_tasks(user):
                     "title": label,
                     "start": datetime.combine(current.date(), start_time).isoformat(),
                     "end": datetime.combine(current.date(), end_time).isoformat(),
-                                        
+                    "dayOfWeek": te.day_of_week.value,
                     "type": "template"
                 })
             current += timedelta(days=1)
@@ -124,7 +124,7 @@ def create_task(user):
     task_type = data.get("type")
     common = data.get("common", {})
     payload = data.get("payload", {})
-    
+
     category = (
     Category.query.filter_by(
         name=common.get("categoryName"),
@@ -133,6 +133,12 @@ def create_task(user):
         if common.get("categoryName")
         else None
     )
+    # fucking hack ❗❌📛
+    def parse_time_str(s):
+        if not s:
+            return None
+        # s — строка вида "HH:MM"
+        return datetime.strptime(s, "%H:%M").time()
 
     if not task_type:
         return jsonify({"error": "type required"}), 400
@@ -169,15 +175,20 @@ def create_task(user):
                 rest_time=payload.get("restTime"),
             )
         elif task_type == "template":
+            start_time_str=payload.get("startTime")
+            end_time_str=payload.get("endTime")
+            print(start_time_str, end_time_str)
+            
             task = TemplateEvent(
                 user_id=user.id,
-                label=common.get("title"),
+                label=payload.get("label"),
                 description=common.get("description"),
                 category=category,
 
                 day_of_week=payload.get("dayOfWeek"),
-                start_time=payload.get("startTime"),
-                end_time=payload.get("endTime"),
+                start_time=parse_time_str(start_time_str),
+                end_time=parse_time_str(end_time_str),
+                
             )
         else:
             return jsonify({"error": "Invalid type"}), 400

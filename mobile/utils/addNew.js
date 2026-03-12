@@ -7,6 +7,12 @@ export function buildTaskRequest(common, newTask, template) {
   : null;
   // console.log(newTask.priority)
   // console.log(common.taskType)
+  console.log(template.dayOfWeek)
+  console.log(template.label)
+  
+  console.log(template.startTime ? new Date(template.startTime).toTimeString().slice(0,5) : null,
+        )
+  console.log(template.endTime ? new Date(template.endTime).toTimeString().slice(0,5) : null,)
 
     return {
         type,   // "flexible" | "planned" | "template"
@@ -27,9 +33,10 @@ export function buildTaskRequest(common, newTask, template) {
         scheduledBy: newTask.scheduledBy,
 
         // TemplateEvent
+        label: template.label,
         dayOfWeek: template.dayOfWeek,
-        startTime: template.startTime,
-        endTime: template.endTime,
+        startTime: template.startTime ? new Date(template.startTime).toTimeString().slice(0,5) : null,
+        endTime: template.endTime ? new Date(template.endTime).toTimeString().slice(0,5) : null,
         }
     };
 }

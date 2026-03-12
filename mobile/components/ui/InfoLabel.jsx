@@ -92,7 +92,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 20,
     fontFamily: font.Bregular,
-
-
   }
 });

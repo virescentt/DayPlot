@@ -13,6 +13,7 @@ import Description from '../ui/addNewForm/Description.jsx';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Header from '../ui/Header.jsx';
 import TemplateWeekDay from '../ui/addNewForm/Template/TemplateWeekDay.jsx';
+import { WEEKDAYS } from '../../constants/services.js';
 
 export default function StepFormPartOne() {
   const { common } = useContext(AddNewContext);
@@ -52,12 +53,12 @@ export default function StepFormPartOne() {
       {type === 'template' && (
         <View style={{flex: 1}}>
           <Title info={'Fill in your typical weekly schedule for each week day. It will be used as a default view for every week.'} iconColor='#fff' textStyle={styles.templateTitle} />
-          <TemplateWeekDay />
-          <TemplateWeekDay />
-          <TemplateWeekDay />
-          <TemplateWeekDay />
-          <TemplateWeekDay />
-          <TemplateWeekDay />
+
+          {Object.entries(WEEKDAYS).map(([key, value]) => {
+              console.log("dayKey:", key, "dayLabel:", value)
+              return (<TemplateWeekDay key={key} dayKey={key} dayLabel={value} />);
+            })}
+
           <BackNextComplete />
         </View>
         // Template events are events that repeat on specific days of the week, such as school or work.

@@ -6,8 +6,8 @@ import { handleBack, handleComplete } from "../../../utils/addNew";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AuthContext } from "../../../context/AuthContext";
 
-export default function BackNextComplete({ rightBtn = "next" }) {
-    const { isChanged, utils, common, newTask,template, createTask, resetForm, setUtils } = useContext(AddNewContext);
+export default function BackNextComplete({ leftBtnText = 'BACK', rightBtn = "next", textSize = 30, textColor = "#3c6674", iconSize = 50, iconColor = "#394c60" }) {
+    const { isChanged, utils, common, newTask, template, createTask, resetForm, setUtils } = useContext(AddNewContext);
     const { token } = useContext(AuthContext);
 
     return (
@@ -21,7 +21,7 @@ export default function BackNextComplete({ rightBtn = "next" }) {
             ]}
             onPress={() => handleBack( isChanged, resetForm, utils.step, setUtils )}
         >
-            <Text style={styles.textBtn}>BACK</Text>
+            <Text style={[styles.textBtn, {fontSize: textSize, color: textColor}]}>{leftBtnText}</Text>
         </Pressable>
 
         {/* NEXT || COMPLETE button */}
@@ -34,13 +34,17 @@ export default function BackNextComplete({ rightBtn = "next" }) {
                 disabled={!common.title}
                 onPress={() => setUtils(prev => ({ ...prev, step: prev.step + 1 }))}
               >
-                <Text style={styles.textBtn}>NEXT</Text>
+                <Text style={[styles.textBtn, {fontSize: textSize, color: textColor}]}>NEXT</Text>
               </Pressable>)
             : (<Pressable
-                style={[styles.button]}
+                style={[
+                styles.button,
+                !template.label && { opacity: 0.1 }  
+                ]}
+                disabled={!template.label}
                 onPress={ async () => handleComplete(common, newTask, template, createTask, token, setUtils, resetForm) }
                 >
-                <MaterialIcons name="done" size={50} color={"#394c60"} />
+                <MaterialIcons name="done" size={iconSize} color={iconColor} />
               </Pressable>)
         }
 
@@ -50,20 +54,14 @@ export default function BackNextComplete({ rightBtn = "next" }) {
 
 const styles = StyleSheet.create({
   buttonsContainer: {
-    flex: 1, 
     width: '100%', 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     alignItems: 'center',
   },
-  button: {
-    alignSelf: 'flex-end',
-  },
+  button: {},
   textBtn: {
-    color: '#fff',
-    fontSize: 30,
     letterSpacing: 1.4,
-    color: '#3c6674',
     fontFamily: font.Mregular,
   },
 })

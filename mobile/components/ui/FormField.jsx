@@ -1,7 +1,7 @@
 import { View, TextInput, StyleSheet } from "react-native"
 import { pxToPt } from '../../utils/scale.js';
 
-export default function FormField({ label, required, myStyle, ...props }) {
+export default function FormField({ myStyle, ...props }) {
   return (
     <View style={{ width: '100%' }}>
       <TextInput style={[styles.input, myStyle]} {...props} />

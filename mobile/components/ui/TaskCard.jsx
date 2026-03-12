@@ -3,16 +3,15 @@ import { pxToPt } from '../../utils/scale';
 import { useContext, useState } from 'react';
 import { TasksContext } from '../../context/TasksContext';
 import { TASK_COLORS } from '../../constants/theme';
-import EditDeleteTemplateModal from './EditDeleteTemplateModal';
+import EditDeleteTemplateModal from './addNewForm/Template/EditDeleteTemplateModal';
 import { Ionicons } from '@expo/vector-icons';
-import { timeToMinutes } from '../../utils/timeline';
 
 
-export default function TaskCard({ task }) {
+export default function TaskCard({ task, timelineStyles = null, modeOverride = null }) {
     const { mode, handleToggleDone } = useContext(TasksContext);
     const [modalVisible, setModalVisible] = useState(false);
     const isDone = task.is_done;
-    
+    const useDayStyle = modeOverride === 'day' || mode === 'day' || (task.type !== 'template' && (!task.start || !task.end));
      // If mode == 'week', then we simply keep that shit in a View, if mode == 'day', then in a Pressable.
      /**  The color of a background will depend on a type #3d6984:
       * flexible = backgr #e1eaf3, border #3d6984, text #0d283d 
@@ -26,7 +25,6 @@ export default function TaskCard({ task }) {
       * 4 - urgent: #0d283d 
     
      */
-    
 
     const openEditModal = () => setModalVisible(true);
     const closeEditModal = () => setModalVisible(false);
@@ -35,8 +33,9 @@ export default function TaskCard({ task }) {
     const handleFutureDays = () => { setModalVisible(false); };
 
     const colors = TASK_COLORS[task.type]; // will choose automatically by its type
+    let modalHeader = 'Edit this template?';
 
-    const taskStyleBase = {
+    let taskStyleBase = {
         fontSize: pxToPt(50),
         height: 40,
         paddingVertical: 10,
@@ -44,9 +43,10 @@ export default function TaskCard({ task }) {
         borderColor: colors.border,
         justifyContent: 'flex-start',
     };
+    if (timelineStyles != null) {taskStyleBase = timelineStyles};
 
     // --- WEEK MODE
-    if (mode === 'week') {
+    if (!useDayStyle) {
         return (
             <View style={[styles.taskContainer, taskStyleBase,
                 {backgroundColor: isDone ? '#0beb3f90' : colors.background,}
@@ -59,7 +59,7 @@ export default function TaskCard({ task }) {
     }
 
     // --- DAY MODE
-    if (mode === 'day') {
+    if (useDayStyle) {
         return (
             <>
             <Pressable style={[styles.taskContainer, taskStyleBase, {backgroundColor: isDone ? '#0beb3f90' : colors.background,}]}>
@@ -108,18 +108,13 @@ export default function TaskCard({ task }) {
                     <Ionicons name="chevron-forward" size={20} color="#3d6984" style={styles.moreIcon} />
                 )}
 
-                {/* Pencil Icon for template */}
-                {/* {task.type === 'template' && (
-                    <Pressable style={styles.taskFooter} onPress={openEditModal}>
-                        <Ionicons name="pencil" size={16} color="#fff" />
-                    </Pressable>
-                )} */}
             </Pressable>
 
             <EditDeleteTemplateModal
                 visible={modalVisible}
                 onClose={closeEditModal}
                 onThisDay={handleThisDay}
+                header={modalHeader}
                 onFutureDays={handleFutureDays}
             />
             </>
