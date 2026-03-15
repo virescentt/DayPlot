@@ -59,7 +59,7 @@ export default function StepFormPartOne() {
               return (<TemplateWeekDay key={key} dayKey={key} dayLabel={value} />);
             })}
 
-          <BackNextComplete />
+          <BackNextComplete rightBtn='none'/>
         </View>
         // Template events are events that repeat on specific days of the week, such as school or work.
       )}

@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     width: '90%', 
     justifyContent: '',
+    marginBottom: 20
   },
   title2: {
     textAlign: 'center',

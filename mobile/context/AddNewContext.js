@@ -21,11 +21,14 @@ export const AddNewProvider = ({ children }) => {
 
    const isChanged = () => {
     // checking common props
-    for (let key in defaultCommon) if (common[key] !== defaultCommon[key]) return true;
+    for (let key in defaultCommon) {
+      if (key === 'taskType') continue;
+      if (common[key] !== defaultCommon[key]) return true;
+    }
     // checking newTask props
     if (
       newTask.priority !== "LOW" ||
-      newTask.estimatedTime !== 0 ||
+      newTask.estimatedTime !== 15 ||
       newTask.reminderOffset !== null ||
       newTask.restTime !== null ||
       newTask.scheduledBy !== "MANUAL"
@@ -53,7 +56,7 @@ export const AddNewProvider = ({ children }) => {
   // --- FlexibleTask and PlannedEvent ---
   const defaultNewTask = () => ({
     priority: "LOW",
-    estimatedTime: 0,
+    estimatedTime: 15,
     deadline: getDefaultDeadline(),
     startDatetime: getDefaultStartDatetime(),
     endDatetime: getDefaultEndDatetime(),

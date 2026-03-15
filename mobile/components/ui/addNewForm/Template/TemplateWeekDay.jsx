@@ -12,6 +12,7 @@ import { TasksContext } from "../../../../context/TasksContext";
 import TaskCard from "../../TaskCard";
 import AddTemplateEvent from "./AddTemplateEvent";
 import { AddNewContext } from "../../../../context/AddNewContext";
+import BackNextComplete from "../BackNextComplete";
 
 export default function TemplateWeekDay({ dayKey, dayLabel }) {
     const { tasks } = useContext(TasksContext);
@@ -81,11 +82,11 @@ export default function TemplateWeekDay({ dayKey, dayLabel }) {
                 </View>
             </Animated.View>
         </View>
-        
         <AddTemplateEvent
             visible={modalVisible}
             onClose={closeEditModal}
         />
+
         </>
     );
 }
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
         marginTop: 8,
         position: "absolute",
         width: "100%",
+        gap: 5
     },
     addButton: {
         marginTop: 10,

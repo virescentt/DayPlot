@@ -25,8 +25,8 @@ export default function BackNextComplete({ leftBtnText = 'BACK', rightBtn = "nex
         </Pressable>
 
         {/* NEXT || COMPLETE button */}
-        {rightBtn === 'next'
-            ? (<Pressable
+        {rightBtn === 'next' ? (
+              <Pressable
                 style={[
                 styles.button,
                 !common.title && { opacity: 0.5 }  
@@ -35,8 +35,9 @@ export default function BackNextComplete({ leftBtnText = 'BACK', rightBtn = "nex
                 onPress={() => setUtils(prev => ({ ...prev, step: prev.step + 1 }))}
               >
                 <Text style={[styles.textBtn, {fontSize: textSize, color: textColor}]}>NEXT</Text>
-              </Pressable>)
-            : (<Pressable
+              </Pressable>
+          ) : rightBtn === 'complete' ? (
+              <Pressable
                 style={[
                 styles.button,
                 !template.label && { opacity: 0.1 }  
@@ -45,9 +46,22 @@ export default function BackNextComplete({ leftBtnText = 'BACK', rightBtn = "nex
                 onPress={ async () => handleComplete(common, newTask, template, createTask, token, setUtils, resetForm) }
                 >
                 <MaterialIcons name="done" size={iconSize} color={iconColor} />
-              </Pressable>)
-        }
+              </Pressable>
+          ) : rightBtn === 'none' ? (
+              <Pressable
+                disabled
 
+                style={[
+                styles.button,
+                  {opacity: 0}
+                ]}
+                onPress={ async () => handleComplete(common, newTask, template, createTask, token, setUtils, resetForm) }
+                >
+                <MaterialIcons name="done" size={iconSize} color={iconColor} />
+              </Pressable>
+          ) : (console.log('what?'))
+
+        }
     </View>
     )
 };

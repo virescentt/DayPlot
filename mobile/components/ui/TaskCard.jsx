@@ -37,7 +37,7 @@ export default function TaskCard({ task, timelineStyles = null, modeOverride = n
 
     let taskStyleBase = {
         fontSize: pxToPt(50),
-        height: 40,
+        height: 45,
         paddingVertical: 10,
         backgroundColor: colors.background,
         borderColor: colors.border,
@@ -69,7 +69,7 @@ export default function TaskCard({ task, timelineStyles = null, modeOverride = n
                 )}
 
                 <Text style={[styles.taskTitle, { color: colors.text, fontSize: taskStyleBase.fontSize }]} numberOfLines={1}>
-                    {task.title}
+                    {task.title.length > 17 ? task.title.substring(0, 17) + '...' : task.title}
                 </Text>
 
                 {/* Priority for flexible */}
