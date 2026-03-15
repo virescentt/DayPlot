@@ -21,15 +21,17 @@ export default function WeekDays({ timeToY }) {
         weekOffset
     } = useContext(TasksContext);
 
+    console.log(today + "TODDDDAAAAy")
     const listRef = useRef(null);
-    // console.log(listRef)
+
+    // scrolling to today's day 
     useEffect(() => {
       if (mode !== 'week') return;
 
       const todayIndex = weekDays.findIndex(
         d => d.toDateString() === today.toDateString()
       );
-
+    
       if (todayIndex !== -1) {
         listRef.current?.scrollToIndex({
           index: todayIndex,
@@ -40,7 +42,7 @@ export default function WeekDays({ timeToY }) {
     }, [mode, weekDays]);
     
     const fontS = pxToPt(41);
-
+    console.log(weekDays + " weeeeeek daaaays")
     // swipes for day mode
     const panResponder = PanResponder.create({
         onMoveShouldSetPanResponder: (_, gestureState) =>
@@ -120,7 +122,7 @@ export default function WeekDays({ timeToY }) {
           selectedDay.toDateString() === today.toDateString() && styles.todayContainer,
       ]}>
         {visibleTasks.map(task => (
-          <TimelineTask key={task.id} timeToY={timeToY} task={task} />
+          <TimelineTask key={`${task.type}-${task.id}`} timeToY={timeToY} task={task} />
         ))}
       </View>
     </View>

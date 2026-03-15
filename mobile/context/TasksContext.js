@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, memo, useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from './AuthContext';
 import { fetchTasks } from '../services/tasks';
@@ -29,6 +28,8 @@ export const TasksProvider = ({ children }) => {
     setLoading(true);
     const data = await fetchTasks(token, from, to);
     setTasks(data);
+    console.log("TASKS FROM LOAD TASKS:")
+    console.log(tasks)
     setLoading(false);
   };
 

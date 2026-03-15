@@ -65,7 +65,7 @@ export const AddNewProvider = ({ children }) => {
   // --- TemplateEvent ---
   const defaultTemplate = () => ({
     label: 'New Event',
-    description: '',
+    description: null,
     dayOfWeek: null,
     startTime: getDefaultStartDatetime(),
     endTime: getDefaultEndDatetime(),
