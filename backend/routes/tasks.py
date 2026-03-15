@@ -4,6 +4,8 @@ from backend.decorators import token_required
 from datetime import datetime, time, timezone, timedelta
 from backend.db.models import db
 from sqlalchemy.exc import IntegrityError
+from backend.utils.tasks_utils import parse_time_str
+from backend.services.schedule_validator import check_time_conflict
 
 tasks_bp = Blueprint("tasks", __name__, url_prefix="/tasks")
 
@@ -133,16 +135,27 @@ def create_task(user):
         if common.get("categoryName")
         else None
     )
-    # fucking hack ❗❌📛
-    def parse_time_str(s):
-        if not s:
-            return None
-        # s — строка вида "HH:MM"
-        return datetime.strptime(s, "%H:%M").time()
 
-    if not task_type:
-        return jsonify({"error": "type required"}), 400
+    start_dt = end_dt = weekday = None
+
+    match task_type:
+        case "flexible" | "planned":
+            start_dt = payload.get("startDatetime")
+            end_dt = payload.get("endDatetime")
+            if check_time_conflict(user_id=user.id, start_dt=start_dt, end_dt=end_dt):
+                return jsonify({"error": f"time of {start_dt}-{end_dt} is crossing other your tasks. Please, change picked time period"}), 400
+
+        case "template":
+            start_dt = parse_time_str(payload.get("startTime"))
+            end_dt = parse_time_str(payload.get("endTime"))
+            weekday = payload.get("dayOfWeek")
+            if check_time_conflict(user_id=user.id, start_time=start_dt, end_time=end_dt, weekday=weekday):
+                return jsonify({"error": f"time of {start_dt}-{end_dt} is crossing other your tasks. Please, change picked time period"}), 400
+
+        case _:
+            return jsonify({"error": "type required"}), 400
     
+
     try:
         if task_type == "flexible":
             task = FlexibleTask(
@@ -155,8 +168,8 @@ def create_task(user):
                 estimated_time=payload.get("estimatedTime"),
                 deadline=payload.get("deadline"),
 
-                start_datetime=payload.get("startDatetime"),
-                end_datetime=payload.get("endDatetime"),
+                start_datetime=start_dt,
+                end_datetime=end_dt,
 
                 reminder_offset=payload.get("reminderOffset"),
                 rest_time=payload.get("restTime"),
@@ -168,16 +181,13 @@ def create_task(user):
                 title=common["title"],
                 description=common.get("description"),
 
-                start_datetime=payload.get("startDatetime"),
-                end_datetime=payload.get("endDatetime"),
+                start_datetime=start_dt,
+                end_datetime=end_dt,
 
                 reminder_offset=payload.get("reminderOffset"),
                 rest_time=payload.get("restTime"),
             )
         elif task_type == "template":
-            start_time_str=payload.get("startTime")
-            end_time_str=payload.get("endTime")
-            print(start_time_str, end_time_str)
             
             task = TemplateEvent(
                 user_id=user.id,
@@ -185,9 +195,9 @@ def create_task(user):
                 description=common.get("description"),
                 category=category,
 
-                day_of_week=payload.get("dayOfWeek"),
-                start_time=parse_time_str(start_time_str),
-                end_time=parse_time_str(end_time_str),
+                day_of_week=weekday,
+                start_time=start_dt,
+                end_time=end_dt,
                 
             )
         else:
