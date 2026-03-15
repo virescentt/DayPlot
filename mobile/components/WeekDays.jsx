@@ -42,14 +42,13 @@ export default function WeekDays({ timeToY }) {
     }, [mode, weekDays]);
     
     const fontS = pxToPt(41);
-    console.log(weekDays + " weeeeeek daaaays")
     // swipes for day mode
     const panResponder = PanResponder.create({
         onMoveShouldSetPanResponder: (_, gestureState) =>
         Math.abs(gestureState.dx) > 20,
         onPanResponderRelease: (_, gestureState) => {
           if (!selectedDay) return;
-          const newDay = new Date(selectedDay);
+
           if (gestureState.dx < -20) goToNextPrev("next", mode, setWeekOffset, setSelectedDay, selectedDay, weekDays);
           
           if (gestureState.dx > 20) goToNextPrev("prev", mode, setWeekOffset, setSelectedDay, selectedDay, weekDays);
@@ -97,8 +96,7 @@ export default function WeekDays({ timeToY }) {
                 {visibleTasks
                   .filter(t => new Date(t.start).toDateString() === dayDate.toDateString())
                   .map(task => {
-                    console.log(`${task.type}-${task.id}`)
-                    // console.log(task.id)
+                    // console.log(`${task.type}-${task.id}`)
                     return <TimelineTask key={`${task.type}-${task.id}`} timeToY={timeToY} task={task} />
                     
         })}

@@ -12,6 +12,8 @@ export default function TaskCard({ task, timelineStyles = null, modeOverride = n
     const [modalVisible, setModalVisible] = useState(false);
     const isDone = task.is_done;
     const useDayStyle = modeOverride === 'day' || mode === 'day' || (task.type !== 'template' && (!task.start || !task.end));
+    let modalHeader = 'Edit this template?';
+
      // If mode == 'week', then we simply keep that shit in a View, if mode == 'day', then in a Pressable.
      /**  The color of a background will depend on a type #3d6984:
       * flexible = backgr #e1eaf3, border #3d6984, text #0d283d 
@@ -23,7 +25,6 @@ export default function TaskCard({ task, timelineStyles = null, modeOverride = n
       * 2 - medium: #3d6984
       * 3 - high: #1a507a
       * 4 - urgent: #0d283d 
-    
      */
 
     const openEditModal = () => setModalVisible(true);
@@ -33,7 +34,6 @@ export default function TaskCard({ task, timelineStyles = null, modeOverride = n
     const handleFutureDays = () => { setModalVisible(false); };
 
     const colors = TASK_COLORS[task.type]; // will choose automatically by its type
-    let modalHeader = 'Edit this template?';
 
     let taskStyleBase = {
         fontSize: pxToPt(50),

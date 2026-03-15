@@ -22,17 +22,17 @@ export default function Home() {
   }
 
   const { mode, minTime, maxTime } = useContext(TasksContext);
-  
+  let contentHeight = 1
   let stepHours = 3;
   if (mode === 'day') {
     stepHours = 1;
+    contentHeight = 1500
   }
 
   const timelineData = useMemo(() => {
-    return calculateTimeline(minTime, maxTime, stepHours, timelineHeight, mode);
+    return calculateTimeline(minTime, maxTime, stepHours, timelineHeight, contentHeight, mode);
   }, [minTime, maxTime, stepHours, timelineHeight]);
 
-  // и достаём
   const { 
     times, 
     timeToY, 
@@ -41,7 +41,6 @@ export default function Home() {
     paddingTopLabels,
     paddingBottomLabels,
     fontS,
-    contentHeight
   } = timelineData;
 
   return (
@@ -62,8 +61,8 @@ export default function Home() {
             style={ styles.dataContainer }
             contentContainerStyle={
               mode === 'day'
-                ? { height: 1500 }
-                : { flexGrow: 1}
+                ? { height: contentHeight }
+                : { flexGrow: contentHeight }
             }
             onLayout={(e) => setTimelineHeight(e.nativeEvent.layout.height)}
           
@@ -82,7 +81,7 @@ export default function Home() {
             />
             
             <View style={{ flexDirection: 'row', flex: 1 }}>
-              {/* Левая колонка — время */}
+              {/* Left column — time */}
               <VerticalTimeline
                 times={times}
                 timeToY={timeToY}
@@ -91,8 +90,8 @@ export default function Home() {
                 paddingBottomLabels={paddingBottomLabels}
               />
 
-              {/* Правая колонка — дни + задачи */}
-                <WeekDays timeToY={timeToY} />
+              {/* Right column — days + tasks */}
+              <WeekDays timeToY={timeToY} />
             </View>
           </ScrollView>
         </View>

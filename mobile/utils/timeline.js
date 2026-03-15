@@ -1,7 +1,7 @@
 // utils/timeline.js
 import { pxToPt } from '../utils/scale';
 
-export function calculateTimeline(minTime, maxTime, stepHours, timelineHeight, mode, fontS = pxToPt(45), paddingTopLabels = 30, paddingBottomLabels = 10) {
+export function calculateTimeline(minTime, maxTime, stepHours, timelineHeight, fontS = pxToPt(45), paddingTopLabels = 30, paddingBottomLabels = 10) {
   let start = minTime * 60;
   const step = stepHours * 60;
   const minStepDp = 40; 
@@ -36,19 +36,12 @@ export function calculateTimeline(minTime, maxTime, stepHours, timelineHeight, m
         top = ratio * (modeHeight - labelHeight *2 );
     } else if (from == 'vertical'){
         top = ratio * usableHeight;
-       
-        // if (mode === 'week'){
-        //   top = ratio * usableHeight;
-        // } else if (mode === 'day') {
-        //   const index = times.indexOf(time);
-        //   top = paddingTopLabels + index * minStepDp;
-        //   top = ratio * usableHeight;
-        // }
     }
     
     
     return top;
   };
+
   console.log(labelHeight)
 
   const isLineVisible = (currentMinutes) => {
@@ -64,3 +57,12 @@ export function timeToMinutes(dateStr) {
   const date = new Date(dateStr);
   return date.getHours() * 60 + date.getMinutes();
 }
+
+
+ // if (mode === 'week'){
+        //   top = ratio * usableHeight;
+        // } else if (mode === 'day') {
+        //   const index = times.indexOf(time);
+        //   top = paddingTopLabels + index * minStepDp;
+        //   top = ratio * usableHeight;
+        // }

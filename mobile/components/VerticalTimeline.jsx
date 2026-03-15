@@ -10,30 +10,32 @@ export default function VerticalTimeline({
 }) {
   
   return (
-      <View style={ styles.container }>
-        <View style={{ paddingTop: paddingTopLabels, backgroundColor: ''}}>
-          {times.map((time, idx) => {
-            const hh = String(Math.floor(time / 60)).padStart(2, '0');
-            
-            return (
-              <Text
-              key={idx}
-              style={[
-                styles.labelText,
-                {top: timeToY(time, 'vertical'), fontSize: fontS}
-              ]}
-              >
-                <Text>
-                  {/* {Math.floor(timeToY(time, 'vertical'))}{'\t'}{'\t'} */}
-                  
-                {hh}:00
-                  </Text>
-              </Text>
-            );
-          })}
+    <View style={ styles.container }>
+      <View style={{ paddingTop: paddingTopLabels, backgroundColor: ''}}>
+        {times.map((time, idx) => {
+          const hh = String(Math.floor(time / 60)).padStart(2, '0');
+          
+          return (
+            <Text
+            key={idx}
+            style={[
+              styles.labelText,
+              {top: timeToY(time, 'vertical'), fontSize: fontS}
+            ]}
+            >
+              <Text>
+                {/* {Math.floor(timeToY(time, 'vertical'))}{'\t'}{'\t'} */}
+                
+              {hh}:00
+                </Text>
+            </Text>
+          );
+        })}
 
-        </View>
+      </View>
+
       <View style={styles.separatorLine} />
+
     </View>
   );
 }

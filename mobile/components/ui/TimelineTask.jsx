@@ -57,7 +57,7 @@ export default function TimelineTask({ task, timeToY }) {
         justifyContent: paddingVertical === 0 ? 'center' : 'flex-start'
     };
 
-
+    console.log(task.id + "\t\t" + topStart)
     return (
         <TaskCard task={task} timelineStyles={timelineStyles}/>
     );
