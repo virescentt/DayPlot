@@ -24,7 +24,10 @@ export default function TimelineTask({ task, timeToY }) {
     
     const colors = TASK_COLORS[task.type]; // will choose automatically by its type
     let fontS = pxToPt(50);
-    let taskHeight = 40;
+    
+    // ⬇⬇ SOME WEIRD SHIT BRUH GET FUCKING RID OF THAT ⬇⬇
+                let taskHeight = 40;
+    
     let topStart = 0;
     let paddingVertical = 0;
 
@@ -47,6 +50,7 @@ export default function TimelineTask({ task, timeToY }) {
         }
     }
 
+    // all tasks that are scheduled get this styling
     const timelineStyles = {
         fontSize: fontS,
         height: taskHeight,

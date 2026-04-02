@@ -1,10 +1,15 @@
 // utils/timeline.js
 import { pxToPt } from '../utils/scale';
 
-export function calculateTimeline(minTime, maxTime, stepHours, timelineHeight, fontS = pxToPt(45), paddingTopLabels = 30, paddingBottomLabels = 10) {
+export function calculateTimeline(minTime, maxTime, stepHours, timelineHeight, mode, contentHeight, fontS = pxToPt(45), paddingTopLabels = 30, paddingBottomLabels = 10) {
+  // CHECK HEIGHT WEEKDAY:  1468.666748046875
+  // contentHeight = 1500
+  // => paddingTopLabels = 31.4
+
+
+  // console.log("TIMELINE HEIGHT THAT THAT: ", timelineHeight)
   let start = minTime * 60;
   const step = stepHours * 60;
-  const minStepDp = 40; 
   
   // round up to the nearest multiple of step from start
   const maxMinutes = maxTime * 60;
@@ -20,11 +25,10 @@ export function calculateTimeline(minTime, maxTime, stepHours, timelineHeight, f
   for (let t = start; t <= end; t += step) times.push(t);
 
   const labelHeight = fontS * 1.2;
-  const contentHeight = 1500
   const modeHeight =
-  mode === 'day'
-    ? contentHeight
-    : timelineHeight;
+    mode === 'day'
+      ? contentHeight
+      : timelineHeight;
   
   let usableHeight = modeHeight - (labelHeight * times.length) - paddingBottomLabels - paddingTopLabels;
   
@@ -38,11 +42,11 @@ export function calculateTimeline(minTime, maxTime, stepHours, timelineHeight, f
         top = ratio * usableHeight;
     }
     
-    
     return top;
   };
 
-  console.log(labelHeight)
+  console.log("LABEL HEIGHT", labelHeight)
+  console.log("FONTS WITH LABEL HEIGHT", fontS)
 
   const isLineVisible = (currentMinutes) => {
     return currentMinutes >= start && currentMinutes <= end;

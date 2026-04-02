@@ -118,7 +118,8 @@ export default function WeekDays({ timeToY }) {
       </Text>
       <View style={[ styles.tasksContainer, {paddingHorizontal: 5}, 
           selectedDay.toDateString() === today.toDateString() && styles.todayContainer,
-      ]}>
+      ]}
+      onLayout={(e) => console.log("CHECK HEIGHT WEEKDAY: ", e.nativeEvent.layout.height)}>
         {visibleTasks.map(task => (
           <TimelineTask key={`${task.type}-${task.id}`} timeToY={timeToY} task={task} />
         ))}
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     flatList: {
         flexDirection: 'row', 
         paddingHorizontal: 12,
-        gap: 10
+        gap: 10,
     },
     dayViewContainer: { 
       flex: 1,
@@ -167,6 +168,7 @@ const styles = StyleSheet.create({
         borderColor: '#3c6674',
         borderRadius: 10,
         paddingTop: 4,
+        // backgroundColor: 'red',
     },
     pressed: {
         shadowOpacity: 0.15,

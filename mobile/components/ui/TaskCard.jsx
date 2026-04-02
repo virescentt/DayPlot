@@ -35,6 +35,7 @@ export default function TaskCard({ task, timelineStyles = null, modeOverride = n
 
     const colors = TASK_COLORS[task.type]; // will choose automatically by its type
 
+    // all tasks that are NOT scheduled (in Task Pool) get this styling
     let taskStyleBase = {
         fontSize: pxToPt(50),
         height: 45,
@@ -137,12 +138,12 @@ const styles = StyleSheet.create({
     flexibleTaskBar: {
         position: 'absolute',
         left: 0,
-        top: 0,
         width: 6,
-        height: '115%',
         backgroundColor: '#0d283d',
         borderTopLeftRadius: 10,
         borderBottomLeftRadius: 10,
+        top: 0,
+        bottom: 0,
     },
     priorityText: {
         marginTop: 4,

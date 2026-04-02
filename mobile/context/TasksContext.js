@@ -1,6 +1,6 @@
 import { createContext, memo, useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from './AuthContext';
-import { fetchTasks } from '../services/tasks';
+import { fetchTasks, toggleTaskDone } from '../services/tasks';
 import { getWeekOffsetForDay, getWeekRange } from '../utils/tasks';
 
 export const TasksContext = createContext();

@@ -5,7 +5,6 @@ export default function VerticalTimeline({
   times,
   timeToY,
   paddingTopLabels,
-  paddingBottomLabels,
   fontS
 }) {
   

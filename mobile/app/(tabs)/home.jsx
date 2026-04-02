@@ -22,15 +22,14 @@ export default function Home() {
   }
 
   const { mode, minTime, maxTime } = useContext(TasksContext);
-  let contentHeight = 1
   let stepHours = 3;
+  let contentHeight = 1500
   if (mode === 'day') {
     stepHours = 1;
-    contentHeight = 1500
   }
 
   const timelineData = useMemo(() => {
-    return calculateTimeline(minTime, maxTime, stepHours, timelineHeight, contentHeight, mode);
+    return calculateTimeline(minTime, maxTime, stepHours, timelineHeight, mode, contentHeight);
   }, [minTime, maxTime, stepHours, timelineHeight]);
 
   const { 
@@ -62,7 +61,7 @@ export default function Home() {
             contentContainerStyle={
               mode === 'day'
                 ? { height: contentHeight }
-                : { flexGrow: contentHeight }
+                : { flexGrow: 1 }
             }
             onLayout={(e) => setTimelineHeight(e.nativeEvent.layout.height)}
           
@@ -87,7 +86,7 @@ export default function Home() {
                 timeToY={timeToY}
                 fontS={fontS}
                 paddingTopLabels={paddingTopLabels}
-                paddingBottomLabels={paddingBottomLabels}
+                // paddingBottomLabels={paddingBottomLabels}
               />
 
               {/* Right column — days + tasks */}
@@ -110,6 +109,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
     },
   dataContainer: {
+    // backgroundColor: 'blue',
     flex: 1, 
     position: 'relative', 
     flexDirection: 'column', 
