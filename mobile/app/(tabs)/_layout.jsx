@@ -3,13 +3,15 @@ import { Ionicons, Feather } from '@expo/vector-icons';
 import { TasksContext } from '../../context/TasksContext';
 import { useContext } from 'react';
 import { AddNewProvider } from '../../context/AddNewContext';
+import { TimeLimitsProvider } from '../../context/TimeLimitsContext';
 
 
 export default function TabsLayout() {
   const { setMode, setSelectedDay } = useContext(TasksContext);
  
   return (
-    <AddNewProvider>
+    <TimeLimitsProvider>
+      <AddNewProvider>
       <Tabs screenOptions={{
           headerShown: false, // 👈 ЭТО УБИРАЕТ ШАПКУ ВО ВСЕХ ТАБАХ
         }}>
@@ -50,6 +52,7 @@ export default function TabsLayout() {
           />
         </Tabs>
         
-    </AddNewProvider>
+      </AddNewProvider>
+    </TimeLimitsProvider>
   );
 }

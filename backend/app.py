@@ -3,6 +3,7 @@ from backend.db.models import db
 from backend.routes.auth import auth_bp
 from backend.routes.user import user_bp
 from backend.routes.tasks import tasks_bp
+from backend.routes.stats import stats_bp
 from dotenv import load_dotenv
 from pathlib import Path
 import os
@@ -29,6 +30,7 @@ def index():
 app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(user_bp, url_prefix="/user")
 app.register_blueprint(tasks_bp, url_prefix="/tasks")
+app.register_blueprint(stats_bp, url_prefix="/stats")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=PORT, debug=True)

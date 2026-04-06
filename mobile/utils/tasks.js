@@ -6,7 +6,7 @@ export function getWeekRange(baseDate, offset = 0) {
   start.setHours(1,0,0,0);
 
   const end = new Date(start);
-  end.setDate(start.getDate() + 7);
+  end.setDate(start.getDate() + 6);
   end.setHours(0,59,59,999);
 
   const days = Array.from({ length: 7 }, (_, i) => {

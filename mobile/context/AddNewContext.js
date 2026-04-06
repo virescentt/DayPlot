@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
 import { fetchCreateTask } from '../services/tasks';
 
 export const AddNewContext = createContext();
@@ -49,7 +49,7 @@ export const AddNewProvider = ({ children }) => {
   const defaultCommon = {
     taskType: null,
     title: 'New Task',
-    description: '',
+    description: null,
     categoryName: null,
   };
 
@@ -68,7 +68,6 @@ export const AddNewProvider = ({ children }) => {
   // --- TemplateEvent ---
   const defaultTemplate = () => ({
     label: 'New Event',
-    description: null,
     dayOfWeek: null,
     startTime: getDefaultStartDatetime(),
     endTime: getDefaultEndDatetime(),

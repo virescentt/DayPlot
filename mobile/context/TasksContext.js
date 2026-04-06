@@ -1,4 +1,4 @@
-import { createContext, memo, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from './AuthContext';
 import { fetchTasks, toggleTaskDone } from '../services/tasks';
 import { getWeekOffsetForDay, getWeekRange } from '../utils/tasks';
@@ -53,7 +53,7 @@ export const TasksProvider = ({ children }) => {
 
   
   const handleToggleDone = async (taskId, taskType) => {
-      if (taskType === 'template') return; // шаблоны не трогаем
+      if (taskType === 'template') return; // dont touch templates
 
       try {
           const updatedTask = await toggleTaskDone(taskId, taskType, token);

@@ -8,7 +8,7 @@ import { LayoutAnimation } from 'react-native';
 import InfoLabel from "../InfoLabel";
 import { TASK_LABELS } from "../../../constants/theme";
 
-export default function ScheduleTask({ info = "Optional. If turned off, the task will be added to the tasks pool on the home page. Such tasks can be scheduled automatically." }) {
+export default function ScheduleTask({ info = "Optional. If turned off, the task will be added to the Tasks Pool on the home page. Such tasks can be scheduled automatically." }) {
   const {common, newTask, setNewTask, utils, setUtils} = useContext(AddNewContext);
   
   useEffect(() => {

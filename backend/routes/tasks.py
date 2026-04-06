@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-from backend.db.models import FlexibleTask, PlannedEvent, TemplateEvent, Category, WeekDay
+from backend.db.models import FlexibleTask, PlannedEvent, TemplateEvent, Category
 from backend.decorators import token_required
-from datetime import datetime, time, timezone, timedelta
+from datetime import datetime, timezone, timedelta
 from backend.db.models import db
 from sqlalchemy.exc import IntegrityError
 from backend.utils.tasks_utils import parse_time_str
@@ -137,20 +137,21 @@ def create_task(user):
     )
 
     start_dt = end_dt = weekday = None
-
     match task_type:
         case "flexible" | "planned":
             start_dt = payload.get("startDatetime")
             end_dt = payload.get("endDatetime")
+            start_str = datetime.fromisoformat(start_dt).strftime("%H:%M")
+            end_str = datetime.fromisoformat(end_dt).strftime("%H:%M")
             if check_time_conflict(user_id=user.id, start_dt=start_dt, end_dt=end_dt):
-                return jsonify({"error": f"time of {start_dt}-{end_dt} is crossing other your tasks. Please, change picked time period"}), 400
+                return jsonify({"error": f"Time of {start_str}-{end_str} is crossing other your tasks at picked day. Please, change picked time period or day"}), 400
 
         case "template":
             start_dt = parse_time_str(payload.get("startTime"))
             end_dt = parse_time_str(payload.get("endTime"))
             weekday = payload.get("dayOfWeek")
             if check_time_conflict(user_id=user.id, start_time=start_dt, end_time=end_dt, weekday=weekday):
-                return jsonify({"error": f"time of {start_dt}-{end_dt} is crossing other your tasks. Please, change picked time period"}), 400
+                return jsonify({"error": f"Time of {start_dt}-{end_dt} is crossing other your tasks at picked day of a week. Please, change picked time period"}), 400
 
         case _:
             return jsonify({"error": "type required"}), 400

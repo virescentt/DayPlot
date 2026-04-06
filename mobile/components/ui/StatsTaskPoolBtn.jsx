@@ -3,16 +3,27 @@ import { TaskPoolButton } from "./TaskPoolButton"
 import font from "../../constants/typography";
 import { pxToPt } from "../../utils/scale";
 import { Ionicons } from '@expo/vector-icons';
-
+import { useContext } from "react";
+import { TimeLimitsContext } from "../../context/TimeLimitsContext";
+import { router } from "expo-router";
 
 
 export default function StatsTaskPoolBtn({ mode }) {
-    const title =
-        mode === 'week'
-      ? 'Week flexible stats'
-      : mode === 'day'
-      ? 'Day flexible stats'
-      : 'Flexible stats';
+    const {stats, scheduledHours} = useContext(TimeLimitsContext)
+
+    let max_hours = 0
+    if (mode === 'week') { max_hours = stats['max_hours_per_week']} 
+    else if (mode === 'day') { max_hours = stats['max_hours_per_day']} 
+
+    let title = 'Week flexible stats'
+    let scheduledText = 'scheduled: ' + scheduledHours + 'H'
+    let limitText = 'limit: ' + max_hours + 'H'
+    
+    const goToSettings = () => {
+      router.push('/(tabs)/profile/time');
+    };
+
+    console.log("STATSSSSS poolbtn: ", stats)
 
     return (
         <>
@@ -22,6 +33,7 @@ export default function StatsTaskPoolBtn({ mode }) {
             <View style={{ width: '70%', }}>
             <Pressable
                 style={ styles.pressableStatsCont }
+                onPress={goToSettings}
                 >
                 <Text style={ styles.statsText }>{title}</Text>
                 <Ionicons name="pencil" size={12} color="#3c6674"/>
@@ -34,8 +46,9 @@ export default function StatsTaskPoolBtn({ mode }) {
                     width: '60%',
                 }}
                 />
-            <Text style={ styles.hoursText }>scheduled: 14h</Text>
-            <Text style={ styles.hoursText }>limit: 20h</Text>
+            <Text style={ styles.hoursText }>{limitText}</Text>
+            <Text style={[styles.hoursText, {color: scheduledHours > max_hours ? '#b98905' : '#3c6674'}
+            ]}>{scheduledText}</Text>
             </View>
             {/* TaskPoolBtn */}
             <TaskPoolButton count={9} />

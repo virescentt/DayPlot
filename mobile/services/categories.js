@@ -1,6 +1,6 @@
 import { SERVER_IP } from "../constants/services";
 
-export const fetchCategories = async () => {
+export const fetchCategories = async (token) => {
   const res = await fetch(
     `http://${SERVER_IP}/categories`,
     {headers: { Authorization: `Bearer ${token}` }}
@@ -8,11 +8,3 @@ export const fetchCategories = async () => {
     
     return res.json();
 };
-
-  // Фетч категорий с сервера
-  // useEffect(() => {
-  //   fetch('http://<SERVER_IP>/categories')  // подставь свой сервер
-  //     .then(res => res.json())
-  //     .then(data => setCategories(data))
-  //     .catch(err => console.log(err));
-  // }, []);

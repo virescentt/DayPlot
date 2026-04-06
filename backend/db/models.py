@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone, timedelta, time
 from sqlalchemy import Enum
 import enum
 from sqlalchemy.orm import validates
@@ -241,14 +241,13 @@ class TimeLimits(db.Model):
     # sleep_start = 23:00
     # sleep_end   = 07:00
 
-    # Сон (период, куда НЕЛЬЗЯ ставить задачи)
-    sleep_start = db.Column(db.Time, nullable=False)
-    sleep_end = db.Column(db.Time, nullable=False)
+    sleep_start = db.Column(db.Time, nullable=False, default=time(23, 0))
+    sleep_end = db.Column(db.Time, nullable=False, default=time(7, 0))
 
-    # Ограничения нагрузки
-    max_hours_per_day = db.Column(db.Float, nullable=False)
-    max_hours_per_week = db.Column(db.Float, nullable=False)
-
+    max_hours_per_day = db.Column(db.Float, nullable=False, default=8) #NEED TO ADD
+    max_hours_per_week = db.Column(db.Float, nullable=False, default=40) #NEED TO ADD
+    use_template_hours = db.Column(db.Boolean, default=True, nullable=False)
+    
     created_at = db.Column(
         db.DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
