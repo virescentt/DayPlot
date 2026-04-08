@@ -15,6 +15,15 @@ export const fetchTasks = async (token, from, to) => {
   return res.json();
 };
 
+export const fetchPoolTasks = async (token) => {
+  const res = await fetch(
+    `http://${SERVER_IP}/tasks/pool}`,
+    {headers: { Authorization: `Bearer ${token}` }}
+    );
+
+    return res.json();
+};
+
 export const toggleTaskDone = async (taskId, taskType, token) => {
   console.log("TOKEN IN toggleTaskDone:", token);
   const res = await fetch(
@@ -60,3 +69,26 @@ export const fetchCreateTask = async (token, taskData) => {
 
   // return data; // { id: ... }
 };
+
+export function formatTaskDateToInfo(start) {
+  const date = new Date(start);
+
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+  });
+}
+
+export function formatTaskTimeRange(start, end) {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  const formatTime = (d) =>
+    d.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+
+  return `from ${formatTime(startDate)} to ${formatTime(endDate)}`;
+}

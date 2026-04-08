@@ -5,9 +5,11 @@ import { TasksContext } from '../../context/TasksContext';
 import { TASK_COLORS } from '../../constants/theme';
 import EditDeleteTemplateModal from './addNewForm/Template/EditDeleteTemplateModal';
 import { Ionicons } from '@expo/vector-icons';
+import { SelectedTaskContext } from '../../context/SelectedTaskContext';
 
 
 export default function TaskCard({ task, timelineStyles = null, modeOverride = null }) {
+    const { setSelectedTask, setBottomSheetVisible } = useContext(SelectedTaskContext);
     const { mode, handleToggleDone } = useContext(TasksContext);
     const [modalVisible, setModalVisible] = useState(false);
     const isDone = task.is_done;
@@ -63,7 +65,10 @@ export default function TaskCard({ task, timelineStyles = null, modeOverride = n
     if (useDayStyle) {
         return (
             <>
-            <Pressable style={[styles.taskContainer, taskStyleBase, {backgroundColor: isDone ? '#0beb3f90' : colors.background,}]}>
+            <Pressable onPress={() => { 
+                setSelectedTask(task)
+                setBottomSheetVisible(true);
+            }} style={[styles.taskContainer, taskStyleBase, {backgroundColor: isDone ? '#0beb3f90' : colors.background,}]}>
                 {/* Flexible task */}
                 {task.type === 'flexible' && (
                     <View style={styles.flexibleTaskBar} />

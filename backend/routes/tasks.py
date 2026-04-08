@@ -5,6 +5,7 @@ from datetime import datetime, timezone, timedelta
 from backend.db.models import db
 from sqlalchemy.exc import IntegrityError
 from backend.utils.tasks_utils import parse_time_str
+from backend.utils.serializers import serialize_task, serialize_template_event
 from backend.services.schedule_validator import check_time_conflict
 
 tasks_bp = Blueprint("tasks", __name__, url_prefix="/tasks")
@@ -24,7 +25,7 @@ def get_tasks(user):
     except ValueError:
         return jsonify({"message": "Invalid date format"}), 400
 
-    # 1. Flexible tasks
+    # --- 1. Flexible tasks ---
     flexible_tasks = FlexibleTask.query.filter(
         FlexibleTask.user_id == user.id,
         FlexibleTask.start_datetime.isnot(None),
@@ -33,53 +34,64 @@ def get_tasks(user):
         FlexibleTask.end_datetime <= to_dt
     ).all()
 
-    # 2. Planned events
+    # --- 2. Planned events ---
     planned_events = PlannedEvent.query.filter(
         PlannedEvent.user_id == user.id,
         PlannedEvent.start_datetime >= from_dt,
         PlannedEvent.end_datetime <= to_dt
     ).all()
 
-    # 3. Template events
+    # --- 3. Template ---
     # choosing template events, which fall within the range by day of the week
     template_events = []
-    for te in TemplateEvent.query.filter_by(user_id=user.id).all():
-        # checing every day for the range of from_dt - to_dt
-        current = from_dt
-        while current <= to_dt:
-            if current.strftime("%A") == te.day_of_week.value:
-                # checking override
-                override = next((o for o in te.overrides if o.date == current.date() and not o.cancelled), None)
-                start_time = override.start_time if override and override.start_time else te.start_time
-                end_time = override.end_time if override and override.end_time else te.end_time
-                label = override.label if override and override.label else te.label
-                template_events.append({
-                    "id": te.id,
-                    "title": label,
-                    "start": datetime.combine(current.date(), start_time).isoformat(),
-                    "end": datetime.combine(current.date(), end_time).isoformat(),
-                    "dayOfWeek": te.day_of_week.value,
-                    "type": "template"
-                })
-            current += timedelta(days=1)
+    templates = TemplateEvent.query.filter_by(user_id=user.id).all()
 
-    # 4. Serialize flexible + planned
-    def serialize_task(t):
-        task_type = "flexible" if isinstance(t, FlexibleTask) else "planned"
-        return {
-            "id": t.id,
-            "title": t.title,
-            "start": t.start_datetime.isoformat() if t.start_datetime else None,
-            "end": t.end_datetime.isoformat() if t.end_datetime else None,
-            "priority": getattr(t, "priority", None).name if hasattr(t, "priority") else None,
-            "is_done": t.is_done,
-            "description": t.description,
-            "category": t.category.name if t.category else None,
-            "type": task_type
-        }
+    current = from_dt
+    while current <= to_dt:
+        for te in templates:
+            if current.strftime("%A") != te.day_of_week.value:
+                continue
 
-    all_tasks = [serialize_task(t) for t in flexible_tasks + planned_events] + template_events
+            override = next(
+                (o for o in te.overrides
+                 if o.date == current.date() and not o.cancelled),
+                None
+            )
+
+            start_time = override.start_time if override and override.start_time else te.start_time
+            end_time = override.end_time if override and override.end_time else te.end_time
+            label = override.label if override and override.label else te.label
+
+            template_events.append(
+                serialize_template_event(
+                    te,
+                    current.date(),
+                    start_time,
+                    end_time,
+                    label
+                )
+            )
+
+        current += timedelta(days=1)
+
+    # --- 4. All in one ---
+    all_tasks = (
+        [serialize_task(t) for t in flexible_tasks + planned_events]
+        + template_events
+    )
     return jsonify(all_tasks)
+
+@tasks_bp.route("/pool", methods=["GET"])
+@token_required
+def get_task_pool(user):
+    tasks = FlexibleTask.query.filter(
+        FlexibleTask.user_id == user.id,
+        FlexibleTask.start_datetime.is_(None),
+        FlexibleTask.end_datetime.is_(None),
+        # FlexibleTask.is_done == False   # maybe later for the filtration by done flag
+    ).all()
+
+    return jsonify([serialize_task(t) for t in tasks])
 
 
 @tasks_bp.route('/<int:task_id>/toggle-done', methods=['PATCH'])
@@ -141,10 +153,11 @@ def create_task(user):
         case "flexible" | "planned":
             start_dt = payload.get("startDatetime")
             end_dt = payload.get("endDatetime")
-            start_str = datetime.fromisoformat(start_dt).strftime("%H:%M")
-            end_str = datetime.fromisoformat(end_dt).strftime("%H:%M")
-            if check_time_conflict(user_id=user.id, start_dt=start_dt, end_dt=end_dt):
-                return jsonify({"error": f"Time of {start_str}-{end_str} is crossing other your tasks at picked day. Please, change picked time period or day"}), 400
+            if (start_dt is not None and end_dt is not None):
+                start_str = datetime.fromisoformat(start_dt).strftime("%H:%M")
+                end_str = datetime.fromisoformat(end_dt).strftime("%H:%M")
+                if check_time_conflict(user_id=user.id, start_dt=start_dt, end_dt=end_dt):
+                    return jsonify({"error": f"Time of {start_str}-{end_str} is crossing other your tasks at picked day. Please, change picked time period or day"}), 400
 
         case "template":
             start_dt = parse_time_str(payload.get("startTime"))

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from './AuthContext';
-import { fetchTasks, toggleTaskDone } from '../services/tasks';
+import { fetchPoolTasks, fetchTasks, toggleTaskDone } from '../services/tasks';
 import { getWeekOffsetForDay, getWeekRange } from '../utils/tasks';
 
 export const TasksContext = createContext();
@@ -8,6 +8,7 @@ export const TasksContext = createContext();
 export const TasksProvider = ({ children }) => {
   const { token, user } = useContext(AuthContext);
   const [tasks, setTasks] = useState([]);
+  const [poolTasks, setPoolTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState('week');
   const [selectedDay, setSelectedDay] = useState(null);
@@ -30,6 +31,15 @@ export const TasksProvider = ({ children }) => {
     setTasks(data);
     console.log("TASKS FROM LOAD TASKS:")
     console.log(tasks)
+    setLoading(false);
+  };
+  
+  const loadPoolTasks = async () => {
+    setLoading(true);
+    const data = await fetchPoolTasks(token);
+    setPoolTasks(data);
+    console.log("💦 POOLTASKS 💦 FROM LOAD TASKS:")
+    console.log(poolTasks)
     setLoading(false);
   };
 
@@ -109,7 +119,8 @@ export const TasksProvider = ({ children }) => {
       setWeekOffset,
       today,
       setTasks,
-      handleToggleDone
+      handleToggleDone,
+      poolTasks
     }}>
       {children}
     </TasksContext.Provider>

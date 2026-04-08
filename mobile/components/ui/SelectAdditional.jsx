@@ -9,26 +9,29 @@ export default function SelectAdditional({
   iconFAname = 'bell',
   myPlaceholder,
   newTaskProperty,
-  options = [] // теперь ожидается массив объектов { label, value }
+  options = [], // { label, value }
+  value = null,
+  readonly = false,
 }) {
   const { newTask, setNewTask } = useContext(AddNewContext);
   const [open, setOpen] = useState(false);
 
-  // Находим текущую выбранную опцию по значению
-  const selectedOption = options.find(opt => opt.value === newTask[newTaskProperty]);
+  const selectedOption = options.find(opt => 
+    opt.value === (value !== null && value !== undefined ? value : newTask[newTaskProperty])
+  );
 
-  const displayText = newTask[newTaskProperty] == null // null или undefined
+  const displayText = newTask[newTaskProperty] == null // null || undefined
   ? myPlaceholder
   : selectedOption?.label ?? myPlaceholder;
 
   return (
     <View style={{ width: '50%', alignItems: 'center', flexDirection: 'row', gap: 10 }}>
       <FontAwesome5 name={iconFAname} size={30} color="#e1eaf3" style={{paddingBottom: 15}} />
-      <Pressable style={styles.input} onPress={() => setOpen(true)}>
+      <Pressable disabled={readonly} style={[styles.input, {opacity: readonly ? 0.5 : 1}]} onPress={() => !readonly && setOpen(true)}>
         <Text style={[ styles.categoryName, !newTask[newTaskProperty] && styles.placeholder ]}>
           {displayText}
         </Text>
-        <FontAwesome5 name="caret-down" size={20} color="#2a5b85" style={{ position: 'absolute', right: 10, top: '50%', transform: [{ translateY: -10 }] }} />
+        <FontAwesome5 name="caret-down" size={20} color="#2a5b85" style={{ position: 'absolute', right: 10, top: '50%', display: readonly && 'none', transform: [{ translateY: -10 }] }} />
       </Pressable>
 
       <Modal visible={open} animationType="slide" transparent onRequestClose={() => setOpen(false)}>
