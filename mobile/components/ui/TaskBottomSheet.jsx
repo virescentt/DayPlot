@@ -7,16 +7,19 @@ import SelectAdditional from "./SelectAdditional";
 import { REMINDER_OFFSET, REST_TIME } from "../../constants/services";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { SelectedTaskContext } from "../../context/SelectedTaskContext";
+import { Button } from "@react-navigation/elements";
+import { TasksContext } from "../../context/TasksContext";
 
 export default function TaskBottomSheet({
   task,
   onEdit,
 }) {
-  const { ToggleDoneBottomSheet, bottomSheetVisible, setBottomSheetVisible} = useContext(SelectedTaskContext)
+  const { ToggleDoneBottomSheet, bottomSheetVisible, setBottomSheetVisible, onDeleteTask} = useContext(SelectedTaskContext)
+  // const { onDeleteTask } = useContext(TasksContext)
   
   const onClose = () => setBottomSheetVisible(false)
   const visible = bottomSheetVisible
-  if (!task) return null;
+  if (!task || task.type === 'template') return null;
     console.log("START!!!! : ", task.start)
     console.log("END!!!! : ", task.end)
   return (
@@ -146,6 +149,11 @@ export default function TaskBottomSheet({
                     />
                 </TouchableOpacity>
             
+            </View>
+
+            {/* DELETE BUTTON */}
+            <View style={{ marginTop: 30 }}>
+              <Button title="Delete" onPress={() => onDeleteTask(task.id, task.type)} color="#ff0000"><Text style={{color: 'white', fontFamily: font.Mregular, fontSize: 18}}>Delete</Text></Button>
             </View>
 
         </ScrollView>

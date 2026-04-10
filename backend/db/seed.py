@@ -4,14 +4,14 @@ from backend.db.models import (
     TemplateEvent, Category, TaskPriority, ScheduleSource, WeekDay
 )
 from werkzeug.security import generate_password_hash
-from datetime import date, datetime, timedelta, time
+from datetime import date, datetime, timedelta, time, timezone
 from random import choice, randint
 
 with app.app_context():
     db.create_all()
 
     # ----------------------
-    # Пользователь
+    # User
     # ----------------------
     user = User.query.filter_by(email="xxx@gmail.com").first()
     if not user:
@@ -25,7 +25,7 @@ with app.app_context():
         db.session.commit()
 
     # ----------------------
-    # Категории
+    # Categories
     # ----------------------
     for cat_name in ["Work", "School", "Hobby"]:
         if not Category.query.filter_by(user_id=user.id, name=cat_name).first():
@@ -64,7 +64,7 @@ with app.app_context():
     db.session.commit()
 
     # ----------------------
-    # Слоты для планирования
+    # slots for planning
     # ----------------------
     used_slots = {}
 
@@ -81,60 +81,36 @@ with app.app_context():
         used_slots[d] = slots
 
     # ----------------------
-    # Планируем шаблонные события на все дни
-    # ----------------------
-    start_date = date(2026,1,26)
-    end_date = date(2026,2,15)
-
-    template_events = TemplateEvent.query.filter_by(user_id=user.id).all()
-    for n in range((end_date - start_date).days + 1):
-        current_date = start_date + timedelta(days=n)
-        weekday = WeekDay(current_date.strftime("%A"))
-        for te in template_events:
-            if te.day_of_week == weekday:
-                add_slot(current_date, te.start_time, te.end_time)
-                if not PlannedEvent.query.filter_by(
-                    user_id=user.id, 
-                    title=te.label, 
-                    start_datetime=datetime.combine(current_date, te.start_time)
-                ).first():
-                    db.session.add(PlannedEvent(
-                        user_id=user.id,
-                        title=te.label,
-                        start_datetime=datetime.combine(current_date, te.start_time),
-                        end_datetime=datetime.combine(current_date, te.end_time)
-                    ))
-    db.session.commit()
-
-    # ----------------------
-    # Чёткие плановые события
+    # Planned events
     # ----------------------
     fixed_tasks = [
-        (date(2026,1,26), time(15,30), 60, "Team Meeting"),
-        (date(2026,1,27), time(16,0), 90, "Doctor Appointment"),
-        (date(2026,1,28), time(14,0), 120, "Workshop"),
-        (date(2026,1,29), time(10,0), 60, "Call with Client"),
+        (date(2026,3,26), time(15,30), 60, "Team Meeting"),
+        (date(2026,3,27), time(16,0), 90, "Doctor Appointment"),
+        (date(2026,3,28), time(14,0), 120, "Workshop"),
+        (date(2026,3,29), time(10,0), 60, "Call with Client"),
     ]
     for d, start, duration_min, title in fixed_tasks:
         end_t = (datetime.combine(date.min, start) + timedelta(minutes=duration_min)).time()
         if is_free(d, start, end_t):
             add_slot(d, start, end_t)
+            start_dt = datetime.combine(d, start).replace(tzinfo=timezone.utc)
+            end_dt = datetime.combine(d, end_t).replace(tzinfo=timezone.utc)
             if not PlannedEvent.query.filter_by(user_id=user.id, title=title, start_datetime=datetime.combine(d, start)).first():
                 db.session.add(PlannedEvent(
                     user_id=user.id,
                     title=title,
-                    start_datetime=datetime.combine(d, start),
-                    end_datetime=datetime.combine(d, end_t)
+                    start_datetime=start_dt,
+                    end_datetime=end_dt
                 ))
     db.session.commit()
 
     # ----------------------
-    # Гибкие задачи (только у них есть estimated_time)
+    # Flexible (with estimated_time)
     # ----------------------
     flexible_tasks_data = [
-        ("Prepare Math Test", TaskPriority.HIGH, 120, date(2026,2,5)),
-        ("Complete Homework", TaskPriority.MEDIUM, 180, date(2026,2,8)),
-        ("Read Technical Book", TaskPriority.MEDIUM, 90, date(2026,2,15)),
+        ("Prepare Math Test", TaskPriority.HIGH, 120, date(2026,4,5)),
+        ("Complete Homework", TaskPriority.MEDIUM, 180, date(2026,4,8)),
+        ("Read Technical Book", TaskPriority.MEDIUM, 90, date(2026,4,15)),
     ]
     for title, priority, duration_min, deadline_date in flexible_tasks_data:
         for attempt in range(20):
@@ -144,18 +120,21 @@ with app.app_context():
             end_t = (datetime.combine(date.min, start_t) + timedelta(minutes=duration_min)).time()
             if is_free(deadline_date, start_t, end_t):
                 add_slot(deadline_date, start_t, end_t)
+                start_dt = datetime.combine(deadline_date, start_t).replace(tzinfo=timezone.utc)
+                end_dt = datetime.combine(deadline_date, end_t).replace(tzinfo=timezone.utc)
+                deadline_dt = datetime.combine(deadline_date, time(23,59)).replace(tzinfo=timezone.utc)
                 if not FlexibleTask.query.filter_by(user_id=user.id, title=title, start_datetime=datetime.combine(deadline_date, start_t)).first():
                     db.session.add(FlexibleTask(
                         user_id=user.id,
                         title=title,
                         priority=priority,
                         estimated_time=duration_min,
-                        start_datetime=datetime.combine(deadline_date, start_t),
-                        end_datetime=datetime.combine(deadline_date, end_t),
-                        deadline=datetime.combine(deadline_date, time(23,59)),
+                        start_datetime=start_dt,
+                        end_datetime=end_dt,
+                        deadline=deadline_dt,
                         scheduled_by=ScheduleSource.AUTO
                     ))
                 break
     db.session.commit()
 
-    print("Full schedule created: шаблонные, плановые и гибкие задачи без пересечений")
+    print("Full schedule created: Template, flexible and planned tasks without time crossing")

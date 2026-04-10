@@ -92,3 +92,20 @@ export function formatTaskTimeRange(start, end) {
 
   return `from ${formatTime(startDate)} to ${formatTime(endDate)}`;
 }
+
+export const deleteTask = async (token, taskId, type) => {
+    const res = await fetch(
+      `http://${SERVER_IP}/tasks/${taskId}?type=${type}`,
+      {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+    });
+
+    if (!res.ok) throw new Error("Failed to delete task");
+    
+    return res.json();
+
+}

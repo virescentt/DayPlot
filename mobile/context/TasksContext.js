@@ -1,12 +1,13 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from './AuthContext';
 import { fetchPoolTasks, fetchTasks, toggleTaskDone } from '../services/tasks';
-import { getWeekOffsetForDay, getWeekRange } from '../utils/tasks';
+import { getWeekRange } from '../utils/tasks';
 
 export const TasksContext = createContext();
 
 export const TasksProvider = ({ children }) => {
   const { token, user } = useContext(AuthContext);
+  // const { setBottomSheetVisible } = useContext(SelectedTaskContext);
   const [tasks, setTasks] = useState([]);
   const [poolTasks, setPoolTasks] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -42,6 +43,22 @@ export const TasksProvider = ({ children }) => {
     console.log(poolTasks)
     setLoading(false);
   };
+
+  const onRefresh = async () => {
+    if (loading) return
+    await loadTasks(weekStart, weekEnd)
+  }
+
+  // const onDeleteTask = async (taskId, type) => {
+  //   try {
+  //     await deleteTask(token, taskId, type);
+  //     setBottomSheetVisible(false);
+  //     await onRefresh()
+  //     Alert.alert("Success", "Your task was deleted");
+  //   } catch (e) {
+  //     Alert.alert("Error", "Could not delete the task");
+  //   }
+  // }
 
   
   // Calculating the week !!!! GOD BLESS AMERICA ✔➰➰〰
@@ -120,7 +137,9 @@ export const TasksProvider = ({ children }) => {
       today,
       setTasks,
       handleToggleDone,
-      poolTasks
+      poolTasks,
+      // onDeleteTask,
+      onRefresh
     }}>
       {children}
     </TasksContext.Provider>

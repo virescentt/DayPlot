@@ -132,6 +132,7 @@ def toggle_task_done(user, task_id):
 @tasks_bp.route("", methods=["POST"])
 @token_required
 def create_task(user):
+    print("HELLO ADD NEW TASK!!!")
 
     data = request.json
 
@@ -153,9 +154,12 @@ def create_task(user):
         case "flexible" | "planned":
             start_dt = payload.get("startDatetime")
             end_dt = payload.get("endDatetime")
+            
             if (start_dt is not None and end_dt is not None):
                 start_str = datetime.fromisoformat(start_dt).strftime("%H:%M")
                 end_str = datetime.fromisoformat(end_dt).strftime("%H:%M")
+                start_dt = datetime.fromisoformat(start_dt).replace(tzinfo=timezone.utc)
+                end_dt = datetime.fromisoformat(end_dt).replace(tzinfo=timezone.utc)
                 if check_time_conflict(user_id=user.id, start_dt=start_dt, end_dt=end_dt):
                     return jsonify({"error": f"Time of {start_str}-{end_str} is crossing other your tasks at picked day. Please, change picked time period or day"}), 400
 
@@ -235,3 +239,38 @@ def create_task(user):
             "error": "Database validation failed",
             "details": str(e)
         }), 400
+
+
+@tasks_bp.route("/<int:task_id>", methods=["DELETE"])
+@token_required
+def delete_task(user, task_id):
+    task_type = request.args.get("type")
+
+    if task_type not in ("flexible", "planned", "template"):
+        return jsonify({"error": "Invalid task type"}), 400
+
+    if task_type == "flexible":
+        task = FlexibleTask.query.filter_by(
+            id=task_id,
+            user_id=user.id
+        ).first()
+
+    elif task_type == "planned":
+        task = PlannedEvent.query.filter_by(
+            id=task_id,
+            user_id=user.id
+        ).first()
+
+    elif task_type == "template":
+        task = TemplateEvent.query.filter_by(
+            id=task_id,
+            user_id=user.id
+        ).first()
+
+    if not task:
+        return jsonify({"error": "Task not found"}), 404
+
+    db.session.delete(task)
+    db.session.commit()
+
+    return jsonify({"message": "Task deleted"}), 200

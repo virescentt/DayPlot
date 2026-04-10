@@ -7,8 +7,7 @@ export function buildTaskRequest(common, newTask, template) {
   : null;
   // console.log(newTask.priority)
   // console.log(common.taskType)
-  console.log(template.dayOfWeek)
-  console.log(template.label)
+  // console.log(template.label)
   
   console.log(template.startTime ? new Date(template.startTime).toTimeString().slice(0,5) : null,
         )

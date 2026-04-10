@@ -136,8 +136,9 @@ class PlannedEvent(db.Model):
     title = db.Column(db.String(255), nullable=False)
     start_datetime = db.Column(db.DateTime(timezone=True), nullable=False)
     end_datetime = db.Column(db.DateTime(timezone=True), nullable=False)
-    is_done = db.Column(db.Boolean, default=False)
 
+    is_done = db.Column(db.Boolean, default=False)
+    
     # Optional fields
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=True)
     category = db.relationship("Category", backref="planned_events")
@@ -183,7 +184,7 @@ class Category(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    name = db.Column(db.String(50), nullable=False)  # название категории, например "school", "work", "hobby"
+    name = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=datetime.now)
 

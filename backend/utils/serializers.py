@@ -37,6 +37,7 @@ def serialize_template_event(te, date, start_time, end_time, label):
 
         "start": datetime.combine(date, start_time).isoformat(),
         "end": datetime.combine(date, end_time).isoformat(),
-
+        "dayOfWeek": te.day_of_week.value,
+        
         "type": "template",
     }

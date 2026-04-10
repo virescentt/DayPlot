@@ -8,23 +8,16 @@ import WeekDays from '../../components/WeekDays.jsx';
 import StatsTaskPoolBtn from '../../components/ui/StatsTaskPoolBtn.jsx';
 import DateBadge from '../../components/ui/DateBadge.jsx';
 import { TasksContext } from '../../context/TasksContext.js';
-import { fetchTasks } from '../../services/tasks.js';
 import TaskBottomSheet from '../../components/ui/TaskBottomSheet.jsx';
 import { SelectedTaskContext } from '../../context/SelectedTaskContext.js';
 
 export default function Home() {
   const [timelineHeight, setTimelineHeight] = useState(0);
-  const { loadTasks, weekStart, weekEnd, loading } = useContext(TasksContext)
+  const { loading, onRefresh } = useContext(TasksContext)
   const { selectedTask } = useContext(SelectedTaskContext)
   // ----------------------------------------------------
 
-  
   // for new tasks to appear in the timeline after refreshing it
-  const onRefresh = async () => {
-    if (loading) return
-    await loadTasks(weekStart, weekEnd)
-  }
-
   const { mode, minTime, maxTime } = useContext(TasksContext);
   let stepHours = 3;
   let contentHeight = 1500
