@@ -45,3 +45,4 @@ export async function goToNextPrev(
     setSelectedDay(next);
   }
 }
+

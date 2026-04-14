@@ -7,7 +7,6 @@ export const TasksContext = createContext();
 
 export const TasksProvider = ({ children }) => {
   const { token, user } = useContext(AuthContext);
-  // const { setBottomSheetVisible } = useContext(SelectedTaskContext);
   const [tasks, setTasks] = useState([]);
   const [poolTasks, setPoolTasks] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -36,30 +35,23 @@ export const TasksProvider = ({ children }) => {
   };
   
   const loadPoolTasks = async () => {
-    setLoading(true);
-    const data = await fetchPoolTasks(token);
-    setPoolTasks(data);
-    console.log("💦 POOLTASKS 💦 FROM LOAD TASKS:")
-    console.log(poolTasks)
-    setLoading(false);
+    try {
+      setLoading(true);
+      const data = await fetchPoolTasks(token);
+      setPoolTasks(data);
+      console.log("💦 POOLTASKS 💦 FROM LOAD TASKS:")
+      console.log(poolTasks)
+      setLoading(false);
+    } catch (e) {
+      Alert.alert("Error", e.message);
+    }
   };
 
   const onRefresh = async () => {
     if (loading) return
     await loadTasks(weekStart, weekEnd)
+    await loadPoolTasks()
   }
-
-  // const onDeleteTask = async (taskId, type) => {
-  //   try {
-  //     await deleteTask(token, taskId, type);
-  //     setBottomSheetVisible(false);
-  //     await onRefresh()
-  //     Alert.alert("Success", "Your task was deleted");
-  //   } catch (e) {
-  //     Alert.alert("Error", "Could not delete the task");
-  //   }
-  // }
-
   
   // Calculating the week !!!! GOD BLESS AMERICA ✔➰➰〰
   const { weekStart, weekEnd, weekDays } = useMemo(() => {
@@ -79,22 +71,27 @@ export const TasksProvider = ({ children }) => {
   }, [weekKey, token, user]);
 
   
-  const handleToggleDone = async (taskId, taskType) => {
+  const handleToggleDone = async (taskId, taskType, isTaskPool = false) => {
       if (taskType === 'template') return; // dont touch templates
 
       try {
           const updatedTask = await toggleTaskDone(taskId, taskType, token);
 
           // updating tasks array to reload useMemo
-          setTasks(prev =>
-          prev.map(t =>
-              t.id === updatedTask.id && t.type === updatedTask.type ? { ...t, is_done: updatedTask.is_done } : t
-          )
-          );
+          const updater = (t) =>
+            t.id === updatedTask.id && t.type === updatedTask.type
+              ? { ...t, is_done: updatedTask.is_done }
+              : t;
+
+          setTasks(prev => prev.map(updater));
+          setPoolTasks(prev => prev.map(updater));
+
       } catch (err) {
           console.log(err);
       }
   };
+
+  
 
   // Visible tasks filter
   const visibleTasks = useMemo(() => {
@@ -138,8 +135,8 @@ export const TasksProvider = ({ children }) => {
       setTasks,
       handleToggleDone,
       poolTasks,
-      // onDeleteTask,
-      onRefresh
+      onRefresh,
+      loadPoolTasks
     }}>
       {children}
     </TasksContext.Provider>

@@ -10,6 +10,7 @@ import DateBadge from '../../components/ui/DateBadge.jsx';
 import { TasksContext } from '../../context/TasksContext.js';
 import TaskBottomSheet from '../../components/ui/TaskBottomSheet.jsx';
 import { SelectedTaskContext } from '../../context/SelectedTaskContext.js';
+import TaskPoolBottomSheet from '../../components/ui/TaskPoolBottomSheet.jsx';
 
 export default function Home() {
   const [timelineHeight, setTimelineHeight] = useState(0);
@@ -92,12 +93,16 @@ export default function Home() {
           </ScrollView>
         </View>
       
+        <TaskPoolBottomSheet />
+        
         {selectedTask &&
-        <TaskBottomSheet 
-        task={selectedTask}
-        onEdit={() => {}}
-        />}
-
+          <TaskBottomSheet 
+          task={selectedTask}
+          onEdit={() => {}}
+          />
+        }
+        
+      
       </View>
       {/* <Footer /> */}
     </View>

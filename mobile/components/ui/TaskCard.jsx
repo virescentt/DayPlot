@@ -9,7 +9,7 @@ import { SelectedTaskContext } from '../../context/SelectedTaskContext';
 
 
 export default function TaskCard({ task, timelineStyles = null, modeOverride = null }) {
-    const { setSelectedTask, setBottomSheetVisible } = useContext(SelectedTaskContext);
+    const { setSelectedTask, setBottomSheetVisible, setPoolBottomSheetVisible, openTaskFromPool } = useContext(SelectedTaskContext);
     const { mode, handleToggleDone } = useContext(TasksContext);
     const [modalVisible, setModalVisible] = useState(false);
     const isDone = task.is_done;
@@ -40,7 +40,7 @@ export default function TaskCard({ task, timelineStyles = null, modeOverride = n
     // all tasks that are NOT scheduled (in Task Pool) get this styling
     let taskStyleBase = {
         fontSize: pxToPt(50),
-        height: 45,
+        height: task.type === 'template' ? 45 : 60,
         paddingVertical: 10,
         backgroundColor: colors.background,
         borderColor: colors.border,
@@ -66,9 +66,14 @@ export default function TaskCard({ task, timelineStyles = null, modeOverride = n
         return (
             <>
             <Pressable onPress={() => { 
-                setSelectedTask(task)
-                setBottomSheetVisible(true);
-            }} style={[styles.taskContainer, taskStyleBase, {backgroundColor: isDone ? '#0beb3f90' : colors.background,}]}>
+                if (modeOverride === 'day' && 
+                    task.type !== 'template') {openTaskFromPool(task)}
+                    else {
+                        setSelectedTask(task);
+                        setBottomSheetVisible(true);
+                    }
+                
+                }} style={[styles.taskContainer, taskStyleBase, {backgroundColor: isDone ? '#0beb3f90' : colors.background,}]}>
                 {/* Flexible task */}
                 {task.type === 'flexible' && (
                     <View style={styles.flexibleTaskBar} />
@@ -86,13 +91,17 @@ export default function TaskCard({ task, timelineStyles = null, modeOverride = n
                 {/* Time Icon + checkbox Container */}
                 <View style={styles.taskFooter}>
                     {/* Time icon */}
-                    <Ionicons name="time-outline" size={16} color={colors.text} style={{marginRight: 3}} />
-                    
-                    {/* Time text */}
-                    <Text style={[styles.timeText, {color: colors.text}]}>
-                        {task.start.slice(11,16)} - {task.end.slice(11,16)}
-                    </Text>
-
+                    {(modeOverride == null || task.type === 'template' ) && (
+                        <>
+                        <Ionicons name="time-outline" size={16} color={colors.text} style={{marginRight: 3}} />
+                        
+                        {/* Time text */}
+                        <Text style={[styles.timeText, {color: colors.text}]}>
+                            {task.start.slice(11,16)} - {task.end.slice(11,16)}
+                        </Text>
+                        </>
+                        )
+                    }
                     {/* Checkbox */}
                     {task.type !== 'template' ? (
                         <Pressable onPress={() => handleToggleDone(task.id, task.type)} style={styles.checkbox}>

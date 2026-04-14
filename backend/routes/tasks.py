@@ -81,6 +81,7 @@ def get_tasks(user):
     )
     return jsonify(all_tasks)
 
+
 @tasks_bp.route("/pool", methods=["GET"])
 @token_required
 def get_task_pool(user):

@@ -14,24 +14,24 @@ export default function TaskBottomSheet({
   task,
   onEdit,
 }) {
-  const { ToggleDoneBottomSheet, bottomSheetVisible, setBottomSheetVisible, onDeleteTask} = useContext(SelectedTaskContext)
-  // const { onDeleteTask } = useContext(TasksContext)
+  const { ToggleDoneBottomSheet, bottomSheetVisible, setBottomSheetVisible, onDeleteTask, closeTaskSheet } = useContext(SelectedTaskContext)
   
-  const onClose = () => setBottomSheetVisible(false)
-  const visible = bottomSheetVisible
+  // const onClose = () => closeTaskSheet()
+  const onClose = () => closeTaskSheet()
   if (!task || task.type === 'template') return null;
-    console.log("START!!!! : ", task.start)
-    console.log("END!!!! : ", task.end)
+  console.log("START!!!! : ", task.start)
+  console.log("END!!!! : ", task.end)
+  console.log("ПРОВЕРОЧКА??? ", bottomSheetVisible, task?.id)
   return (
     <Modal
-      isVisible={visible && !!task}
+      isVisible={bottomSheetVisible}
       onSwipeComplete={onClose}
       onBackdropPress={onClose}
       customSwipeArea={30}
       swipeDirection="down"
       backdropTransitionInTiming={300}
       backdropTransitionOutTiming={300}
-      style={styles.modal}
+      style={[styles.modal]}
       propagateSwipe={true}
     >
       <View style={styles.container}>
@@ -80,8 +80,8 @@ export default function TaskBottomSheet({
                     myPlaceholder="Reminder"
                     newTaskProperty="reminderOffset"
                     options={REMINDER_OFFSET}
-                    value={task.reminderOffset} // для просмотра
-                    readonly={true} // или false для редактирования
+                    value={task.reminderOffset} 
+                    readonly={true} 
                 />
                 <SelectAdditional
                     iconFAname='hourglass-start' 

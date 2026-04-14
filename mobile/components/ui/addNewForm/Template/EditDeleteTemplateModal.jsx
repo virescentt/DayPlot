@@ -12,15 +12,15 @@ export default function EditDeleteTemplateModal({ visible, onClose, onThisDay, o
         <View style={styles.overlay}>
           <TouchableWithoutFeedback>
             <View style={styles.container}>
-              {/* Крестик */}
+              {/* Cross sign */}
               <Pressable style={styles.closeButton} onPress={onClose}>
                 <Text style={styles.closeText}>✕</Text>
               </Pressable>
 
-              {/* Заголовок */}
+              {/* header */}
               <Text style={styles.title}>{header}</Text>
 
-              {/* Две текстовые зоны с разделителем */}
+              {/* Two text zones with a separator */}
               <View style={styles.rowButtons}>
                 <Pressable style={styles.halfButton} onPress={onThisDay}>
                   <Text style={styles.text}>This day only</Text>

@@ -23,6 +23,7 @@ def serialize_task(t: FlexibleTask | PlannedEvent):
         "priority": t.priority.name if is_flexible and t.priority else None,
         "estimatedTime": t.estimated_time if is_flexible else None,
         "deadline": t.deadline.isoformat() if is_flexible and t.deadline else None,
+        "scheduledBy": t.scheduled_by.value if is_flexible and t.scheduled_by else None,
 
         # --- common for both ---
         "reminderOffset": t.reminder_offset.name if t.reminder_offset else None,

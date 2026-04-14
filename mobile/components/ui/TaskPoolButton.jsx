@@ -1,72 +1,39 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import font from '../../constants/typography.js';
 import { pxToPt } from '../../utils/scale.js';
 
 
-export function TaskPoolButton({ count = 3, opened = false }) {
+export function TaskPoolButton({ count = 3, opened = false, iconsColor = '#3c6674', numberColor = '#394c60' }) {
+
   return (
-    <View style={styles.wrapper}>
-      <Pressable style={styles.button}>
-        {/* стрелка */}
+    <>
+      <View style={styles.wholeIcon}>
         <Ionicons
           name={opened ? 'chevron-down-outline' : 'chevron-up-outline'}
           size={18}
-          color="#3c6674"
+          color={iconsColor}
         />
 
-        {/* иконка стопки */}
         <View style={{ position: 'relative' }}>
           <Ionicons
             name="layers"
             size={25}
-            color="#3c6674"
+            color={iconsColor}
           />
 
-          {/* бейдж */}
-          {/* <View style={styles.badge}> */}
-            <Text style={styles.badgeText}>{count}</Text>
-          {/* </View> */}
+          <Text style={[styles.badgeText, {color: numberColor }]}>{count}</Text>
         </View>
-      </Pressable>
-    </View>
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    position: 'absolute',
-    right: -12, // 👈 заезжает за экран
-  },
-
-  button: {
+  wholeIcon: {
     flexDirection: 'row',
     alignItems: 'center',
     // gap: 8,
-
-    paddingVertical: 8,
-    paddingLeft: 5,
-    paddingRight: 26,
-
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 10,
-
-    backgroundColor: 'transparent',
-  },
-
-  badge: {
-    position: 'absolute',
-    top: -6,
-    right: -8,
-
-    minWidth: 16,
-    height: 16,
-    borderRadius: 8,
-
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 
   badgeText: {

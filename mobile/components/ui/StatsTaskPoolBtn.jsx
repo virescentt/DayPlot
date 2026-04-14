@@ -1,15 +1,25 @@
-import { Pressable, View, StyleSheet, Text } from "react-native"
+import { Pressable, View, StyleSheet, Text, TouchableOpacity, Alert } from "react-native"
 import { TaskPoolButton } from "./TaskPoolButton"
 import font from "../../constants/typography";
 import { pxToPt } from "../../utils/scale";
 import { Ionicons } from '@expo/vector-icons';
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { TimeLimitsContext } from "../../context/TimeLimitsContext";
 import { router } from "expo-router";
+import { SelectedTaskContext } from "../../context/SelectedTaskContext";
+import { fetchPoolTasks } from "../../services/tasks";
+import { TasksContext } from "../../context/TasksContext";
 
 
 export default function StatsTaskPoolBtn({ mode }) {
     const {stats, scheduledHours} = useContext(TimeLimitsContext)
+    const { onOpenTaskPool, poolBottomSheetVisible } = useContext(SelectedTaskContext)
+    const { poolTasks, loadPoolTasks } = useContext(TasksContext)
+
+    useEffect(() => {
+      loadPoolTasks();
+    }, []);
+
 
     let max_hours = 0
     if (mode === 'week') { max_hours = stats['max_hours_per_week']} 
@@ -51,7 +61,9 @@ export default function StatsTaskPoolBtn({ mode }) {
             ]}>{scheduledText}</Text>
             </View>
             {/* TaskPoolBtn */}
-            <TaskPoolButton count={9} />
+            <TouchableOpacity onPress={onOpenTaskPool} style={styles.wrapper}>
+              <TaskPoolButton count={poolTasks.length} opened={poolBottomSheetVisible} />
+            </TouchableOpacity>
         </View>
         </>
     );
@@ -69,6 +81,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center', 
     gap: 5, 
+  },
+  wrapper: {
+    position: 'absolute',
+    right: -12, // goes beyond the screen
+    paddingVertical: 8,
+    paddingLeft: 5,
+    paddingRight: 26,
+
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 10,
+
+    backgroundColor: 'transparent',
   },
   statsText: {
     letterSpacing: 1.4,

@@ -17,7 +17,7 @@ export const fetchTasks = async (token, from, to) => {
 
 export const fetchPoolTasks = async (token) => {
   const res = await fetch(
-    `http://${SERVER_IP}/tasks/pool}`,
+    `http://${SERVER_IP}/tasks/pool`,
     {headers: { Authorization: `Bearer ${token}` }}
     );
 
