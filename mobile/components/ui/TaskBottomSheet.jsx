@@ -75,6 +75,7 @@ export default function TaskBottomSheet({
                 </Text></>)
             : (<Text style={styles.dateTime}>Estimated time: {task.estimatedTime / 60}{" hr"}</Text>)
             }
+            {/* Reminder & RestTime */}
             <View style={{ flexDirection: 'row', marginVertical: 15 }}>
                 <SelectAdditional
                     myPlaceholder="Reminder"
@@ -99,6 +100,10 @@ export default function TaskBottomSheet({
             {/* Type */}
             <Text style={ styles.title3 }>Type:{" "}
                 <Text style={[styles.title3, {color: '#0d283d'} ]}>{task.type}</Text>
+            </Text>
+            {/* Scheduled By */}
+            <Text style={ styles.title3 }>Scheduled by:{" "}
+                <Text style={[styles.title3, {color: '#0d283d'} ]}>{task.scheduledBy}</Text>
             </Text>
 
             {/* Category */}

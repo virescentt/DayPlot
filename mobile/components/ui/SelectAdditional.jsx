@@ -19,10 +19,16 @@ export default function SelectAdditional({
   const selectedOption = options.find(opt => 
     opt.value === (value !== null && value !== undefined ? value : newTask[newTaskProperty])
   );
+  print("SELECTED OPT from RESTTIME: ", selectedOption)
 
-  const displayText = newTask[newTaskProperty] == null // null || undefined
-  ? myPlaceholder
-  : selectedOption?.label ?? myPlaceholder;
+  let displayText = ''
+  if (!value) {
+    displayText = newTask[newTaskProperty] == null // null || undefined
+    ? myPlaceholder
+    : selectedOption?.label ?? myPlaceholder;
+  } else {
+    displayText = selectedOption?.label ?? myPlaceholder;
+  }
 
   return (
     <View style={{ width: '50%', alignItems: 'center', flexDirection: 'row', gap: 10 }}>

@@ -27,7 +27,7 @@ class RestTime(enum.Enum):
 
 class ScheduleSource(enum.Enum):
     AUTO = "auto"
-    MANUAL = "manual"
+    MANUAL = "user"
 
 class WeekDay(enum.Enum):
     MONDAY = "Monday"
