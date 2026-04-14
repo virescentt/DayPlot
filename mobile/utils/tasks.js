@@ -1,3 +1,6 @@
+import { autoDistribute } from "../algorithm/autoDistributeAlgorithm";
+import { fetchFreeSlots } from "../services/algorithm";
+
 export function getWeekRange(baseDate, offset = 0) {
   // PAY ATTENTION TO -1 BCS OF THE UTC DATETIME CODING BRO 💥💥
 
@@ -45,4 +48,18 @@ export async function goToNextPrev(
     setSelectedDay(next);
   }
 }
+
+
+export const filterByDateRange = (tasks, startRange) => {
+  console.log("START RANGE RAW:", startRange);
+  console.log("START PARSED:", new Date(startRange));
+  const start = new Date(startRange);
+
+  return tasks.filter(task => {
+    const deadline = new Date(task.deadline);
+    console.log("TASK DEADLINE:", task.deadline, new Date(task.deadline));
+  console.log("COMPARE:", new Date(task.deadline) >= new Date(startRange));
+    return deadline >= start;
+  });
+};
 

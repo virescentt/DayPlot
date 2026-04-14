@@ -4,6 +4,7 @@ import { deleteTask, fetchPoolTasks, fetchTasks, toggleTaskDone } from '../servi
 import { getWeekOffsetForDay, getWeekRange } from '../utils/tasks';
 import { TasksContext } from './TasksContext';
 import { Alert } from 'react-native';
+import { runAutoDistribute } from '../algorithm/runAutoDistribute';
 
 export const SelectedTaskContext = createContext();
 
@@ -110,9 +111,9 @@ export const SelectedTaskProvider = ({ children }) => {
   };
 
   const handleRunAlgorithm = (start, end) => {
-    const result = autoDistribute(tempTasks, start, end);
-    
-    setTasks(result); // или setPoolTasks / контекст
+    const result = runAutoDistribute(token, tempTasks, start, end);
+    console.log("\n\n\nAFTER AUTO DIRSTIBUTE\n\n\n")
+    // setTasks(result); // или setPoolTasks / контекст
     setShowDateModal(false);
   }
 

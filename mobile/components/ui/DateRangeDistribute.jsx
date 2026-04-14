@@ -4,12 +4,15 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function DateRangeDistribute({ visible, onClose, onDistribute }) {
 
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState(() => new Date().toISOString());
+  const [endDate, setEndDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString();
+  });
 
   // validates: end must be > start. 
   useEffect(() => {
-    if (!startDate || !endDate) return;
 
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -49,7 +52,7 @@ export default function DateRangeDistribute({ visible, onClose, onDistribute }) 
               </Text>
                {/* Start Date */}
                 <DateTimePicker
-                value={startDate ? new Date(startDate) : new Date()}
+                value={new Date(startDate)}
                 mode="date"
                 display={Platform.OS === 'ios' ? 'compact' : 'default'}
                 onChange={(e, date) => {
@@ -66,15 +69,7 @@ export default function DateRangeDistribute({ visible, onClose, onDistribute }) 
               </Text>
                 {/* End Date */}
                 <DateTimePicker
-                value={
-                  endDate
-                    ? new Date(endDate)
-                    : (() => {
-                        const d = new Date();
-                        d.setDate(d.getDate() + 1);
-                        return d;
-                      })()
-                }
+                value={ new Date(endDate) }
                 mode="date"
                 display={Platform.OS === 'ios' ? 'compact' : 'default'}
                 onChange={(e, date) => {
